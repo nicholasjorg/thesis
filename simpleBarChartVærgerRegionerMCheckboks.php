@@ -12,29 +12,64 @@
 </head>
 <body>
 <div class = "container">
-<div class = "row" id = "contentRow">
-	<div class="col-sm-4 form-filters">
-	<div class="checkbox checked">
-	  <label><input type="checkbox" checked="checked" id="Hovedstaden" name="Hovedstaden" value="Hovedstaden">Hovedstaden</label>
-	</div>
-	<div class="checkbox">
-	  <label><input type="checkbox"  checked="checked" id="Midtjylland" name="Midtjylland" value="Midtjylland">Midtjylland</label>
-	</div>
-	<div class="checkbox">
-	  <label><input type="checkbox" checked="checked" id="Nordjylland" name="Nordjylland" value="Nordjylland">Nordjylland</label>
-	</div>
-	<div class="checkbox">
-	  <label><input type="checkbox"  checked="checked" id="Sjælland" name="Sjælland" value="Sjælland">Sjælland</label>
-	</div>
-	<div class="checkbox">
-	  <label><input type="checkbox" checked="checked" id="Syddanmark" name="Syddanmark" value="Syddanmark">Syddanmark</label>
-	</div>
-	<div class="checkbox">
-	  <label><input type="checkbox" checked="checked" id="Udenfor Danmark" name="Udenfor Danmark" value="Udenfor Danmark">Udenfor Danmark</label>
-	</div>
-	</div>
-	<div class = "col-sm-8" id="result"></div>
-</div>
+    <div class = "row" id = "contentRow">
+        <div class = "col-sm-4">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#home">Filter</a></li>
+                <li><a href="#menu1">Zoom</a></li>
+                <li><a href="#menu2">Compare</a></li>
+                <li><a href="#menu3">Menu 3</a></li>
+            </ul>
+            <div class="tab-content">
+              <div id="home" class="tab-pane fade in active">
+                <h3>Vælg regioner</h3>
+                <div class="col-sm-4 form-filters">
+                    <div class="checkbox checked">
+                      <label><input type="checkbox" checked="checked" id="Hovedstaden" name="Hovedstaden" value="Hovedstaden">Hovedstaden</label>
+                    </div>
+                    <div class="checkbox">
+                      <label><input type="checkbox"  checked="checked" id="Midtjylland" name="Midtjylland" value="Midtjylland">Midtjylland</label>
+                    </div>
+                    <div class="checkbox">
+                      <label><input type="checkbox" checked="checked" id="Nordjylland" name="Nordjylland" value="Nordjylland">Nordjylland</label>
+                    </div>
+                    <div class="checkbox">
+                      <label><input type="checkbox"  checked="checked" id="Sjælland" name="Sjælland" value="Sjælland">Sjælland</label>
+                    </div>
+                    <div class="checkbox">
+                      <label><input type="checkbox" checked="checked" id="Syddanmark" name="Syddanmark" value="Syddanmark">Syddanmark</label>
+                    </div>
+                    <div class="checkbox">
+                      <label><input type="checkbox" checked="checked" id="Udenfor Danmark" name="Udenfor Danmark" value="Udenfor Danmark">Udenfor Danmark</label>
+                    </div>
+                </div>
+              </div>
+              <div id="menu1" class="tab-pane fade">
+                <h3>Single year</h3>
+                <div class="dropdown">
+                  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
+                  <span class="caret"></span></button>
+                  <ul class="dropdown-menu" id ="scroll-menu">
+                    <?php
+                    $result = getYears();
+                    while ($row = mysqli_fetch_array($result)) {
+                        echo '<li><a href="#">'.$row["displayDate"].'</a></li>';
+                    }
+                    ?>
+                  </ul>
+                </div>
+              </div>
+              <div id="menu2" class="tab-pane fade">
+                <h3>Compare</h3>
+                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+              </div>
+              <div id="menu3" class="tab-pane fade">
+                <h3>Menu 3</h3>
+                <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+              </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 	<?php
@@ -52,7 +87,18 @@
 			}
 		$jsonobj = json_encode($jsonarray);
 	?>
+    <script>
+        var fadeOut = function(){
+           var r = $.Deferred();
+           $("#graph").fadeOut(150);
 
+           setTimeout(function () {
+           r.resolve();
+           }, 500);
+
+           return r;
+        };
+    </script>
 	<script>
 		var jsonarr = <?php echo $jsonobj; ?>;
 		var jsonarrlength = Object.keys(jsonarr).length;
@@ -71,20 +117,21 @@
 
 	 		if(exists == false){//console.log("exists er false");
 				filterJsonArr[addIndex].region = jsonarr[addIndex].region;
-				updateData();
+                fadeOut().done(update);
 	 		}
 	 		else{//console.log("exists er true. Prøver at fjerne: "+name);
 	 		filterJsonArr[i].region = null;
-	 		updateData();}
+	 		fadeOut().done(update);
+            }
 	 		//console.log(Object.keys(filterJsonArr).length);
 
 			//$('#result').html(filter_options.join('; '));
 		});
-		updateData();
 
-		function updateData(){
-		d3.select("svg").remove();
+        update;
 
+		var update = function(){
+        d3.select("svg").remove();
 		var newData = new Array();
 		for(var h=0; h<Object.keys(filterJsonArr).length; h++){
 			console.log(h);
@@ -92,28 +139,38 @@
 		}
 
 		//Laver svg element til at komme figuren
-	var svg = d3.select("#contentRow").append("svg");
-	//Sætter attributter
-	var w=500, h=500;
-	svg.attr("width", w).attr("height", h);
+    	var svg = d3.select("#contentRow").append("svg").attr("id","graph");
+        //fadeIn();
+    	//Sætter attributter
+    	var w=500, h=500;
+    	svg.attr("width", w).attr("height", h);
 
-	svg.selectAll("rect").data(newData).enter().append("rect")
-	.attr("x",function(d,i){ return i*21 })
-	.attr("y", function (d){ return h-(d.antal/10)})
-	.attr("width", 20)
-	.attr("height", function (d){ return (d.antal/10)})
-	.attr("fill", "teal");
+    	svg.selectAll("rect").data(newData).enter().append("rect")
+        .attr("id", function(d,i){return d.region})
+    	.attr("x",function(d,i){ return i*21 })
+    	.attr("y", function (d){ return h-(d.antal/10)})
+    	.attr("width", 20)
+    	.attr("height", function (d){ return (d.antal/10)})
+    	.attr("fill", "teal");
 
-
-	svg.selectAll("text")
-	.data(newData)
-	.enter()
-	.append("text")
-	.text(function (d) { return d.region })
-	.attr("x",function(d,i){ return i*21 })
-	.attr("y", function (d){ return h-(d.antal/10)});
-		}
+    	svg.selectAll("text")
+    	.data(newData)
+    	.enter()
+    	.append("text")
+    	.text(function (d) { return d.region })
+    	.attr("x",function(d,i){ return i*21 })
+    	.attr("y", function (d){ return h-(d.antal/10)});
+    	}
 	</script>
+
+    <script>
+    //Tabbed menu javascript
+    $(document).ready(function(){
+        $(".nav-tabs a").click(function(){
+            $(this).tab('show');
+        });
+    });
+    </script>
 </body>
 </head>
 
