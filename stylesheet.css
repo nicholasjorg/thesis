@@ -1,5 +1,4 @@
 div.bar {
-<<<<<<< Updated upstream
 display: inline-block;
 width: 20px;
 background-color: teal;
@@ -44,11 +43,6 @@ background-color: teal;
   z-index: 1;
 }
 /*END OF TABS*/
-=======
-	display: inline-block;
-	width: 20px;
-	background-color: teal;
-}
 .axis path,
 .axis line {
     fill: none;
@@ -60,4 +54,3 @@ background-color: teal;
     font-size: 11px;
     color: olive;
 }
->>>>>>> Stashed changes
