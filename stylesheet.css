@@ -42,7 +42,10 @@ background-color: teal;
 [type=radio]:checked ~ label ~ .content {
   z-index: 1;
 }
+<<<<<<< Updated upstream
 /*END OF TABS*/
+=======
+>>>>>>> Stashed changes
 .axis path,
 .axis line {
     fill: none;
