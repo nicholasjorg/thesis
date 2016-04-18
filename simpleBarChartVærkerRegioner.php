@@ -10,8 +10,6 @@
 
 <div class="bar"></div>
 
-
-
 <?php
 $jsonarray = array();
 //Bygger SQL statement
@@ -28,13 +26,12 @@ while ($row = mysqli_fetch_array($result)) {
 $jsonobj = json_encode($jsonarray);
 ?>
 
-
 <script type="text/javascript">
 
 var jsonarr = <?php echo $jsonobj; ?>;
 //for(var i=0; i<jsonarr.length; i++)
 	//alert(jsonarr[i].antal);
-	
+
 //Laver svg element til at komme figuren
 var svg = d3.select("body").append("svg");
 //Sætter attributter
@@ -49,7 +46,7 @@ svg.selectAll("rect").data(jsonarr).enter().append("rect")
 .attr("fill", "teal");
 
 
-	
+
 svg.selectAll("text")
 .data(jsonarr)
 .enter()
@@ -65,14 +62,9 @@ svg.selectAll("text2")
 .append("text2")
 .text(function (d) { return d.antal })
 .attr("x",function(d,i){ return i*21 })
-.attr("y", function (d){ return h-(d.antal/10)-10});		
-	
+.attr("y", function (d){ return h-(d.antal/10)-10});
+
 </script>
-
-
-
-
-
 
 </body>
 </head>
