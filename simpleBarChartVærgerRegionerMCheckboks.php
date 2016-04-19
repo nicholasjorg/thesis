@@ -68,8 +68,6 @@
         </div>
     </div>
 </div>
-<<<<<<< HEAD
-
 	<?php
 	//Henter data omkring regioner / antal værker
 		$jsonarray = array();
@@ -86,7 +84,7 @@
 			}
 		$jsonobj = json_encode($jsonarray);
 	?>
-	
+
 	<?php
 	//Henter data omkring regioner / antal værker fordelt over enkelte år.
 		$jsonarray = array();
@@ -101,10 +99,10 @@
 			$tmparr = array($var1=>$row[$var1], $var2=>$row[$var2], antal=>$row[$var3]);
 			array_push($jsonarray,$tmparr);
 		}
-		
+
 		$regionSingleYear= json_encode($jsonarray);
 	?>
-		
+
     <script>
         var fadeOut = function(){
            var r = $.Deferred();
@@ -201,13 +199,12 @@
 		var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
 		svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
 	}
-	
+
 	//Kalder update første gang.
-	fadeOut().done(update);	
+	fadeOut().done(update);
 </script>
 
 <script>
-	
 	function updateWithYears(year){
 		//Fjerner gammel graf
         d3.select("svg").remove();
@@ -218,12 +215,12 @@
 			if(filterJsonArr[i].region == regionSingleYear[j].region && regionSingleYear[j].displayDate==year) newYearData.push(regionSingleYear[j]);
 			}
 		}
-		
+
 		//Sorterer newData ascending order
 		newYearData.sort(function(a,b){
 			return parseFloat(a.antal) - parseFloat(b.antal);
 		});
-	
+
 		//Sætter variable
 		var margin = {top: 10, right: 0, bottom: 10, left: 40};
 		var w = 500, h = 500;
@@ -251,12 +248,10 @@
 		var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
 		svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
 
-	
+
 	}
 
 </script>
-
-
 
 <script>
 //Tabbed menu javascript
