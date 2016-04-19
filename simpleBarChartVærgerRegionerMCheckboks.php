@@ -1,6 +1,4 @@
 <?php require("functions.php"); ?>
-<?php require("generateHistogram.php");?>
-
 <HTML>
 <head>
 <script type="text/javascript" src="d3/d3.js"></script>
@@ -87,7 +85,6 @@
         array_push($jsonarray,$tmparr);
         }
     $jsonobj = json_encode($jsonarray);
-    return $jsonobj;
     ?>
     <script>
 		var jsonarr = <?php echo $jsonobj; ?>;
