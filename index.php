@@ -8,8 +8,9 @@
 </head>
 <body>
 
-<a href="simpleBarChartVærkerRegioner.php">Simple bar chart værker regioner</a>
-<a href="simpleBarChartVærgerRegionerMCheckboks.php">Simple bar chart værker regioner: Med checkbox</a>
+<a href="simpleBarChartVærkerRegioner.php">Simple bar chart værker regioner</a></br>
+<a href="simpleBarChartVærgerRegionerMCheckboks.php">Simple bar chart værker regioner: Med checkbox</a></br>
+<a href="cleanDisplayDate.php">Clean display date</a></br>
 
 </body>
 </head>

@@ -18,7 +18,8 @@
                 <li class="active"><a href="#home">Filter</a></li>
                 <li><a href="#menu1">Zoom</a></li>
                 <li><a href="#menu2">Compare</a></li>
-                <li><a href="#menu3">Menu 3</a></li>
+                <li><a href="#menu3">Parameters</a></li>
+                <li><a href="#menu4"></a></li>
             </ul>
             <div class="tab-content">
               <div id="home" class="tab-pane fade in active">
@@ -99,7 +100,7 @@
            return r;
         };
     </script>
-	
+
 	<script>
 		var jsonarr = <?php echo $jsonobj; ?>;
 		var jsonarrlength = Object.keys(jsonarr).length;
@@ -127,12 +128,12 @@
 	 			fadeOut().done(update);
             }
 		});
-		
+
 	//Funktion til at opdatere graf
 	var update = function(){
 		//Fjerner gammel graf
         d3.select("svg").remove();
-		
+
 		var newData = new Array();
 		for(var h=0; h<Object.keys(filterJsonArr).length; h++){
 			if(filterJsonArr[h].region == "needschanging") { filterJsonArr[h].region = null }
@@ -172,7 +173,7 @@
 	}
 	//Kalder update første gang.
 	fadeOut().done(update);
-	
+
 </script>
 
 <script>
