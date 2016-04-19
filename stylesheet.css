@@ -1,9 +1,8 @@
 div.bar {
-display: inline-block;
-width: 20px;
-background-color: teal;
+	display: inline-block;
+	width: 20px;
+	background-color: teal;
 }
-/*  TABS */
 .tabs {
   position: relative;
   min-height: 400px; /* This part sucks */
@@ -42,10 +41,6 @@ background-color: teal;
 [type=radio]:checked ~ label ~ .content {
   z-index: 1;
 }
-<<<<<<< Updated upstream
-/*END OF TABS*/
-=======
->>>>>>> Stashed changes
 .axis path,
 .axis line {
     fill: none;
@@ -55,5 +50,4 @@ background-color: teal;
 .axis text {
     font-family: sans-serif;
     font-size: 11px;
-    color: olive;
 }
