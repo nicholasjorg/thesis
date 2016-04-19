@@ -1,5 +1,4 @@
 <?php require("functions.php"); ?>
-
 <HTML>
 <head>
 <script type="text/javascript" src="d3/d3.js"></script>
@@ -69,6 +68,7 @@
         </div>
     </div>
 </div>
+<<<<<<< HEAD
 
 	<?php
 	//Henter data omkring regioner / antal værker
