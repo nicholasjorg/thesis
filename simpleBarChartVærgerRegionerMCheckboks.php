@@ -1,4 +1,5 @@
 <?php require("functions.php"); ?>
+<?php require("getRegionData.php"); ?>
 <HTML>
 <head>
 <script type="text/javascript" src="d3/d3.js"></script>
@@ -68,55 +69,9 @@
         </div>
     </div>
 </div>
-<<<<<<< HEAD
 
-	<?php
-	//Henter data omkring regioner / antal værker
-		$jsonarray = array();
-		//Bygger SQL statement
-		$var1 = "region";
-		$var2 = "count(*)";
-		$sql = 'SELECT '.$var1.', '.$var2.' FROM allData group by region';
-		$result = queryDB($sql);
-
-		while ($row = mysqli_fetch_array($result)) {
-			//Indsæt de forskellige variable, ændre count(*), da det ellers fucker op i JS
-			$tmparr = array($var1=>$row[$var1], antal=>$row[$var2]);
-			array_push($jsonarray,$tmparr);
-			}
-		$jsonobj = json_encode($jsonarray);
-	?>
-	
-	<?php
-	//Henter data omkring regioner / antal værker fordelt over enkelte år.
-		$jsonarray = array();
-		//Bygger SQL statement
-		$var1 = "region";
-		$var2 = "displayDate";
-		$var3 = "count(*)";
-		$sql = 'SELECT '.$var1.', '.$var2.', '.$var3.' FROM allData WHERE '.$var1.' is not null AND '.$var2.' is not null GROUP BY '.$var1.', '.$var2;
-		$result = queryDB($sql);
-		while ($row = mysqli_fetch_array($result)) {
-		//Indsæt de forskellige variable, ændre count(*), da det ellers fucker op i JS
-			$tmparr = array($var1=>$row[$var1], $var2=>$row[$var2], antal=>$row[$var3]);
-			array_push($jsonarray,$tmparr);
-		}
-		
-		$regionSingleYear= json_encode($jsonarray);
-	?>
-		
-    <script>
-        var fadeOut = function(){
-           var r = $.Deferred();
-           $("#graph").fadeOut(150);
-
-           setTimeout(function () {
-           r.resolve();
-           }, 300);
-
-           return r;
-        };
-    </script>
+    <script src = "js/effects.js"></script>
+    <script src = "js/tabMenu.js"></script>
 
 	<script>
 		var regionSingleYear = <?php echo $regionSingleYear; ?>;
@@ -207,7 +162,6 @@
 </script>
 
 <script>
-	
 	function updateWithYears(year){
 		//Fjerner gammel graf
         d3.select("svg").remove();
@@ -250,21 +204,8 @@
 		svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis);
 		var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
 		svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
-
-	
 	}
 
-</script>
-
-
-
-<script>
-//Tabbed menu javascript
-$(document).ready(function(){
-	$(".nav-tabs a").click(function(){
-    	$(this).tab('show');
-    });
-});
 </script>
 
 </body>
