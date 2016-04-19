@@ -72,7 +72,8 @@
 
     <script src = "js/effects.js"></script>
     <script src = "js/tabMenu.js"></script>
-
+	
+	<!--Script til at manipulere data via HTML inputs -->
 	<script>
 		var regionSingleYear = <?php echo $regionSingleYear; ?>;
 		console.log(regionSingleYear);
@@ -106,14 +107,18 @@
                 else updateWithYears(year);
             }
 		});
-
+	
+		//Ændre i year til single view
 		$('select').change(function() {
     	year = $(this).val();
     	if(year == null) fadeOut().done(update);
         else updateWithYears(year);
 		});
 
-
+	
+	
+	
+	
 	//Funktion til at opdatere graf
 	var update = function(){
 		//Fjerner gammel graf
