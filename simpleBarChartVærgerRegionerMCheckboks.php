@@ -47,7 +47,7 @@
               </div>
               <div id="menu1" class="tab-pane fade">
                 <h3>Single year</h3>
-                  <select id ="scroll-menu" name="select">
+                  <select id ="selectSingleYear">
                   <option value="null">Alle</option>
                     <?php
                     $result = getDisplayDateYears();
@@ -55,6 +55,25 @@
                         echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
                     }
                     ?>
+				</select>
+				<h3>Single year</h3>
+                <select id ="selectSingleYear">
+                <option value="null">Alle</option>
+                <?php
+                	$result = getDisplayDateYears();
+                    while ($row = mysqli_fetch_array($result)) {
+                        echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
+                    }
+                ?>
+				</select>
+				<select id ="selectSingleYear">
+                <option value="null">Alle</option>
+                <?php
+                	$result = getDisplayDateYears();
+                    while ($row = mysqli_fetch_array($result)) {
+                        echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
+                    }
+                ?>
 				</select>
               </div>
               <div id="menu2" class="tab-pane fade">
@@ -82,7 +101,6 @@
 		//Kloner jsonarr til filterJsonArr
 		var filterJsonArr = JSON.parse(JSON.stringify(jsonarr));
 		var year;
-		console.log(year);
 
 		//Kører hver gang der ændres på en checkboks
 		$('.form-filters input:checkbox').click(function() {
@@ -98,88 +116,54 @@
 
 	 		if(exists == false){
 				filterJsonArr[addIndex].region = jsonarr[addIndex].region;
-				if(year == null) fadeOut().done(update);
-                else updateWithYears(year);
+				if(year == null) updateWithNewData(updateRegionData());
+                else updateWithNewData(updateSingleYearData());
 	 		}
 	 		else{
 	 			filterJsonArr[i].region = null;
-	 			if(year == null) fadeOut().done(update);
-                else updateWithYears(year);
+	 			if(year == null) updateWithNewData(updateRegionData());
+                else updateWithNewData(updateSingleYearData());
             }
 		});
 	
 		//Ændre i year til single view
-		$('select').change(function() {
-    	year = $(this).val();
-    	if(year == null) fadeOut().done(update);
-        else updateWithYears(year);
+		$('#selectSingleYear').change(function() {
+    		year = $(this).val();
+    		if(year == null) updateWithNewData(updateRegionData());
+        	else updateWithNewData(updateSingleYearData());
 		});
-
+		
+		
 	
-	
-	
-	
-	//Funktion til at opdatere graf
-	var update = function(){
-		//Fjerner gammel graf
-        d3.select("svg").remove();
-
-		var newData = new Array();
-		for(var h=0; h<Object.keys(filterJsonArr).length; h++){
-			if(filterJsonArr[h].region == "needschanging") { filterJsonArr[h].region = null }
-			if(filterJsonArr[h].region != null) { newData.push(filterJsonArr[h]); }
-		}
-		//Sorterer newData ascending order
-		newData.sort(function(a,b){
-			return parseFloat(a.antal) - parseFloat(b.antal);
-		});
-
-		//Sætter variable
-		var margin = {top: 10, right: 0, bottom: 10, left: 40};
-		var w = 500, h = 500;
-
-		//Laver svg element til at komme figuren
-		var svg = d3.select("#contentRow").append("svg").attr("id","graph").attr("width", w).attr("height", h);
-
-		//Laver scale
-		var min = newData[0].antal;
-		var max = newData[Object.keys(newData).length-1].antal;
-		var yScale = d3.scale.linear().domain([0,max]).range([h-margin.top-margin.bottom,margin.top]).nice();
-		var xScale = d3.scale.ordinal().domain(newData.map(function (d){return d.region})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
-
-		//Tegner rectangels
-		svg.selectAll("rect").data(newData).enter().append("rect")
-		.attr("x",function(d,i){ return xScale(d.region)})
-		.attr("y", function (d){ return yScale(d.antal)})
-		.attr("width", xScale.rangeBand() )
-		.attr("height", function (d){ return yScale(0) - yScale(d.antal) })
-		.attr("fill", "teal");
-
-		//Bygger akser
-		var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-		svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis);
-		var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
-		svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
-	}
-	
-	//Kalder update første gang.
-	fadeOut().done(update);	
-</script>
-
-<script>
-	function updateWithYears(year){
-		//Fjerner gammel graf
-        d3.select("svg").remove();
-
-		var newYearData = new Array();
-		for(var i=0; i<Object.keys(filterJsonArr).length; i++){
-			for(var j=0; j<Object.keys(regionSingleYear).length; j++){
-			if(filterJsonArr[i].region == regionSingleYear[j].region && regionSingleYear[j].displayDate==year) newYearData.push(regionSingleYear[j]);
+		function updateRegionData(){
+			var newData = new Array();
+			for(var h=0; h<Object.keys(filterJsonArr).length; h++){
+				if(filterJsonArr[h].region == "needschanging") { filterJsonArr[h].region = null }
+				if(filterJsonArr[h].region != null) { newData.push(filterJsonArr[h]); }
 			}
+			return newData;
 		}
 		
-		//Sorterer newData ascending order
-		newYearData.sort(function(a,b){
+		function updateSingleYearData(){
+			var newYearData = new Array();
+			for(var i=0; i<Object.keys(filterJsonArr).length; i++){
+				for(var j=0; j<Object.keys(regionSingleYear).length; j++){
+				if(filterJsonArr[i].region == regionSingleYear[j].region && regionSingleYear[j].displayDate==year) newYearData.push(regionSingleYear[j]);
+				}
+			}
+			return newYearData;
+		}
+		
+		
+	updateWithNewData(updateRegionData());
+
+	function updateWithNewData(data){
+		console.log(data);
+		//Fjerner gammel graf
+        d3.select("svg").remove();
+        
+        //Sorterer newData ascending order
+		data.sort(function(a,b){
 			return parseFloat(a.antal) - parseFloat(b.antal);
 		});
 	
@@ -191,14 +175,14 @@
 		var svg = d3.select("#contentRow").append("svg").attr("id","graph").attr("width", w).attr("height", h);
 
 		//Laver scale
-		var min = newYearData[0].antal;
-		var max = newYearData[Object.keys(newYearData).length-1].antal;
+		var min = data[0].antal;
+		var max = data[Object.keys(data).length-1].antal;
 		var yScale = d3.scale.linear().domain([0,max]).range([h-margin.top-margin.bottom,margin.top]).nice();
-		var xScale = d3.scale.ordinal().domain(newYearData.map(function (d){return d.region.concat(d.displayDate)})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
+		var xScale = d3.scale.ordinal().domain(data.map(function (d){return d.region})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
 
 		//Tegner rectangels
-		svg.selectAll("rect").data(newYearData).enter().append("rect")
-		.attr("x",function(d,i){ return xScale(d.region.concat(d.displayDate))})
+		svg.selectAll("rect").data(data).enter().append("rect")
+		.attr("x",function(d,i){ return xScale(d.region)})
 		.attr("y", function (d){ return yScale(d.antal)})
 		.attr("width", xScale.rangeBand() )
 		.attr("height", function (d){ return yScale(0) - yScale(d.antal) })
