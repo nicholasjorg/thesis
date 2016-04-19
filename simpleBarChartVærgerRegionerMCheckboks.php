@@ -47,18 +47,15 @@
               </div>
               <div id="menu1" class="tab-pane fade">
                 <h3>Single year</h3>
-                <div class="dropdown">
-                  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Dropdown Example
-                  <span class="caret"></span></button>
-                  <ul class="dropdown-menu" id ="scroll-menu">
+                  <select id ="scroll-menu" name="select">
+                  <option value="null">Alle</option>
                     <?php
                     $result = getDisplayDateYears();
                     while ($row = mysqli_fetch_array($result)) {
-                        echo '<li><a href="#">'.$row["displayDate"].'</a></li>';
+                        echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
                     }
                     ?>
-                  </ul>
-                </div>
+				</select>
               </div>
               <div id="menu2" class="tab-pane fade">
                 <h3>Compare</h3>
@@ -74,6 +71,7 @@
 </div>
 
 	<?php
+	//Henter data omkring regioner / antal værker
 		$jsonarray = array();
 		//Bygger SQL statement
 		$var1 = "region";
@@ -88,6 +86,25 @@
 			}
 		$jsonobj = json_encode($jsonarray);
 	?>
+	
+	<?php
+	//Henter data omkring regioner / antal værker fordelt over enkelte år.
+		$jsonarray = array();
+		//Bygger SQL statement
+		$var1 = "region";
+		$var2 = "displayDate";
+		$var3 = "count(*)";
+		$sql = 'SELECT '.$var1.', '.$var2.', '.$var3.' FROM allData WHERE '.$var1.' is not null AND '.$var2.' is not null GROUP BY '.$var1.', '.$var2;
+		$result = queryDB($sql);
+		while ($row = mysqli_fetch_array($result)) {
+		//Indsæt de forskellige variable, ændre count(*), da det ellers fucker op i JS
+			$tmparr = array($var1=>$row[$var1], $var2=>$row[$var2], antal=>$row[$var3]);
+			array_push($jsonarray,$tmparr);
+		}
+		
+		$regionSingleYear= json_encode($jsonarray);
+	?>
+		
     <script>
         var fadeOut = function(){
            var r = $.Deferred();
@@ -102,10 +119,14 @@
     </script>
 
 	<script>
+		var regionSingleYear = <?php echo $regionSingleYear; ?>;
+		console.log(regionSingleYear);
 		var jsonarr = <?php echo $jsonobj; ?>;
 		var jsonarrlength = Object.keys(jsonarr).length;
 		//Kloner jsonarr til filterJsonArr
 		var filterJsonArr = JSON.parse(JSON.stringify(jsonarr));
+		var year;
+		console.log(year);
 
 		//Kører hver gang der ændres på en checkboks
 		$('.form-filters input:checkbox').click(function() {
@@ -121,13 +142,22 @@
 
 	 		if(exists == false){
 				filterJsonArr[addIndex].region = jsonarr[addIndex].region;
-                fadeOut().done(update);
+				if(year == null) fadeOut().done(update);
+                else updateWithYears(year);
 	 		}
 	 		else{
 	 			filterJsonArr[i].region = null;
-	 			fadeOut().done(update);
+	 			if(year == null) fadeOut().done(update);
+                else updateWithYears(year);
             }
 		});
+
+		$('select').change(function() {
+    	year = $(this).val();
+    	if(year == null) fadeOut().done(update);
+        else updateWithYears(year);
+		});
+
 
 	//Funktion til at opdatere graf
 	var update = function(){
@@ -171,10 +201,62 @@
 		var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
 		svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
 	}
+	
 	//Kalder update første gang.
-	fadeOut().done(update);
+	fadeOut().done(update);	
+</script>
+
+<script>
+	
+	function updateWithYears(year){
+		//Fjerner gammel graf
+        d3.select("svg").remove();
+
+		var newYearData = new Array();
+		for(var i=0; i<Object.keys(filterJsonArr).length; i++){
+			for(var j=0; j<Object.keys(regionSingleYear).length; j++){
+			if(filterJsonArr[i].region == regionSingleYear[j].region && regionSingleYear[j].displayDate==year) newYearData.push(regionSingleYear[j]);
+			}
+		}
+		
+		//Sorterer newData ascending order
+		newYearData.sort(function(a,b){
+			return parseFloat(a.antal) - parseFloat(b.antal);
+		});
+	
+		//Sætter variable
+		var margin = {top: 10, right: 0, bottom: 10, left: 40};
+		var w = 500, h = 500;
+
+		//Laver svg element til at komme figuren
+		var svg = d3.select("#contentRow").append("svg").attr("id","graph").attr("width", w).attr("height", h);
+
+		//Laver scale
+		var min = newYearData[0].antal;
+		var max = newYearData[Object.keys(newYearData).length-1].antal;
+		var yScale = d3.scale.linear().domain([0,max]).range([h-margin.top-margin.bottom,margin.top]).nice();
+		var xScale = d3.scale.ordinal().domain(newYearData.map(function (d){return d.region.concat(d.displayDate)})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
+
+		//Tegner rectangels
+		svg.selectAll("rect").data(newYearData).enter().append("rect")
+		.attr("x",function(d,i){ return xScale(d.region.concat(d.displayDate))})
+		.attr("y", function (d){ return yScale(d.antal)})
+		.attr("width", xScale.rangeBand() )
+		.attr("height", function (d){ return yScale(0) - yScale(d.antal) })
+		.attr("fill", "teal");
+
+		//Bygger akser
+		var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+		svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis);
+		var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
+		svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
+
+	
+	}
 
 </script>
+
+
 
 <script>
 //Tabbed menu javascript
