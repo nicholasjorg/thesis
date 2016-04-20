@@ -7,8 +7,13 @@
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 	<!-- jQuery library -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<!-- Latest compiled JavaScript -->
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <!-- d3 script -->
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+
 </head>
 <body>
 <div class = "container">
@@ -91,7 +96,7 @@
 
     <script src = "js/effects.js"></script>
     <script src = "js/tabMenu.js"></script>
-	
+
 	<!--Script til at manipulere data via HTML inputs -->
 	<script>
 		var regionSingleYear = <?php echo $regionSingleYear; ?>;
@@ -125,16 +130,14 @@
                 else updateWithNewData(updateSingleYearData());
             }
 		});
-	
+
 		//Ændre i year til single view
 		$('#selectSingleYear').change(function() {
     		year = $(this).val();
     		if(year == null) updateWithNewData(updateRegionData());
         	else updateWithNewData(updateSingleYearData());
 		});
-		
-		
-	
+
 		function updateRegionData(){
 			var newData = new Array();
 			for(var h=0; h<Object.keys(filterJsonArr).length; h++){
@@ -143,7 +146,7 @@
 			}
 			return newData;
 		}
-		
+
 		function updateSingleYearData(){
 			var newYearData = new Array();
 			for(var i=0; i<Object.keys(filterJsonArr).length; i++){
@@ -153,20 +156,19 @@
 			}
 			return newYearData;
 		}
-		
-		
+
 	updateWithNewData(updateRegionData());
 
 	function updateWithNewData(data){
 		console.log(data);
 		//Fjerner gammel graf
         d3.select("svg").remove();
-        
+
         //Sorterer newData ascending order
 		data.sort(function(a,b){
 			return parseFloat(a.antal) - parseFloat(b.antal);
 		});
-	
+
 		//Sætter variable
 		var margin = {top: 10, right: 0, bottom: 10, left: 40};
 		var w = 500, h = 500;
@@ -180,13 +182,26 @@
 		var yScale = d3.scale.linear().domain([0,max]).range([h-margin.top-margin.bottom,margin.top]).nice();
 		var xScale = d3.scale.ordinal().domain(data.map(function (d){return d.region})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
 
+        //Bygger tooltip
+        var tip = d3.tip()
+          .attr('class', 'd3-tip')
+          .offset([-10, 0])
+          .html(function(d) {
+            return "Klik for mere info om " +  d.region + " <span style='color:red'></span>";
+        })
+
+        svg.call(tip);
+
 		//Tegner rectangels
 		svg.selectAll("rect").data(data).enter().append("rect")
+        .attr("class",function(d,i){return "rectangle"})
+        .attr("id",function(d,i){return d.region})
 		.attr("x",function(d,i){ return xScale(d.region)})
 		.attr("y", function (d){ return yScale(d.antal)})
 		.attr("width", xScale.rangeBand() )
 		.attr("height", function (d){ return yScale(0) - yScale(d.antal) })
-		.attr("fill", "teal");
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide)
 
 		//Bygger akser
 		var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
@@ -194,9 +209,7 @@
 		var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
 		svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
 	}
-
 </script>
-
 </body>
 </head>
 
