@@ -53,7 +53,8 @@
               <div id="menu1" class="tab-pane fade">
                 <h3>Single year</h3>
                   <select id ="selectSingleYear">
-                  <option value="null">Alle</option>
+                  <option value="Vaelg" display="none">Vælg år</option>
+                  <option value="Alle">Alle</option>
                     <?php
                     $result = getDisplayDateYears();
                     while ($row = mysqli_fetch_array($result)) {
@@ -63,7 +64,7 @@
 				</select>
 				<h3>Interval</h3>
                 <select id ="selectStartYear">
-                <option value="Alle">Start</option>
+                <option value="start">Start</option>
                 <?php
                 	$result = getDisplayDateYears();
                     while ($row = mysqli_fetch_array($result)) {
@@ -72,7 +73,7 @@
                 ?>
 				</select>
 				<select id ="selectEndYear">
-                <option value="null">Slut</option>
+                <option value="slut">Slut</option>
                 <?php
                 	$result = getDisplayDateYears();
                     while ($row = mysqli_fetch_array($result)) {
@@ -105,7 +106,7 @@
 		var jsonarrlength = Object.keys(jsonarr).length;
 		//Kloner jsonarr til filterJsonArr
 		var filterJsonArr = JSON.parse(JSON.stringify(jsonarr));
-		var year, endYear;
+		var year, startYear, endYear;
 
 		//Kører hver gang der ændres på en checkboks
 		$('.form-filters input:checkbox').click(function() {
@@ -121,31 +122,37 @@
 
 	 		if(exists == false){
 				filterJsonArr[addIndex].region = jsonarr[addIndex].region;
-				if(year == null) updateWithNewData(updateRegionData());
-                else updateWithNewData(updateSingleYearData());
+				if(year != null && startYear == null) updateWithNewData(updateSingleYearData());
+				else if(year == null && startYear != null) updateWithNewData(updateIntervalYearData());
+				else updateWithNewData(updateRegionData());
 	 		}
 	 		else{
 	 			filterJsonArr[i].region = null;
-	 			if(year == null) updateWithNewData(updateRegionData());
-                else updateWithNewData(updateSingleYearData());
+	 			if(year != null && startYear == null) updateWithNewData(updateSingleYearData());
+				else if(year == null && startYear != null) updateWithNewData(updateIntervalYearData());
+				else updateWithNewData(updateRegionData());
             }
 		});
 
-		//Ændre i year til single view
+		//Ændre i year til single view ved klik på dropdown menu
 		$('#selectSingleYear').change(function() {
+			$('#selectStartYear').val("start");
+			$('#selectEndYear').val("slut");
     		year = $(this).val();
     		endYear = null;
-    		if(year == null) updateWithNewData(updateRegionData());
-        	else updateWithNewData(updateSingleYearData());
+    		startYear = null;
+    		if(year=="Alle"){year=null; updateWithNewData(updateRegionData()); return;}
+    		updateWithNewData(updateSingleYearData());
 		});
 
-
+		//Ændre i intervallet. Denne funktion kalder når knappen vælg trykkes
 		$("#btnSubmit").click(function(){
-			year = $('#selectStartYear').val();
+			$('#selectSingleYear').val("Vaelg");
+			startYear = $('#selectStartYear').val();
 			endYear = $('#selectEndYear').val();
+			year = null;
         	updateWithNewData(updateIntervalYearData());
     	});
-
 
 		function updateRegionData(){
 			var newData = new Array();
@@ -153,19 +160,24 @@
 				if(filterJsonArr[h].region == "needschanging") { filterJsonArr[h].region = null }
 				if(filterJsonArr[h].region != null) { newData.push(filterJsonArr[h]); }
 			}
+			console.log(newData);
 			return newData;
 		}
 
 		function updateSingleYearData(){
-			var newYearData = new Array();
-			for(var i=0; i<Object.keys(filterJsonArr).length; i++){
+			var newYearData = JSON.parse(JSON.stringify(updateRegionData()));
+			for(var i=0; i<Object.keys(newYearData).length; i++){
+				newYearData[i].antal = 0;
+				
 				for(var j=0; j<Object.keys(regionSingleYear).length; j++){
-				if(filterJsonArr[i].region == regionSingleYear[j].region && regionSingleYear[j].displayDate>=year) newYearData.push(regionSingleYear[j]);
+				if(newYearData[i].region == regionSingleYear[j].region 
+					&& regionSingleYear[j].displayDate==year){
+					newYearData[i].antal = parseFloat(newYearData[i].antal) + parseFloat(regionSingleYear[j].antal);
+					}
 				}
-			}
+			}			
 			return newYearData;
 		}
-
 
 		function updateIntervalYearData(){
 			var newIntervalData = JSON.parse(JSON.stringify(updateRegionData()));
@@ -173,8 +185,8 @@
 				newIntervalData[i].antal = 0;
 				for(var j=0; j<Object.keys(regionSingleYear).length; j++){
 					if(newIntervalData[i].region == regionSingleYear[j].region
-					&& regionSingleYear[j].displayDate > year
-					&& regionSingleYear[j].displayDate < endYear){
+						&& regionSingleYear[j].displayDate > startYear
+						&& regionSingleYear[j].displayDate < endYear){
 					newIntervalData[i].antal = parseFloat(newIntervalData[i].antal) + parseFloat(regionSingleYear[j].antal);
 					}
 				}
