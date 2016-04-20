@@ -1,4 +1,5 @@
 <?php require("functions.php");?>
+
 <HTML>
 <head>
 <script type="text/javascript" src="d3/d3.js"></script>
@@ -8,7 +9,7 @@
 <body>
 
 <a href="cleanDisplayDate.php">Clean display date</a></br>
-<br />
+<br/>
 <a href="simpleBarChartVærgerRegionerMCheckboks.php">Simple bar chart værker regioner: Med checkbox</a>
 
 </body>

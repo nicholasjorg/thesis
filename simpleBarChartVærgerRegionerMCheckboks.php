@@ -5,15 +5,16 @@
 <?php require("header.php");?>
 
 <div class = "container">
-    <div class = "row" id = "contentRow">
+    <div class = "row">
         <div class = "col-sm-4">
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#home">Filter</a></li>
-                <li><a href="#menu1">Zoom</a></li>
-                <li><a href="#menu2">Compare</a></li>
-                <li><a href="#menu3">Parameters</a></li>
-                <li><a href="#menu4"></a></li>
-            </ul>
+            <div class ="row">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#home">Filter</a></li>
+                    <li><a href="#menu1">Zoom</a></li>
+                    <li><a href="#menu2">Compare</a></li>
+                    <li><a href="#menu3">Parameters</a></li>
+                </ul>
+            </div>
             <div class="tab-content">
               <div id="home" class="tab-pane fade in active">
                 <h3>Vælg regioner</h3>
@@ -38,6 +39,7 @@
                     </div>
                 </div>
               </div>
+              <!-- Dashboard menu start !-->
               <div id="menu1" class="tab-pane fade">
                 <h3>Single year</h3>
                   <select id ="selectSingleYear">
@@ -79,9 +81,14 @@
                 <h3>Menu 3</h3>
                 <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
               </div>
+              <!-- Dashboard menu end !-->
             </div>
+        </div><!-- Dashboard col end !-->
+        <div class ="col-sm-6" id = "graphContent"></div>
+        <div class ="col-sm-2">
+            <h3>Aktive parametre</h3>
         </div>
-    </div>
+    </div><!-- row !-->
 </div>
 
     <script src = "js/effects.js"></script>
@@ -156,14 +163,14 @@
 			var newYearData = JSON.parse(JSON.stringify(updateRegionData()));
 			for(var i=0; i<Object.keys(newYearData).length; i++){
 				newYearData[i].antal = 0;
-				
+
 				for(var j=0; j<Object.keys(regionSingleYear).length; j++){
-				if(newYearData[i].region == regionSingleYear[j].region 
+				if(newYearData[i].region == regionSingleYear[j].region
 					&& regionSingleYear[j].displayDate==year){
 					newYearData[i].antal = parseFloat(newYearData[i].antal) + parseFloat(regionSingleYear[j].antal);
 					}
 				}
-			}			
+			}
 			return newYearData;
 		}
 
@@ -193,14 +200,14 @@
 		data.sort(function(a,b){
 			return parseFloat(a.antal) - parseFloat(b.antal);
 		});
-		
+
 
 		//Sætter variable
 		var margin = {top: 10, right: 0, bottom: 10, left: 40};
 		var w = 500, h = 500;
 
 		//Laver svg element til at komme figuren
-		var svg = d3.select("#contentRow").append("svg").attr("id","graph").attr("width", w).attr("height", h);
+		var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
 
 		//Laver scale
 		var min = data[0].antal;
