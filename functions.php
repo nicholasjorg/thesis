@@ -29,4 +29,10 @@ function getDisplayDateYears(){
     return $result;
 }
 
+function getRegions(){
+    $sql = 'select distinct region From allData where region is not null AND region NOT like "%needschanging%"';
+    $result = queryDB($sql);
+    return $result;
+}
+
 ?>
