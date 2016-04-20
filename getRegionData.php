@@ -14,7 +14,7 @@
 			}
 		$jsonobj = json_encode($jsonarray);
 	?>
-	
+
 	<?php
 	//Henter data omkring regioner / antal værker fordelt over enkelte år.
 		$jsonarray = array();
@@ -28,6 +28,6 @@
 		//Indsæt de forskellige variable, ændre count(*), da det ellers fucker op i JS
 			$tmparr = array($var1=>$row[$var1], $var2=>$row[$var2], antal=>$row[$var3]);
 			array_push($jsonarray,$tmparr);
-		}	
+		}
 		$regionSingleYear = json_encode($jsonarray);
 	?>
