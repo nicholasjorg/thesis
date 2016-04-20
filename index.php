@@ -8,17 +8,10 @@
 </head>
 <body>
 
-<<<<<<< Updated upstream
 <a href="simpleBarChartVærkerRegioner.php">Simple bar chart værker regioner</a></br>
 <a href="simpleBarChartVærgerRegionerMCheckboks.php">Simple bar chart værker regioner: Med checkbox</a></br>
 <a href="cleanDisplayDate.php">Clean display date</a></br>
 
-=======
-<a href="simpleBarChartVærkerRegioner.php">Simple bar chart værker regioner</a>
-<br />
-<a href="simpleBarChartVærgerRegionerMCheckboks.php">Simple bar chart værker regioner: Med checkbox</a>	
-	
->>>>>>> Stashed changes
 </body>
 </head>
 
