@@ -25,7 +25,7 @@
               <div id="home" class="tab-pane fade in active">
                 <h3>Vælg regioner</h3>
                 <div class="col-sm-4 form-filters">
-                    <div class="checkbox checked">
+                	<div class="checkbox checked">
                       <label><input type="checkbox" checked="checked" id="Hovedstaden" name="Hovedstaden" value="Hovedstaden">Hovedstaden</label>
                     </div>
                     <div class="checkbox">
@@ -56,9 +56,9 @@
                     }
                     ?>
 				</select>
-				<h3>Single year</h3>
-                <select id ="selectSingleYear">
-                <option value="null">Alle</option>
+				<h3>Interval</h3>
+                <select id ="selectStartYear">
+                <option value="Alle">Start</option>
                 <?php
                 	$result = getDisplayDateYears();
                     while ($row = mysqli_fetch_array($result)) {
@@ -66,8 +66,8 @@
                     }
                 ?>
 				</select>
-				<select id ="selectSingleYear">
-                <option value="null">Alle</option>
+				<select id ="selectEndYear">
+                <option value="null">Slut</option>
                 <?php
                 	$result = getDisplayDateYears();
                     while ($row = mysqli_fetch_array($result)) {
@@ -75,6 +75,7 @@
                     }
                 ?>
 				</select>
+				<input id="btnSubmit" type="submit" value="Kør"/>
               </div>
               <div id="menu2" class="tab-pane fade">
                 <h3>Compare</h3>
@@ -95,12 +96,11 @@
 	<!--Script til at manipulere data via HTML inputs -->
 	<script>
 		var regionSingleYear = <?php echo $regionSingleYear; ?>;
-		console.log(regionSingleYear);
 		var jsonarr = <?php echo $jsonobj; ?>;
 		var jsonarrlength = Object.keys(jsonarr).length;
 		//Kloner jsonarr til filterJsonArr
 		var filterJsonArr = JSON.parse(JSON.stringify(jsonarr));
-		var year;
+		var year, endYear;
 
 		//Kører hver gang der ændres på en checkboks
 		$('.form-filters input:checkbox').click(function() {
@@ -129,9 +129,17 @@
 		//Ændre i year til single view
 		$('#selectSingleYear').change(function() {
     		year = $(this).val();
+    		endYear = null;
     		if(year == null) updateWithNewData(updateRegionData());
         	else updateWithNewData(updateSingleYearData());
 		});
+		
+		
+		$("#btnSubmit").click(function(){
+			year = $('#selectStartYear').val();
+			endYear = $('#selectEndYear').val();
+        	updateWithNewData(updateIntervalYearData());
+    	}); 
 		
 		
 	
@@ -148,17 +156,31 @@
 			var newYearData = new Array();
 			for(var i=0; i<Object.keys(filterJsonArr).length; i++){
 				for(var j=0; j<Object.keys(regionSingleYear).length; j++){
-				if(filterJsonArr[i].region == regionSingleYear[j].region && regionSingleYear[j].displayDate==year) newYearData.push(regionSingleYear[j]);
+				if(filterJsonArr[i].region == regionSingleYear[j].region && regionSingleYear[j].displayDate>=year) newYearData.push(regionSingleYear[j]);
 				}
 			}
 			return newYearData;
+		}
+		
+		function updateIntervalYearData(){
+			var newIntervalData = JSON.parse(JSON.stringify(updateRegionData()));
+			for(var i=0; i<Object.keys(newIntervalData).length; i++){
+				newIntervalData[i].antal = 0;
+				for(var j=0; j<Object.keys(regionSingleYear).length; j++){
+					if(newIntervalData[i].region == regionSingleYear[j].region
+					&& regionSingleYear[j].displayDate > year
+					&& regionSingleYear[j].displayDate < endYear){
+					newIntervalData[i].antal = parseFloat(newIntervalData[i].antal) + parseFloat(regionSingleYear[j].antal);
+					}
+				}
+			}	
+			return newIntervalData;
 		}
 		
 		
 	updateWithNewData(updateRegionData());
 
 	function updateWithNewData(data){
-		console.log(data);
 		//Fjerner gammel graf
         d3.select("svg").remove();
         
