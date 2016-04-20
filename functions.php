@@ -24,7 +24,7 @@ function queryTestDB($query){
 }
 
 function getDisplayDateYears(){
-    $sql = 'select distinct displayDate From allData where displayDate is not null order by displayDate asc';
+    $sql = 'select distinct displayDate From allData where displayDate is not null order by displayDate desc';
     $result = queryDB($sql);
     return $result;
 }
