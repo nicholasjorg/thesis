@@ -1,21 +1,9 @@
 <?php require("functions.php"); ?>
 <?php require("getRegionData.php"); ?>
-<HTML>
-<head>
-<script type="text/javascript" src="d3/d3.js"></script>
-<link rel="stylesheet" type="text/css" href="stylesheet.css">
-	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-	<!-- jQuery library -->
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-	<!-- Latest compiled JavaScript -->
-	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <!-- d3 script -->
-    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 
-</head>
-<body>
+<!-- Header -->
+<?php require("header.php");?>
+
 <div class = "container">
     <div class = "row" id = "contentRow">
         <div class = "col-sm-4">
@@ -218,7 +206,10 @@
         svg.call(tip);
 
 		//Tegner rectangels
-		svg.selectAll("rect").data(data).enter().append("rect")
+		svg.selectAll("rect").data(data).enter()
+        .append("svg:a")
+        .attr("xlink:href", function(d){return "index.php?" + d.region;})
+        .append("rect")
         .attr("class",function(d,i){return "rectangle"})
         .attr("id",function(d,i){return d.region})
 		.attr("x",function(d,i){ return xScale(d.region)})
@@ -226,7 +217,7 @@
 		.attr("width", xScale.rangeBand() )
 		.attr("height", function (d){ return yScale(0) - yScale(d.antal) })
         .on('mouseover', tip.show)
-        .on('mouseout', tip.hide)
+        .on('mouseout', tip.hide);
 
 		//Bygger akser
 		var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
