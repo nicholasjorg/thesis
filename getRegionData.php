@@ -34,14 +34,14 @@
 	<?php
 
 	$jsonarray = array();
-	$region = "region";
-	$class = "classifications";
-	$displayDate = "displayDate";
-	$onView = "onView";
-	$sql = 'select region, classifications, displayDate, onView, count(*) from allData WHERE region is not null AND region not like "%needschanging%" group by region, classifications, displayDate, onView';
+	//$region = "region";
+	//$class = "classifications";
+	//$displayDate = "displayDate";
+	//$onView = "onView";
+	$sql = 'select region, classifications, displayDate, onView, count(*) as antal from allData WHERE region is not null AND region not like "%needschanging%" group by region, classifications, displayDate, onView';
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
-    	$tmp = array(region=>$row["region"], classifications=>$row[classifications], displayDate=>$row["displayDate"], onView=>$row["onView"], antal=>$row["antal"]);
+    	$tmp = array(region=>$row["region"], classifications=>$row["classifications"], displayDate=>$row["displayDate"], onView=>$row["onView"], antal=>$row["antal"]);
     	array_push($jsonarray, $tmp);
     }
     $dataset = json_encode($jsonarray);

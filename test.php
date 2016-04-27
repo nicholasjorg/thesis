@@ -103,33 +103,23 @@
 
 	var dataset = <?php echo $dataset ?>;
 	var year, startYear, endYear;
-	console.log(dataset);
 
     //Filter arrays
     var classification = {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true, Design: true, Relief: true, Akvaral: true, Tekstil: true, Keramik: true,Collage: true, Glas: true, Møbel: true, Digital:true, Video:true, Integreret_kunst:true, Indretning: true,Print:true, Miked_media:true,Grafisk_design:true,Performance:true, Installation:true,Lys:true}
 	var regions = {Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};
-
+	
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-filters input:checkbox').click(function() {
 		var name = $(this).val().trim();
-
-        if(regions[name] == true){
-            regions[name] = false;
-        }
-        else{
-            regions[name] = true;
-        }
+		if(regions[name] == true) regions[name] = false;
+        else regions[name] = true;
         updateData();
 	});
 
 	$('.classification-filters input:checkbox').click(function() {
 		var name = $(this).val().trim();
-        if(classification[name] == true){
-            classification[name] = false;
-        }
-        else{
-            classification[name] = true;
-        }
+        if(classification[name] == true) classification[name] = false;
+        else classification[name] = true;
         updateData();
 	});
 
@@ -153,37 +143,32 @@
        	updateWithNewData(updateIntervalYearData());
     });*/
 
-    function trueClassifications(){
-
-    }
-
-    function isTrue(region){
-
-    }
-
 	function updateData(){
 		var newData = new Array();
-
-        for (var j = 0; j < 6 ; j++){
-            console.log(regions[j]);
+		
+        for (var key in regions) {
+        	if(regions[key]==true) {
+        		var tmpArr = {region:key, antal:0};
+        		newData.push(tmpArr);
+        	}
         }
 
         for (var i = 0; i < Object.keys(dataset).length; i++) {
-            if(regions[dataset[i].region] == false && classification[dataset[i].classifications] == false){
-                //newData.push(dataset[i]);
+            if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true){
+                for (var j = 0; j < Object.keys(newData).length; j++) {
+                	if(newData[j].region == dataset[i].region){ 
+                		newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal); break;}
+                };
             }
             else{
                 continue;
             }
 		}
-        //updateWithNewData();
+        updateWithNewData(newData);
 	}
+	
+	updateData();
 
-	function isInJson(array, point){
-		for (var i = 0; i < Object.keys(dataset).length; i++) {
-			dataset[i].region;
-		};
-	}
 
 	function updateWithNewData(data){
 		//Fjerner gammel graf
