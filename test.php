@@ -169,8 +169,8 @@
         }
 
         for (var i = 0; i < Object.keys(dataset).length; i++) {
-            if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true){
-                newData.push(dataset[i]);
+            if(regions[dataset[i].region] == false && classification[dataset[i].classifications] == false){
+                //newData.push(dataset[i]);
             }
             else{
                 continue;

@@ -39,10 +39,10 @@
 	$class = "classifications";
 	$displayDate = "displayDate";
 	$onView = "onView";
-	$sql = 'select '.$region.', '.$class.', '.$displayDate.', '.$onView.' from allData WHERE region is not null AND region not like "%needschanging%"';
+	$sql = 'select region, classifications, displayDate, onView, count(*) from allData WHERE region is not null AND region not like "%needschanging%" group by region, classifications, displayDate, onView';
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
-    	$tmp = array($region=>$row[$region], $class=>$row[$class], $displayDate=>$row[$displayDate], $onView=>$row[$onView]);
+    	$tmp = array(region=>$row["region"], classifications=>$row[classifications], displayDate=>$row["displayDate"], onView=>$row["onView"], antal=>$row["antal"]);
     	array_push($jsonarray, $tmp);
     }
     $dataset = json_encode($jsonarray);
