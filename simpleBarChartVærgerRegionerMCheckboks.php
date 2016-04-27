@@ -71,7 +71,7 @@
                     }
                 ?>
 				</select>
-				<input id="btnSubmit" type="submit" value="Kør"/>
+				<input id="btnSubmit" type="submit" value="Vælg"/>
               </div>
               <div id="menu2" class="tab-pane fade">
                 <h3>Compare</h3>
@@ -133,7 +133,8 @@
 		$('#selectSingleYear').change(function() {
 			$('#selectStartYear').val("start");
 			$('#selectEndYear').val("slut");
-    		year = $(this).val();
+    		updateAktiveParametre();
+            year = $(this).val();
     		endYear = null;
     		startYear = null;
     		if(year=="Alle"){year=null; updateWithNewData(updateRegionData()); return;}
@@ -188,6 +189,10 @@
 			}
 			return newIntervalData;
 		}
+
+        function updateAktiveParametre(){
+            alert(arguments.callee.caller.toString());
+        }
 
 
 	updateWithNewData(updateRegionData());
