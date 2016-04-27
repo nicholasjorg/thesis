@@ -110,8 +110,7 @@
 		var regionSingleYear = <?php echo $regionSingleYear; ?>;
 		var jsonarr = <?php echo $jsonobj; ?>;
 		var jsonarrlength = Object.keys(jsonarr).length;
-		var classifications = <?php echo $classifications; ?>;
-		console.log(classifications);
+		//var classifications = <?php echo $classifications; ?>;
 		//Kloner jsonarr til filterJsonArr
 		var filterJsonArr = JSON.parse(JSON.stringify(jsonarr));
 		var year, startYear, endYear;

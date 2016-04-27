@@ -1,5 +1,5 @@
 	<?php
-	/*
+
 	//Henter data omkring regioner / antal værker
 		$jsonarray = array();
 		//Bygger SQL statement
@@ -29,7 +29,6 @@
 			array_push($jsonarray,$tmparr);
 		}
 		$regionSingleYear = json_encode($jsonarray);
-		*/
 	?>
 
 	<?php
