@@ -105,6 +105,7 @@
 	// var regions = <?php echo $regions ?>;
 	// var classifications = <?php echo $classifications ?>;
 	var year, startYear, endYear;
+	console.log(dataset);
 
 	var reg = {hovedstaden:true, syddanmark:true};
 
