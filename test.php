@@ -34,7 +34,7 @@
 	                      <label><input type="checkbox" checked="checked" id="Syddanmark" name="Syddanmark" value="Syddanmark">Syddanmark</label>
 	                    </div>
 	                    <div class="checkbox">
-	                      <label><input type="checkbox" checked="checked" id="Udenfor Danmark" name="Udenfor Danmark" value="Udenfor Danmark">Udenfor Danmark</label>
+	                      <label><input type="checkbox" checked="checked" id="Udenfor Danmark" name="Udenfor Danmark" value="UdenforDanmark">Udenfor Danmark</label>
 	                    </div>
                     </div>
                     <div class="classification-filters">
@@ -103,7 +103,7 @@
 
 	var dataset = <?php echo $dataset ?>;
 	var year, startYear, endYear;
-
+	console.log(dataset);
     //Filter arrays
     var classification = {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true, Design: true, Relief: true, Akvaral: true, Tekstil: true, Keramik: true,Collage: true, Glas: true, Møbel: true, Digital:true, Video:true, Integreret_kunst:true, Indretning: true,Print:true, Miked_media:true,Grafisk_design:true,Performance:true, Installation:true,Lys:true}
 	var regions = {Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};
@@ -124,53 +124,77 @@
 	});
 
 	//Ændre i year til single view ved klik på dropdown menu
-	/*$('#selectSingleYear').change(function() {
+	$('#selectSingleYear').change(function() {
 		$('#selectStartYear').val("start");
 		$('#selectEndYear').val("slut");
-    	year = $(this).val();
    		endYear = null;
     	startYear = null;
-    	if(year=="Alle"){year=null; updateWithNewData(updateRegionData()); return;}
-    	updateWithNewData(updateSingleYearData());
+    	year = $(this).val();
+    	if(year=="Alle"){year=null; updateData(); return;}
+    	updateData();
 	});
 
 	//Ændre i intervallet. Denne funktion kalder når knappen vælg trykkes
 	$("#btnSubmit").click(function(){
 		$('#selectSingleYear').val("Vaelg");
+		year = null;
 		startYear = $('#selectStartYear').val();
 		endYear = $('#selectEndYear').val();
-		year = null;
-       	updateWithNewData(updateIntervalYearData());
-    });*/
+       	updateData();
+    });
 
 	function updateData(){
 		var newData = new Array();
-		
+		//Laver newData indeholdende alle regioner som er true
         for (var key in regions) {
         	if(regions[key]==true) {
         		var tmpArr = {region:key, antal:0};
         		newData.push(tmpArr);
         	}
         }
+        //Hvis single år er valgt
+        if(year != null){
+	        for (var i = 0; i < Object.keys(dataset).length; i++) {
+	            if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true && dataset[i].displayDate == year){
+	                for (var j = 0; j < Object.keys(newData).length; j++) {
+	                	if(newData[j].region == dataset[i].region){ 
+	                		newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal); break;}
+	                };
+	            }
+	            else continue;
+	        }        
+        }
+        //Hvis årsinterval er valgt
+        else if(startYear != null && endYear != null){
+        	for (var i = 0; i < Object.keys(dataset).length; i++) {
+	            if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true && dataset[i].displayDate > startYear && dataset[i].displayDate < endYear){
+	                for (var j = 0; j < Object.keys(newData).length; j++) {
+	                	if(newData[j].region == dataset[i].region){ 
+	                		newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal); break;}
+	                };
+	            }
+	            else continue;
+	        }      
+        }
+        else{
+        	for (var i = 0; i < Object.keys(dataset).length; i++) {
+                    if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true){
+                        for (var j = 0; j < Object.keys(newData).length; j++) {
+                        	if(newData[j].region == dataset[i].region){ 
+                        		newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal); break;}
+                        };
+                    }
+                    else continue;
+            }
+        }
 
-        for (var i = 0; i < Object.keys(dataset).length; i++) {
-            if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true){
-                for (var j = 0; j < Object.keys(newData).length; j++) {
-                	if(newData[j].region == dataset[i].region){ 
-                		newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal); break;}
-                };
-            }
-            else{
-                continue;
-            }
-		}
-        updateWithNewData(newData);
+        drawDiagram(newData);
 	}
 	
 	updateData();
 
 
-	function updateWithNewData(data){
+	function drawDiagram(data){
 		//Fjerner gammel graf
         d3.select("svg").remove();
 
