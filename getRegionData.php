@@ -32,31 +32,31 @@
 		*/
 	?>
 
-	<?php 
-	
+	<?php
+
 	$jsonarray = array();
 	$region = "region";
 	$class = "classifications";
 	$displayDate = "displayDate";
-	$onView = "onView"; 
+	$onView = "onView";
 	$sql = 'select '.$region.', '.$class.', '.$displayDate.', '.$onView.' from allData WHERE region is not null AND region not like "%needschanging%"';
     $result = queryDB($sql);
-    while ($row = mysqli_fetch_array($result)) {
+    while ($row = mysqli_fetch_assoc($result)) {
     	$tmp = array($region=>$row[$region], $class=>$row[$class], $displayDate=>$row[$displayDate], $onView=>$row[$onView]);
-    	array_push($jsonarray, $tmparr);
+    	array_push($jsonarray, $tmp);
     }
     $dataset = json_encode($jsonarray);
-    
+
 	?>
 
-	<?php  
+	<?php
 	/*
-    $sql = 'select region, classifications, displayDate, onView from allData WHERE region is not null AND region not like "%needschanging%"';
+    $sql = '    "';
     $result = queryDB($sql);
 
 	$bid = array();
 	while ($row = mysqli_fetch_array($result)) {
-    	$tmpar = array(region=>$row["region"], classifications=>$row["classifications"], 
+    	$tmpar = array(region=>$row["region"], classifications=>$row["classifications"],
     		displayDate=>$row["displayDate"], onView=>$row["onView"]);
     	array_push($bid, $tmpar);
     }
