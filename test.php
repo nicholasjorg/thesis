@@ -102,33 +102,39 @@
 <script>
 
 	var dataset = <?php echo $dataset ?>;
-	// var regions = <?php echo $regions ?>;
-	// var classifications = <?php echo $classifications ?>;
 	var year, startYear, endYear;
 	console.log(dataset);
 
-	var reg = {hovedstaden:true, syddanmark:true};
-
+    //Filter arrays
+    var classification = {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true, Design: true, Relief: true, Akvaral: true, Tekstil: true, Keramik: true,Collage: true, Glas: true, Møbel: true, Digital:true, Video:true, Integreret_kunst:true, Indretning: true,Print:true, Miked_media:true,Grafisk_design:true,Performance:true, Installation:true,Lys:true}
+	var regions = {Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};
 
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-filters input:checkbox').click(function() {
 		var name = $(this).val().trim();
-		for (var i = 0; i < Object.keys(regions).length; i++) {
-			if(regions[i].region == name && regions[i].display == true) {regions[i].display = false; break;}
-			if(regions[i].region == name && regions[i].display == false) {regions[i].display = true; break;}
-		};
+
+        if(regions[name] == true){
+            regions[name] = false;
+        }
+        else{
+            regions[name] = true;
+        }
+        updateData();
 	});
 
 	$('.classification-filters input:checkbox').click(function() {
 		var name = $(this).val().trim();
-		for (var i = 0; i < Object.keys(regions).length; i++) {
-			if(classifications[i].classification == name && classifications[i].display == true) {classifications[i].display = false; break;}
-			if(classifications[i].classification == name && classifications[i].display == false) {classifications[i].display = true; break;}
-		};
+        if(classification[name] == true){
+            classification[name] = false;
+        }
+        else{
+            classification[name] = true;
+        }
+        updateData();
 	});
 
 	//Ændre i year til single view ved klik på dropdown menu
-	$('#selectSingleYear').change(function() {
+	/*$('#selectSingleYear').change(function() {
 		$('#selectStartYear').val("start");
 		$('#selectEndYear').val("slut");
     	year = $(this).val();
@@ -145,17 +151,37 @@
 		endYear = $('#selectEndYear').val();
 		year = null;
        	updateWithNewData(updateIntervalYearData());
-    });
+    });*/
+
+    function trueClassifications(){
+
+    }
+
+    function isTrue(region){
+
+    }
 
 	function updateData(){
-		for (var i = 0; i < Object.keys(dataset).length; i++) {
-			dataset[i].region dataset[i]
-		};
+		var newData = new Array();
+
+        for (var j = 0; j < 6 ; j++){
+            console.log(regions[j]);
+        }
+
+        for (var i = 0; i < Object.keys(dataset).length; i++) {
+            if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true){
+                newData.push(dataset[i]);
+            }
+            else{
+                continue;
+            }
+		}
+        //updateWithNewData();
 	}
 
 	function isInJson(array, point){
 		for (var i = 0; i < Object.keys(dataset).length; i++) {
-			dataset[i].region
+			dataset[i].region;
 		};
 	}
 

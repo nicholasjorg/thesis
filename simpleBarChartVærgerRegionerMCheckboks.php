@@ -40,7 +40,7 @@
                 </div>
 
                 <div class="classification-filters">
-              		<?php 
+              		<?php
                  		$result = getClassifications();
                     		while ($row = mysqli_fetch_array($result)) {
                     			echo '<div class="checkbox">';
@@ -146,7 +146,7 @@
 
 		$('.classification-filters input:checkbox').click(function() {
 			var name = $(this).val().trim();
-			
+
 		});
 
 		//Ændre i year til single view ved klik på dropdown menu
