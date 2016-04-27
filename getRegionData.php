@@ -33,12 +33,14 @@
     ?>
 
 	<?php
+    $local = "";
+    include 'limit.php';
 	$jsonarray = array();
 	//$region = "region";
 	//$class = "classifications";
 	//$displayDate = "displayDate";
 	//$onView = "onView";
-	$sql = 'select region, classifications, displayDate, onView, count(*) as antal from allData WHERE region is not null AND region not like "%needschanging%" group by region, classifications, displayDate, onView';
+	$sql = 'select region, classifications, displayDate, onView, count(*) as antal from allData WHERE region is not null AND region not like "%needschanging%" group by region, classifications, displayDate, onView' . $local;
 
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
