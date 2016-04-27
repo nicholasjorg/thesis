@@ -1,5 +1,5 @@
 	<?php
-
+    /*
 	//Henter data omkring regioner / antal værker
 		$jsonarray = array();
 		//Bygger SQL statement
@@ -29,16 +29,16 @@
 			array_push($jsonarray,$tmparr);
 		}
 		$regionSingleYear = json_encode($jsonarray);
-	?>
+	*/
+    ?>
 
 	<?php
-
 	$jsonarray = array();
 	$region = "region";
 	$class = "classifications";
 	$displayDate = "displayDate";
 	$onView = "onView";
-	$sql = 'select region, classifications, displayDate, onView, count(*) from allData WHERE region is not null AND region not like "%needschanging%" group by region, classifications, displayDate, onView';
+	$sql = 'select region, classifications, displayDate, onView, count(*) from allData WHERE region is not null AND region not like "%needschanging%" group by region, classifications, displayDate, onView' . $envLimit;
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
     	$tmp = array(region=>$row["region"], classifications=>$row[classifications], displayDate=>$row["displayDate"], onView=>$row["onView"], antal=>$row["antal"]);
