@@ -38,7 +38,7 @@
 	                    </div>
                     </div>
                     <div class="classification-filters">
-              		<?php 
+              		<?php
                  		$result = getClassifications();
                     		while ($row = mysqli_fetch_array($result)) {
                     			echo '<div class="checkbox">';
@@ -159,11 +159,6 @@
 		};
 	}
 
-
-
-
-	
-
 	function updateWithNewData(data){
 		//Fjerner gammel graf
         d3.select("svg").remove();
@@ -172,7 +167,7 @@
 		data.sort(function(a,b){
 			return parseFloat(a.antal) - parseFloat(b.antal);
 		});
-		
+
 		//Sætter variable
 		var margin = {top: 10, right: 0, bottom: 10, left: 40};
 		var w = 500, h = 500;
