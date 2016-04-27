@@ -102,13 +102,12 @@
 <script>
 
 	var dataset = <?php echo $dataset ?>;
-	var regions = <?php echo $regions ?>;
-	var classifications = <?php echo $classifications ?>;
+	// var regions = <?php echo $regions ?>;
+	// var classifications = <?php echo $classifications ?>;
 	var year, startYear, endYear;
-	console.log(regions);
+
 	var reg = {hovedstaden:true, syddanmark:true};
 
-	reg.hovedstaden = false
 
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-filters input:checkbox').click(function() {

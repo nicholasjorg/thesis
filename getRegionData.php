@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 	<?php
 	//Henter data omkring regioner / antal værker
 	$jsonarray = array();
@@ -49,10 +50,22 @@
 	while ($row = mysqli_fetch_array($result1)) {
     	$tmpar = array(region=>$row["region"], classifications=>$row["classifications"],
     		displayDate=>$row["displayDate"], onView=>$row["onView"], available=>$row["available"]);
+=======
+	<?php  
+    $sql = 'select region, classifications, displayDate, onView from allData WHERE region is not null AND region not like "%needschanging%"';
+    $result = queryDB($sql);
+
+	$objectsarr = array();
+	
+	while ($row = mysqli_fetch_array($result)) {
+    	$tmpar = array(region=>$row["region"], classifications=>$row["classifications"], 
+    		displayDate=>$row["displayDate"], onView=>$row["onView"]);    	
+>>>>>>> 4eb5fa259e39b6a3570dc378cd6a4150cc8d45f1
     	array_push($bid, $tmpar);
     }
     $dataset = json_encode($bid);
 
+<<<<<<< HEAD
 	//Henter data omkring classifications
 	$classarray = array();
 
@@ -65,6 +78,9 @@
 	}
 	$classifications = json_encode($classarray);
 	?>
+=======
+	
+>>>>>>> 4eb5fa259e39b6a3570dc378cd6a4150cc8d45f1
 
 
 
