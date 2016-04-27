@@ -35,4 +35,19 @@ function getRegions(){
     return $result;
 }
 
+function getRegClassDisplayOnView(){
+    $sql = 'select region, classifications, displayDate, onView from allData WHERE region is not null AND region not like "%needschanging%"';
+    $result = queryDB($sql);
+    return $result;
+}
+
+function getClassifications(){
+    $sql = 'select distinct classifications from allData WHERE classifications is not null';
+    $result = queryDB($sql);
+    return $result;
+
+}
+
+
+
 ?>

@@ -37,6 +37,17 @@
                       <label><input type="checkbox" checked="checked" id="Udenfor Danmark" name="Udenfor Danmark" value="Udenfor Danmark">Udenfor Danmark</label>
                     </div>
                 </div>
+
+                <div class="classification-filters">
+              		<?php 
+                 		$result = getClassifications();
+                    		while ($row = mysqli_fetch_array($result)) {
+                    			echo '<div class="checkbox">';
+                    			echo '<label><input type="checkbox" checked="checked" id="'.$row["classifications"].' name="'.$row["classifications"].' value="'.$row["classifications"].'">'.$row["classifications"].'</label>';
+                    			echo '</div>';
+                    		}
+                    ?>
+                </div>
               </div>
               <div id="menu1" class="tab-pane fade">
                 <h3>Single year</h3>
@@ -92,9 +103,12 @@
 		var regionSingleYear = <?php echo $regionSingleYear; ?>;
 		var jsonarr = <?php echo $jsonobj; ?>;
 		var jsonarrlength = Object.keys(jsonarr).length;
+		var classifications = <?php echo $classifications; ?>;
+		console.log(classifications);
 		//Kloner jsonarr til filterJsonArr
 		var filterJsonArr = JSON.parse(JSON.stringify(jsonarr));
 		var year, startYear, endYear;
+		var available, onView;
 
 		//Kører hver gang der ændres på en checkboks
 		$('.form-filters input:checkbox').click(function() {
@@ -120,6 +134,12 @@
 				else if(year == null && startYear != null) updateWithNewData(updateIntervalYearData());
 				else updateWithNewData(updateRegionData());
             }
+		});
+
+
+		$('.classification-filters input:checkbox').click(function() {
+			var name = $(this).val().trim();
+			
 		});
 
 		//Ændre i year til single view ved klik på dropdown menu
@@ -156,7 +176,6 @@
 			var newYearData = JSON.parse(JSON.stringify(updateRegionData()));
 			for(var i=0; i<Object.keys(newYearData).length; i++){
 				newYearData[i].antal = 0;
-				
 				for(var j=0; j<Object.keys(regionSingleYear).length; j++){
 				if(newYearData[i].region == regionSingleYear[j].region 
 					&& regionSingleYear[j].displayDate==year){
@@ -241,5 +260,4 @@
 </script>
 </body>
 </head>
-
 
