@@ -47,6 +47,11 @@
                     		}
                     ?>
                 	</div>
+                    <div class="onView-filter">
+                        <input type="radio" name="onView" value="alle" checked="checked"/><label>Alle</label>
+                        <input type="radio" name="onView" value="til"  /><label>True</label>
+                        <input type="radio" name="onView" value="fra" /><label>False</label>
+                    </div>
                 </div>
               </div>
               <div id="menu1" class="tab-pane fade">
@@ -102,10 +107,15 @@
 <script>
 
 	var dataset = <?php echo $dataset ?>;
+    //Hvis nogle af nedstående variable er sat til null vil de ikke være gældende eller gælde for alle.
 	var year, startYear, endYear;
-	console.log(dataset);
+    onView = null;
+	
     //Filter arrays
-    var classification = {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true, Design: true, Relief: true, Akvaral: true, Tekstil: true, Keramik: true,Collage: true, Glas: true, Møbel: true, Digital:true, Video:true, Integreret_kunst:true, Indretning: true,Print:true, Miked_media:true,Grafisk_design:true,Performance:true, Installation:true,Lys:true}
+    var classification = {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true, 
+        Design: true, Relief: true, Akvarel: true, Tekstil: true, Keramik: true, Collage: true, Glas: true, Møbel: true, 
+        Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true, "Grafisk design":true, 
+        Performance:true, Installation:true, Lys:true}
 	var regions = {Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};
 	
 	//Kører hver gang der ændres på en checkboks under filter
@@ -122,6 +132,14 @@
         else classification[name] = true;
         updateData();
 	});
+
+        $('.onView-filter input:radio').click(function() {
+        var name = $(this).val().trim();
+        if(name == "til") onView = true;
+        else if(name == "fra") onView = false;
+        else onView = null;
+        updateData();
+    });
 
 	//Ændre i year til single view ved klik på dropdown menu
 	$('#selectSingleYear').change(function() {
@@ -142,7 +160,97 @@
 		endYear = $('#selectEndYear').val();
        	updateData();
     });
+    
+    function updateData(){
+        var newData = new Array();
+        //Kopiere de relevante regioner og typer ind i newData
+        for (var key in regions) {
+            if(regions[key]==true) {
+                var typer = new Array();
+                for(var type in classification){
+                    if(classification[type]==true) typer.push({classifications:type, antal:0});
+                }
+                var tmpArr = {region:key, antal:0, typer};
+                newData.push(tmpArr);
+            }
+        }
 
+        if(onView == true)
+            {newData = countData("true", "true", newData);}
+        
+        else if(onView == false)
+            {newData = countData("false", "false", newData);}
+        
+        else if(onView == null)
+            {newData = countData("true", "false", newData);}
+        
+        drawDiagram(newData);
+    }
+
+    function countData(what, what2, newData){
+        //Single år er valgt
+            if(year != null){
+                console.log("I year != null. Year: "+year);
+                for (var i = 0; i < Object.keys(dataset).length; i++) {
+                    if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
+                        && dataset[i].displayDate == year && (dataset[i].onView == what || dataset[i].onView == what2) ){
+                        for (var j = 0; j < Object.keys(newData).length; j++) {
+                            if(newData[j].region == dataset[i].region){
+                                newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
+                                for (var h = 0; h < Object.keys(newData[j].typer).length; h++) {
+                                    if(newData[j].typer[h].classifications == dataset[i].classifications){
+                                        newData[j].typer[h].antal =parseFloat(newData[j].typer[h].antal) + parseFloat(dataset[i].antal); break;
+                                    }
+
+                                };
+                            }
+                        };
+                    }
+                };
+            }
+            //Interval år er valgt
+            else if(startYear != null && endYear != null){
+                console.log("I startYear != null");
+                for (var i = 0; i < Object.keys(dataset).length; i++) {
+                    if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
+                        && dataset[i].displayDate > startYear && dataset[i].displayDate < endYear 
+                        && (dataset[i].onView == what || dataset[i].onView == what2) ){
+                        for (var j = 0; j < Object.keys(newData).length; j++) {
+                            if(newData[j].region == dataset[i].region){
+                                newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
+                                for (var h = 0; h < Object.keys(newData[j].typer).length; h++) {
+                                    if(newData[j].typer[h].classifications == dataset[i].classifications){
+                                        newData[j].typer[h].antal =parseFloat(newData[j].typer[h].antal) + parseFloat(dataset[i].antal); break;
+                                    }
+
+                                };
+                            }
+                        };
+                    }
+                };
+            }
+            //Intet år er valgt
+            else {
+                for (var i = 0; i < Object.keys(dataset).length; i++) {
+                    if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
+                        && (dataset[i].onView == what || dataset[i].onView == what2) ){
+                        for (var j = 0; j < Object.keys(newData).length; j++) {
+                            if(newData[j].region == dataset[i].region){
+                                newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
+                                for (var h = 0; h < Object.keys(newData[j].typer).length; h++) {
+                                    if(newData[j].typer[h].classifications == dataset[i].classifications){
+                                        newData[j].typer[h].antal =parseFloat(newData[j].typer[h].antal) + parseFloat(dataset[i].antal); break;
+                                    }
+
+                                };
+                            }
+                        };
+                    }
+                };
+            }
+            return newData;
+    }
+    /*
 	function updateData(){
 		var newData = new Array();
 		//Laver newData indeholdende alle regioner som er true
@@ -176,6 +284,7 @@
 	            else continue;
 	        }      
         }
+        //Hvis alle år er valgt
         else{
         	for (var i = 0; i < Object.keys(dataset).length; i++) {
                     if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true){
@@ -187,9 +296,9 @@
                     else continue;
             }
         }
-
         drawDiagram(newData);
 	}
+    */
 	
 	updateData();
 
