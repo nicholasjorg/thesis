@@ -32,7 +32,7 @@
                           <label><input type="checkbox" checked="checked" id="Syddanmark" name="Syddanmark" value="Syddanmark">Syddanmark</label>
                         </div>
                         <div class="checkbox">
-                          <label><input type="checkbox" checked="checked" id="Udenfor Danmark" name="Udenfor Danmark" value="Udenfor Danmark">Udenfor Danmark</label>
+                          <label><input type="checkbox" checked="checked" id="Udenfor Danmark" name="Udenfor Danmark" value="UdenforDanmark">Udenfor Danmark</label>
                         </div>
                     </div>
                     <div class="onView-filter">
@@ -102,7 +102,7 @@
         <div class = "col-sm-4" id = "graphContent">
         <!-- Graph will be appended here -->
         </div><!-- End of graph -->
-        <div class = "col-sm-2 pull-right" id = activeParameters>
+        <div class = "col-sm-2 pull-right" id = "activeParameters">
             <h3> Aktive parametre </h3>
             <h5><u> Regioner:</u> </h5>
             <div id = "aktiveRegioner">
@@ -112,16 +112,17 @@
             <div id = "aktiveÅr">
                 1918 - 2016
             </div>
-            <h5><u> Værktyper </u></h5>
+            <h5><u> Værktyper:</u></h5>
             <div id = "aktiveTyper">
                 Alle
             </div>
-            <h5><u> OnDisplay </u></h5>
-            <div id = "onDisplay">
-                Begge
+            <h5><u> OnView:</u></h5>
+            <div id = "onView">
+                Alle
             </div>
         </div>
     </div><!-- End of Row -->
+    <div id='pie-test'></div>
 </div>
 
 <script src = "js/effects.js"></script>
@@ -141,6 +142,8 @@
         Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true, "Grafisk design":true, 
         Performance:true, Installation:true, Lys:true}
 	var regions = {Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};
+    //Laver det til parametre som kan sendes med URL.
+    var tilstreng = jQuery.param(classification);
 
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-filters input:checkbox').click(function() {
@@ -164,6 +167,7 @@
         if(name == "til") onView = true;
         else if(name == "fra") onView = false;
         else onView = null;
+        updateOnView();
         updateData();
     });
 
@@ -174,7 +178,8 @@
    		endYear = null;
     	startYear = null;
     	year = $(this).val();
-    	if(year=="Alle"){year=null; updateData(); return;}
+    	if(year=="Alle") year=null;
+        updateActiveYears();
     	updateData();
 	});
 
@@ -184,6 +189,7 @@
 		year = null;
 		startYear = $('#selectStartYear').val();
 		endYear = $('#selectEndYear').val();
+        updateActiveYears();
        	updateData();
     });
     
@@ -216,7 +222,6 @@
     function countData(what, what2, newData){
         //Single år er valgt
             if(year != null){
-                console.log("I year != null. Year: "+year);
                 for (var i = 0; i < Object.keys(dataset).length; i++) {
                     if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
                         && dataset[i].displayDate == year && (dataset[i].onView == what || dataset[i].onView == what2) ){
@@ -236,7 +241,6 @@
             }
             //Interval år er valgt
             else if(startYear != null && endYear != null){
-                console.log("I startYear != null");
                 for (var i = 0; i < Object.keys(dataset).length; i++) {
                     if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
                         && dataset[i].displayDate > startYear && dataset[i].displayDate < endYear 
@@ -276,59 +280,8 @@
             }
             return newData;
     }
-    /*
-	function updateData(){
-		var newData = new Array();
-		//Laver newData indeholdende alle regioner som er true
-        for (var key in regions) {
-        	if(regions[key]==true) {
-        		var tmpArr = {region:key, antal:0};
-        		newData.push(tmpArr);
-        	}
-        }
-
-        //Hvis single år er valgt
-        if(year != null){
-	        for (var i = 0; i < Object.keys(dataset).length; i++) {
-	            if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true && dataset[i].displayDate == year){
-	                for (var j = 0; j < Object.keys(newData).length; j++) {
-	                	if(newData[j].region == dataset[i].region){
-	                		newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal); break;}
-	                };
-	            }
-	            else continue;
-	        }
-        }
-        //Hvis årsinterval er valgt
-        else if(startYear != null && endYear != null){
-        	for (var i = 0; i < Object.keys(dataset).length; i++) {
-	            if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true && dataset[i].displayDate > startYear && dataset[i].displayDate < endYear){
-	                for (var j = 0; j < Object.keys(newData).length; j++) {
-	                	if(newData[j].region == dataset[i].region){
-	                		newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal); break;}
-	                };
-	            }
-	            else continue;
-	        }
-        }
-        //Hvis alle år er valgt
-        else{
-        	for (var i = 0; i < Object.keys(dataset).length; i++) {
-                    if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true){
-                        for (var j = 0; j < Object.keys(newData).length; j++) {
-                        	if(newData[j].region == dataset[i].region){
-                        		newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal); break;}
-                        };
-                    }
-                    else continue;
-            }
-        }
-        drawDiagram(newData);
-	}
-    */
 
 	updateData();
-
 
 	function drawDiagram(data){
 		//Fjerner gammel graf
@@ -357,8 +310,10 @@
           .attr('class', 'd3-tip')
           .offset([-10, 0])
           .html(function(d) {
-            return "Klik for mere info om " +  d.region + " <span style='color:red'></span>";
-        })
+            drawPie(d.typer);
+            var url = "info omkring classifications valgt, year, startYear, endYear, onView og hvilken region"
+            return "Klik for mere info om " +  d.region + " <span style='color:red' id='pie-test'></span>";
+        });
 
         svg.call(tip);
 
@@ -382,6 +337,21 @@
 		var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
 		svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
 	}
+    
+    function drawPie(regionData){
+        var color = d3.scale.category20();
+        var pie = d3.layout.pie().value(function(d){return d.antal});
+        var w = 300;
+        var h = 300;
+        var outerRadius = w/2;
+        var innerRadius = 100;
+        var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius);
+        var svg = d3.select("#pie-test").append("svg").attr("id","pieChart").attr("width",w).attr("height",h);
+        var arcs = svg.selectAll("g.arc").data(pie(regionData)).enter().append("g").attr("class", "arc").attr("transform", "translate("+outerRadius+", "+outerRadius+")");
+        arcs.append("path").attr("fill", function(d,i){return color(i);}).attr("d",arc); 
+        arcs.append("text").attr("transform",function(d){return "translate("+arc.centroid(d)+")";}).attr("text-anchor","middle").text(function(d){return d.classifications});
+    }
+
 </script>
 </body>
 <script src = "js/parametersHistogram.js"></script>

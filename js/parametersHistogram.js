@@ -11,17 +11,33 @@ var outputString = "";
     $("#aktiveRegioner").text(outputString);
 }
 function updateVærktyper(værktyper){
-var outputString = "";
+    var outputString = "";
 
-    for (var key in værktyper) {
-        if(værktyper[key]==true) {
-            var stringKey = String(key);
-            outputString = outputString + stringKey + " ";
+        for (var key in værktyper) {
+            if(værktyper[key]==true) {
+                var stringKey = String(key);
+                outputString = outputString + stringKey + " ";
+            }
         }
-    }
-    $("#aktiveTyper").text(outputString);
+        $("#aktiveTyper").text(outputString);
 }
 
-function updateOnDisplay(){
-    $("#onDisplay").text("Hello");
+function updateOnView(){
+    if(onView == true)
+        $("#onView").text("True");
+    else if(onView == false)
+        $("#onView").text("False");
+    else
+        $("#onView").text("Begge");
+}
+
+function updateActiveYears(){
+    if(year != null)
+        $("#aktiveÅr").text(year)
+    else if(startYear != null && endYear !=null){
+        var outputString = startYear + " - " + endYear;
+        $("#aktiveÅr").text(outputString);
+    }
+    else
+        $("#aktiveÅr").text("1918 - 2016");
 }
