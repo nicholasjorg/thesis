@@ -1,6 +1,18 @@
-var fadeOut = function(){
+function fadeOut(){
    var r = $.Deferred();
-   $("#graph").fadeOut(150);
+   $("#graphContent").fadeOut(150);
+
+   setTimeout(function () {
+   r.resolve();
+   }, 300);
+
+   return r;
+   fadeIn();
+};
+
+function fadeIn(){
+   var r = $.Deferred();
+   $("#graphContent").fadeIn(150);
 
    setTimeout(function () {
    r.resolve();

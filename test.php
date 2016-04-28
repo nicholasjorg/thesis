@@ -5,94 +5,118 @@
 <?php require("header.php");?>
 
 <div class = "container">
-    <div class = "row" id = "contentRow">
+    <div class = "row">
         <div class = "col-sm-4">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#home">Filter</a></li>
-                <li><a href="#menu1">Zoom</a></li>
-                <li><a href="#menu2">Compare</a></li>
-                <li><a href="#menu3">Parameters</a></li>
-                <li><a href="#menu4"></a></li>
+                <li class="active"><a href="#home">Regioner</a></li>
+                <li><a href="#menu1">Årstal</a></li>
+                <li><a href="#menu2">Værktyper</a></li>
             </ul>
             <div class="tab-content">
-              <div id="home" class="tab-pane fade in active">
-                <h3>Vælg regioner</h3>
-                	<div class="col-sm-6 region-filters">
-	                	<div class="checkbox">
-	                      <label><input type="checkbox" checked="checked" id="Hovedstaden" name="Hovedstaden" value="Hovedstaden">Hovedstaden</label>
-	                    </div>
-	                    <div class="checkbox">
-	                      <label><input type="checkbox"  checked="checked" id="Midtjylland" name="Midtjylland" value="Midtjylland">Midtjylland</label>
-	                    </div>
-	                    <div class="checkbox">
-	                      <label><input type="checkbox" checked="checked" id="Nordjylland" name="Nordjylland" value="Nordjylland">Nordjylland</label>
-	                    </div>
-	                    <div class="checkbox">
-	                      <label><input type="checkbox"  checked="checked" id="Sjælland" name="Sjælland" value="Sjælland">Sjælland</label>
-	                    </div>
-	                    <div class="checkbox">
-	                      <label><input type="checkbox" checked="checked" id="Syddanmark" name="Syddanmark" value="Syddanmark">Syddanmark</label>
-	                    </div>
-	                    <div class="checkbox">
-	                      <label><input type="checkbox" checked="checked" id="Udenfor Danmark" name="Udenfor Danmark" value="Udenfor Danmark">Udenfor Danmark</label>
-	                    </div>
+                <div id="home" class="tab-pane fade in active">
+                    <h3>Vælg regioner</h3>
+                    <div class="col-sm-6 region-filters">
+                    	<div class="checkbox">
+                          <label><input type="checkbox" checked="checked" id="Hovedstaden" name="Hovedstaden" value="Hovedstaden">Hovedstaden</label>
+                        </div>
+                        <div class="checkbox">
+                          <label><input type="checkbox"  checked="checked" id="Midtjylland" name="Midtjylland" value="Midtjylland">Midtjylland</label>
+                        </div>
+                        <div class="checkbox">
+                          <label><input type="checkbox" checked="checked" id="Nordjylland" name="Nordjylland" value="Nordjylland">Nordjylland</label>
+                        </div>
+                        <div class="checkbox">
+                          <label><input type="checkbox"  checked="checked" id="Sjælland" name="Sjælland" value="Sjælland">Sjælland</label>
+                        </div>
+                        <div class="checkbox">
+                          <label><input type="checkbox" checked="checked" id="Syddanmark" name="Syddanmark" value="Syddanmark">Syddanmark</label>
+                        </div>
+                        <div class="checkbox">
+                          <label><input type="checkbox" checked="checked" id="Udenfor Danmark" name="Udenfor Danmark" value="Udenfor Danmark">Udenfor Danmark</label>
+                        </div>
                     </div>
-                    <div class="classification-filters">
-              		<?php
-                 		$result = getClassifications();
-                    		while ($row = mysqli_fetch_array($result)) {
-                    			echo '<div class="checkbox">';
-                    			echo '<label><input type="checkbox" checked="checked" id="'.$row["classifications"].' name="'.$row["classifications"].' value="'.$row["classifications"].'">'.$row["classifications"].'</label>';
-                    			echo '</div>';
-                    		}
-                    ?>
-                	</div>
                 </div>
-              </div>
-              <div id="menu1" class="tab-pane fade">
-                <h3>Single year</h3>
-                  <select id ="selectSingleYear">
-                  <option value="Vaelg">Vælg år</option>
-                  <option value="Alle">Alle</option>
+                <div id="menu1" class="tab-pane fade col-sm-8">
+                    <h3>Single year</h3>
+                    <select id ="selectSingleYear">
+                    <option value="Vaelg">Vælg år</option>
+                    <option value="Alle">Alle</option>
                     <?php
-                    $result = getDisplayDateYears();
-                    while ($row = mysqli_fetch_array($result)) {
-                        echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
+                        $result = getDisplayDateYears();
+                        while ($row = mysqli_fetch_array($result)) {
+                            echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
                     }
                     ?>
-				</select>
-				<h3>Interval</h3>
-                <select id ="selectStartYear">
-                <option value="start">Start</option>
-                <?php
-                	$result = getDisplayDateYears();
-                    while ($row = mysqli_fetch_array($result)) {
-                        echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
-                    }
-                ?>
-				</select>
-				<select id ="selectEndYear">
-                <option value="slut">Slut</option>
-                <?php
-                	$result = getDisplayDateYears();
-                    while ($row = mysqli_fetch_array($result)) {
-                        echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
-                    }
-                ?>
-				</select>
-				<input id="btnSubmit" type="submit" value="Kør"/>
-              </div>
-              <div id="menu2" class="tab-pane fade">
-                <h3>Compare</h3>
-                <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
-              </div>
-              <div id="menu3" class="tab-pane fade">
-                <h3>Menu 3 </h3>
-                <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-              </div>
+				    </select>
+
+                    <h3>Interval</h3>
+                    <select id ="selectStartYear">
+                    <option value="start">Start</option>
+                    <?php
+                    	$result = getDisplayDateYears();
+                        while ($row = mysqli_fetch_array($result)) {
+                            echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
+                        }
+                    ?>
+				    </select>
+			        <select id ="selectEndYear">
+                    <option value="slut">Slut</option>
+                        <?php
+                        	$result = getDisplayDateYears();
+                            while ($row = mysqli_fetch_array($result)) {
+                                echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
+                            }
+                        ?>
+			        </select>
+			        <input id="btnSubmit" type="submit" value="Vælg"/>
+                </div>
+                <div id="menu2" class="tab-pane fade">
+                    <h3>Værktyper</h3>
+                    <div class = "row">
+                    <div class="col-sm-12 classification-filters">
+
+                    <?php
+                        $result = getClassifications();
+                            while ($row = mysqli_fetch_array($result)) {
+                                    echo '<div class="col-sm-6">';
+                                    echo    '<div class="checkbox">';
+                                    echo    '<label><input type="checkbox" checked="checked" id="'.$row["classifications"].' name="'.$row["classifications"].'      value="'.$row["classifications"].'">'.$row["classifications"].'</label>';
+                                    echo    '</div>';
+                                    echo '</div>';
+                            }
+                    ?>
+                    </div>
+                    </div>
+                </div>
+                <div id="menu3" class="tab-pane fade">
+                    <h3>Menu 3 </h3>
+                    <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                </div>
+            </div>
+        </div><!-- End of menu -->
+        <div class = "col-sm-4" id = "graphContent">
+        <!-- Graph will be appended here -->
+        </div><!-- End of graph -->
+        <div class = "col-sm-2 pull-right" id = activeParameters>
+            <h3> Aktive parametre </h3>
+            <h5><u> Regioner:</u> </h5>
+            <div id = "aktiveRegioner">
+                Alle
+            </div>
+            <h5><u> Årstal:</u> </h5>
+            <div id = "aktiveÅr">
+                1918 - 2016
+            </div>
+            <h5><u> Værktyper </u></h5>
+            <div id = "aktiveTyper">
+                Alle
+            </div>
+            <h5><u> OnDisplay </u></h5>
+            <div id = "onDisplay">
+                Begge
             </div>
         </div>
-    </div>
+    </div><!-- End of Row -->
 </div>
 
 <script src = "js/effects.js"></script>
@@ -107,12 +131,13 @@
     //Filter arrays
     var classification = {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true, Design: true, Relief: true, Akvaral: true, Tekstil: true, Keramik: true,Collage: true, Glas: true, Møbel: true, Digital:true, Video:true, Integreret_kunst:true, Indretning: true,Print:true, Miked_media:true,Grafisk_design:true,Performance:true, Installation:true,Lys:true}
 	var regions = {Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};
-	
+
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-filters input:checkbox').click(function() {
 		var name = $(this).val().trim();
 		if(regions[name] == true) regions[name] = false;
         else regions[name] = true;
+        updateRegioner(regions);
         updateData();
 	});
 
@@ -120,6 +145,7 @@
 		var name = $(this).val().trim();
         if(classification[name] == true) classification[name] = false;
         else classification[name] = true;
+        updateVærktyper(classification);
         updateData();
 	});
 
@@ -145,7 +171,6 @@
 
 	function updateData(){
 		var newData = new Array();
-		
         for (var key in regions) {
         	if(regions[key]==true) {
         		var tmpArr = {region:key, antal:0};
@@ -156,7 +181,7 @@
         for (var i = 0; i < Object.keys(dataset).length; i++) {
             if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true){
                 for (var j = 0; j < Object.keys(newData).length; j++) {
-                	if(newData[j].region == dataset[i].region){ 
+                	if(newData[j].region == dataset[i].region){
                 		newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal); break;}
                 };
             }
@@ -166,7 +191,6 @@
 		}
         updateWithNewData(newData);
 	}
-	
 	updateData();
 
 
@@ -184,7 +208,7 @@
 		var w = 500, h = 500;
 
 		//Laver svg element til at komme figuren
-		var svg = d3.select("#contentRow").append("svg").attr("id","graph").attr("width", w).attr("height", h);
+		var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
 
 		//Laver scale
 		var min = data[0].antal;
@@ -223,6 +247,6 @@
 		svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
 	}
 </script>
-
 </body>
+<script src = "js/parametersHistogram.js"></script>
 </head>
