@@ -13,7 +13,7 @@
                 <li><a href="#menu2">Værktyper</a></li>
             </ul>
             <div class="tab-content">
-                <div id="home" class="tab-pane fade in active">
+                <div id="home" class="tab-pane fade in active row">
                     <h3>Vælg regioner</h3>
                     <div class="col-sm-6 region-filters">
                     	<div class="checkbox">
@@ -35,11 +35,14 @@
                           <label><input type="checkbox" checked="checked" id="Udenfor Danmark" name="Udenfor Danmark" value="Udenfor Danmark">Udenfor Danmark</label>
                         </div>
                     </div>
-                    <div class="onView-filter">
-                        <input type="radio" name="onView" value="alle" checked="checked"/><label>Alle</label>
-                        <input type="radio" name="onView" value="til"  /><label>True</label>
-                        <input type="radio" name="onView" value="fra" /><label>False</label>
-                    </div>
+                </div>
+                <div class = "row">
+                <div class="onView-filter">
+                    <h3 id><span id = "hey">OnDisplay</span></h3>
+                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="Begge" checked= "checked"/></div><label>Alle</label></p>
+                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="Til" /></div><label>True</label></p>
+                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="Fra" /></div><label>False</label></p>
+                </div>
                 </div>
                 <div id="menu1" class="tab-pane fade col-sm-8">
                     <h3>Single year</h3>
@@ -121,9 +124,11 @@
                 Begge
             </div>
         </div>
+        <!-- Details on demand -->
+        <div id="dod" style="display:none"></div>
     </div><!-- End of Row -->
-</div>
-
+</div><!-- End of container -->
+<!-- Details on demand Div -->
 <script src = "js/effects.js"></script>
 <script src = "js/tabMenu.js"></script>
 
@@ -134,11 +139,11 @@
     //Hvis nogle af nedstående variable er sat til null vil de ikke være gældende eller gælde for alle.
 	var year, startYear, endYear;
     onView = null;
-	
+
     //Filter arrays
-    var classification = {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true, 
-        Design: true, Relief: true, Akvarel: true, Tekstil: true, Keramik: true, Collage: true, Glas: true, Møbel: true, 
-        Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true, "Grafisk design":true, 
+    var classification = {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true,
+        Design: true, Relief: true, Akvarel: true, Tekstil: true, Keramik: true, Collage: true, Glas: true, Møbel: true,
+        Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true, "Grafisk design":true,
         Performance:true, Installation:true, Lys:true}
 	var regions = {Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};
 
@@ -186,7 +191,7 @@
 		endYear = $('#selectEndYear').val();
        	updateData();
     });
-    
+
     function updateData(){
         var newData = new Array();
         //Kopiere de relevante regioner og typer ind i newData
@@ -203,13 +208,13 @@
 
         if(onView == true)
             {newData = countData("true", "true", newData);}
-        
+
         else if(onView == false)
             {newData = countData("false", "false", newData);}
-        
+
         else if(onView == null)
             {newData = countData("true", "false", newData);}
-        
+
         drawDiagram(newData);
     }
 
@@ -239,7 +244,7 @@
                 console.log("I startYear != null");
                 for (var i = 0; i < Object.keys(dataset).length; i++) {
                     if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
-                        && dataset[i].displayDate > startYear && dataset[i].displayDate < endYear 
+                        && dataset[i].displayDate > startYear && dataset[i].displayDate < endYear
                         && (dataset[i].onView == what || dataset[i].onView == what2) ){
                         for (var j = 0; j < Object.keys(newData).length; j++) {
                             if(newData[j].region == dataset[i].region){
@@ -352,14 +357,7 @@
 		var yScale = d3.scale.linear().domain([0,max]).range([h-margin.top-margin.bottom,margin.top]).nice();
 		var xScale = d3.scale.ordinal().domain(data.map(function (d){return d.region})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
 
-        //Bygger tooltip
-        var tip = d3.tip()
-          .attr('class', 'd3-tip')
-          .offset([-10, 0])
-          .html(function(d) {
-            return "Klik for mere info om " +  d.region + " <span style='color:red'></span>";
-        })
-
+        //From tooltip.js
         svg.call(tip);
 
 		//Tegner rectangels
@@ -376,7 +374,7 @@
         .on('mouseover', tip.show)
         .on('mouseout', tip.hide);
 
-		//Bygger akser
+        //Bygger akser
 		var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
 		svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis);
 		var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
@@ -385,4 +383,12 @@
 </script>
 </body>
 <script src = "js/parametersHistogram.js"></script>
+<script>
+    $(".rectangle").hover(function(event) {
+        $("#dod").css({top: event.clientY, left: event.clientX}).show();
+        console.log("HERE");
+    }, function() {
+        $("#dod").hide();
+    });
+</script>
 </head>

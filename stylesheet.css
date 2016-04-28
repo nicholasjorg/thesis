@@ -1,3 +1,6 @@
+body {
+    position: relative;
+}
 #graph{
   margin-top: 100px;
 }
@@ -58,9 +61,10 @@ div.bar {
 /* STYLING FOR RECT BARS */
 .rectangle{
   fill:teal;
+  cursor: pointer;
 }
 
-/* STYLING FOR HOVER OG DETAILS ON DEMAND */
+/* STYLING FOR TOOLTIP */
 
 .rectangle:hover {
   fill: orangered;
@@ -91,4 +95,14 @@ div.bar {
   margin: -1px 0 0 0;
   top: 100%;
   left: 0;
+}
+
+/*STYLING FOR DOD*/
+#dod{
+    border-radius: 25px;
+    height: 500px;
+    width: 500px;
+    position: fixed;
+    display: none;
+    background:gray;
 }

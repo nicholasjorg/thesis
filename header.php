@@ -13,6 +13,9 @@ echo'
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <!-- d3 script -->
     <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+    <!-- Custom Javascript -->
+    <script src ="js/tooltip.js"></script>
+    <script src ="js/dodHistogram.js"></script>
 </head>
 <body>';
 ?>
