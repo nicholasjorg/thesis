@@ -1,6 +1,6 @@
 <?php require("functions.php"); ?>
 <?php require("getRegionData.php"); ?>
-<?php require("getUrlVariables.php");?>
+
 <!-- Header -->
 <?php require("header.php");?>
 
@@ -109,39 +109,19 @@
             <h3> Aktive parametre </h3>
             <h5><u> Regioner:</u> </h5>
             <div id = "aktiveRegioner">
-                <?php
-                if (isset($_GET['regioner'])){
-                    echo $regioner;
-                }
-                else echo 'Alle';
-                ?>
+                Alle
             </div>
             <h5><u> Årstal:</u> </h5>
             <div id = "aktiveÅr">
-                <?php
-                if (isset($_GET['arstal'])){
-                    echo $arstal;
-                }
-                else echo '1918 - 2016';
-                ?>
+                1918 - 2016
             </div>
             <h5><u> Værktyper:</u></h5>
             <div id = "aktiveTyper">
-                <?php
-                if (isset($_GET['typer'])){
-                    echo $typer;
-                }
-                else echo 'Alle';
-                ?>
+                Alle
             </div>
             <h5><u> OnView:</u></h5>
             <div id = "onView">
-                <?php
-                if (isset($_GET['onView'])){
-                    echo $regioner;
-                }
-                else echo 'Begge';
-                ?>
+                Alle
             </div>
         </div>
         <!-- Details on demand -->
@@ -161,12 +141,23 @@
     onView = null;
 
     //Filter arrays
-    var classification = {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true,
-        Design: true, Relief: true, Akvarel: true, Tekstil: true, Keramik: true, Collage: true, Glas: true, Møbel: true,
-        Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true, "Grafisk design":true,
-        Performance:true, Installation:true, Lys:true}
-	var regions = {Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};
-
+    var classification =
+    <?php
+        if (isset($_GET['typer'])){
+            echo $typer .";";
+        }
+        else echo '{Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true,
+            Design: true, Relief: true, Akvarel: true, Tekstil: true, Keramik: true, Collage: true, Glas: true, Møbel: true,
+            Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true, "Grafisk design":true,
+            Performance:true, Installation:true, Lys:true};';
+    ?>
+    var regions =
+    <?php
+        if (isset($_GET['regioner'])){
+            echo $typer;
+        }
+        else echo '{Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};';
+    ?>
 
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-filters input:checkbox').click(function() {
@@ -305,52 +296,6 @@
     }
 
 	updateData();
-
-	function drawDiagram(data){
-		//Fjerner gammel graf
-        d3.select("svg").remove();
-
-        //Sorterer data fra parametreret ascending order
-		data.sort(function(a,b){
-			return parseFloat(a.antal) - parseFloat(b.antal);
-		});
-
-		//Sætter variable
-		var margin = {top: 10, right: 0, bottom: 10, left: 40};
-		var w = 500, h = 500;
-
-		//Laver svg element til at komme figuren
-		var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
-
-		//Laver scale
-		var min = data[0].antal;
-		var max = data[Object.keys(data).length-1].antal;
-		var yScale = d3.scale.linear().domain([0,max]).range([h-margin.top-margin.bottom,margin.top]).nice();
-		var xScale = d3.scale.ordinal().domain(data.map(function (d){return d.region})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
-
-        //From tooltip.js
-        svg.call(tip);
-
-		//Tegner rectangels
-		svg.selectAll("rect").data(data).enter()
-        .append("svg:a")
-        .attr("xlink:href", function(d){return "index.php?" + d.region;})
-        .append("rect")
-        .attr("class",function(d,i){return "rectangle"})
-        .attr("id",function(d,i){return d.region})
-		.attr("x",function(d,i){ return xScale(d.region)})
-		.attr("y", function (d){ return yScale(d.antal)})
-		.attr("width", xScale.rangeBand() )
-		.attr("height", function (d){ return yScale(0) - yScale(d.antal) })
-        .on('mouseover', tip.show)
-        .on('mouseout', tip.hide);
-
-        //Bygger akser
-		var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-		svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis);
-		var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
-		svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
-	}
 
     function drawPie(regionData){
         //d3.select("pieChart").remove();
