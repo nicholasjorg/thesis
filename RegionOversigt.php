@@ -357,7 +357,7 @@
 		//Tegner rectangels
 		svg.selectAll("rect").data(data).enter()
         .append("svg:a")
-        .attr("xlink:href", function(d){return "index.php?" + d.region;})
+        .attr("xlink:href", function(d){return "dodRegion.php?region="+d.region+"&year="+year+"&startYear="+startYear+"&endYear="+endYear+"&typer="+JSON.stringify(classification)+"&onView="+onView;})
         .append("rect")
         .attr("class",function(d,i){return "rectangle"})
         .attr("id",function(d,i){return d.region})

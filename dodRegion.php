@@ -3,6 +3,7 @@
 
 <!-- Header -->
 <?php require("header.php");?>
+<?php require("getUrlVariables.php");?>
 
 <div class = "container">
     <div class = "row">
@@ -109,7 +110,12 @@
             <h3> Aktive parametre </h3>
             <h5><u> Regioner:</u> </h5>
             <div id = "aktiveRegioner">
-                Alle
+                <?php
+                if (isset($_GET['region'])){
+                    echo $region;
+                }
+                else echo "Hovedstaden";
+                ?>
             </div>
             <h5><u> Årstal:</u> </h5>
             <div id = "aktiveÅr">
@@ -138,26 +144,41 @@
 	var dataset = <?php echo $dataset ?>;
     //Hvis nogle af nedstående variable er sat til null vil de ikke være gældende eller gælde for alle.
 	var year, startYear, endYear;
+    <?php
+    if (isset($_GET['year'])){
+        echo 'year=' . $year;
+    }
+    if (isset($_GET['startYear'])){
+        echo ' startYear=' . $startYear;
+        echo ' endYear=' . $endYear;    
+    }
+    ?>
     onView = null;
 
     //Filter arrays
     var classification =
     <?php
         if (isset($_GET['typer'])){
-            echo $typer .";";
+            echo $typer;
         }
         else echo '{Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true,
             Design: true, Relief: true, Akvarel: true, Tekstil: true, Keramik: true, Collage: true, Glas: true, Møbel: true,
             Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true, "Grafisk design":true,
-            Performance:true, Installation:true, Lys:true};';
-    ?>
-    var regions =
+            Performance:true, Installation:true, Lys:true}'
+    ?>;
+    var currentRegion =
     <?php
-        if (isset($_GET['regioner'])){
-            echo $typer;
+        if (isset($_GET['region'])){
+            echo $_GET['region'];
         }
-        else echo '{Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};';
-    ?>
+        else echo 'Hovedstaden';
+    ?>;
+
+    console.log ("year = " + year);
+    console.log ("start= " + startYear);
+    console.log ("end = " + endYear);
+    console.log (classification);
+    console.log ("current region = " + currentRegion);
 
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-filters input:checkbox').click(function() {

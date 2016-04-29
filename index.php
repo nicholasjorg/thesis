@@ -11,7 +11,7 @@
 <li><a href="cleanDisplayDate.php">Clean display date</a></li>
 <li><a href="regionOversigt.php">Regionoversigt</a></li>
 <li><a href="regionOversigt.php">dodRegion</a></li>
-<li><a href="regionOversigt.php?regioner=Hovedstaden">dodRegion m hovedstaden</a></li>
+<li><a href="dodRegion.php?region=Hovedstaden">dodRegion m hovedstaden</a></li>
 </ul>
 </body>
 </HTML>
