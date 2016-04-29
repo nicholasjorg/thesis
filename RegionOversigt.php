@@ -134,7 +134,7 @@
 
 <!--Script til at manipulere data via HTML inputs -->
 <script>
-
+    var newData = new Array();
 	var dataset = <?php echo $dataset ?>;
     //Hvis nogle af nedstående variable er sat til null vil de ikke være gældende eller gælde for alle.
 	var year, startYear, endYear;
@@ -198,7 +198,7 @@
     });
 
     function updateData(){
-        var newData = new Array();
+        newData = new Array();
         //Kopiere de relevante regioner og typer ind i newData
         for (var key in regions) {
             if(regions[key]==true) {
@@ -332,8 +332,9 @@
 		var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
 		svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
 	}
-    
+
     function drawPie(regionData){
+        //d3.select("pieChart").remove();
         var color = d3.scale.category20();
         var pie = d3.layout.pie().value(function(d){return d.antal});
         var w = 300;
@@ -341,9 +342,9 @@
         var outerRadius = w/2;
         var innerRadius = 100;
         var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius);
-        var svg = d3.select("#pie-test").append("svg").attr("id","pieChart").attr("width",w).attr("height",h);
+        var svg = d3.select("#dod").append("svg").attr("id","pieChart").attr("width",w).attr("height",h);
         var arcs = svg.selectAll("g.arc").data(pie(regionData)).enter().append("g").attr("class", "arc").attr("transform", "translate("+outerRadius+", "+outerRadius+")");
-        arcs.append("path").attr("fill", function(d,i){return color(i);}).attr("d",arc); 
+        arcs.append("path").attr("fill", function(d,i){return color(i);}).attr("d",arc);
         arcs.append("text").attr("transform",function(d){return "translate("+arc.centroid(d)+")";}).attr("text-anchor","middle").text(function(d){return d.classifications});
     }
 
@@ -352,8 +353,19 @@
 <script src = "js/parametersHistogram.js"></script>
 <script>
     $(".rectangle").hover(function(event) {
+        //Finde region
+        var region = this.id;
+        //Lave datasæt
+        for (var j = 0; j < Object.keys(newData).length; j++) {
+            if (newData[j].region == region){
+                //Lav grafen
+                drawPie(newData[j].typer);
+            }
+        }
+        //Lav Grafen
+        //Append graf til div: dod
+        //vis div: dod
         $("#dod").css({top: event.clientY, left: event.clientX}).show();
-        console.log("HERE");
     }, function() {
         $("#dod").hide();
     });
