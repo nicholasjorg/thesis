@@ -1,6 +1,6 @@
 <?php require("functions.php"); ?>
 <?php require("getRegionData.php"); ?>
-<?php require("getUrlVariables.php");?>
+
 <!-- Header -->
 <?php require("header.php");?>
 
@@ -109,52 +109,28 @@
             <h3> Aktive parametre </h3>
             <h5><u> Regioner:</u> </h5>
             <div id = "aktiveRegioner">
-                <?php
-                if (isset($_GET['regioner'])){
-                    echo $regioner;
-                }
-                else echo 'Alle';
-                ?>
+                Alle
             </div>
             <h5><u> Årstal:</u> </h5>
             <div id = "aktiveÅr">
-                <?php
-                if (isset($_GET['arstal'])){
-                    echo $arstal;
-                }
-                else echo '1918 - 2016';
-                ?>
+                1918 - 2016
             </div>
             <h5><u> Værktyper:</u></h5>
             <div id = "aktiveTyper">
-                <?php
-                if (isset($_GET['typer'])){
-                    echo $typer;
-                }
-                else echo 'Alle';
-                ?>
+                Alle
             </div>
             <h5><u> OnView:</u></h5>
             <div id = "onView">
-                <?php
-                if (isset($_GET['onView'])){
-                    echo $regioner;
-                }
-                else echo 'Begge';
-                ?>
+                Alle
             </div>
         </div>
-        
         <!-- Details on demand -->
-        <div id="dod" style="display:none" class="col-sm-12"><div id="dod-graf" class="col-sm-6"></div><div id="dod-text" class="col-sm-6"></div></div>
-        <!-- Details on demand Div -->
+        <div id="dod" style="display:none"></div>
     </div><!-- End of Row -->
 </div><!-- End of container -->
-
+<!-- Details on demand Div -->
 <script src = "js/effects.js"></script>
 <script src = "js/tabMenu.js"></script>
-<script src = "js/parametersHistogram.js"></script>
-<script src = "js/randomColor.js"></script>
 
 <!--Script til at manipulere data via HTML inputs -->
 <script>
@@ -165,12 +141,23 @@
     onView = null;
 
     //Filter arrays
-    var classification = {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true,
-        Design: true, Relief: true, Akvarel: true, Tekstil: true, Keramik: true, Collage: true, Glas: true, Møbel: true,
-        Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true, "Grafisk design":true,
-        Performance:true, Installation:true, Lys:true}
-	var regions = {Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};
-
+    var classification =
+    <?php
+        if (isset($_GET['typer'])){
+            echo $typer .";";
+        }
+        else echo '{Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true,
+            Design: true, Relief: true, Akvarel: true, Tekstil: true, Keramik: true, Collage: true, Glas: true, Møbel: true,
+            Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true, "Grafisk design":true,
+            Performance:true, Installation:true, Lys:true};';
+    ?>
+    var regions =
+    <?php
+        if (isset($_GET['regioner'])){
+            echo $typer;
+        }
+        else echo '{Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};';
+    ?>
 
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-filters input:checkbox').click(function() {
@@ -189,7 +176,7 @@
         updateData();
 	});
 
-    $('.onView-filter input:radio').click(function() {
+        $('.onView-filter input:radio').click(function() {
         var name = $(this).val().trim();
         if(name == "til") onView = true;
         else if(name == "fra") onView = false;
@@ -220,26 +207,6 @@
        	updateData();
     });
 
-    $(document).on('mouseenter','.rectangle',function(e){
-        for (var j = 0; j < Object.keys(newData).length; j++) {
-            if (newData[j].region == this.id){
-                drawPie(newData[j].typer);
-                $("#dod-text").empty();
-                for (var i = 0; i < Object.keys(newData[j].typer).length; i++) {
-                    $("#dod-text").append(newData[j].typer[i].classifications+" - "+newData[j].typer[i].antal+"<br />");
-                };
-                break;
-            }
-        }
-        $("#dod").css({top: event.clientY, left: event.clientX}).show();
-    });
-    $(document).on('mouseleave','.rectangle',function(e){
-        $("#dod").hide();
-    });
-
-
-
-
     function updateData(){
         newData = new Array();
         //Kopiere de relevante regioner og typer ind i newData
@@ -253,24 +220,25 @@
                 newData.push(tmpArr);
             }
         }
-        console.log(newData);
 
         if(onView == true)
             {newData = countData("true", "true", newData);}
+
         else if(onView == false)
             {newData = countData("false", "false", newData);}
+
         else if(onView == null)
             {newData = countData("true", "false", newData);}
 
         drawDiagram(newData);
     }
 
-    function countData(onViewInfo1, onViewInfo2, newData){
+    function countData(what, what2, newData){
         //Single år er valgt
             if(year != null){
                 for (var i = 0; i < Object.keys(dataset).length; i++) {
                     if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
-                        && dataset[i].displayDate == year && (dataset[i].onView == onViewInfo1 || dataset[i].onView == onViewInfo2) ){
+                        && dataset[i].displayDate == year && (dataset[i].onView == what || dataset[i].onView == what2) ){
                         for (var j = 0; j < Object.keys(newData).length; j++) {
                             if(newData[j].region == dataset[i].region){
                                 newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
@@ -290,7 +258,7 @@
                 for (var i = 0; i < Object.keys(dataset).length; i++) {
                     if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
                         && dataset[i].displayDate > startYear && dataset[i].displayDate < endYear
-                        && (dataset[i].onView == onViewInfo1 || dataset[i].onView == onViewInfo2) ){
+                        && (dataset[i].onView == what || dataset[i].onView == what2) ){
                         for (var j = 0; j < Object.keys(newData).length; j++) {
                             if(newData[j].region == dataset[i].region){
                                 newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
@@ -309,7 +277,7 @@
             else {
                 for (var i = 0; i < Object.keys(dataset).length; i++) {
                     if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
-                        && (dataset[i].onView == onViewInfo1 || dataset[i].onView == onViewInfo2) ){
+                        && (dataset[i].onView == what || dataset[i].onView == what2) ){
                         for (var j = 0; j < Object.keys(newData).length; j++) {
                             if(newData[j].region == dataset[i].region){
                                 newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
@@ -329,67 +297,41 @@
 
 	updateData();
 
-	function drawDiagram(data){
-		//Fjerner gammel graf
-        d3.select("svg").remove();
-
-        //Sorterer data fra parametreret ascending order
-		data.sort(function(a,b){
-			return parseFloat(a.antal) - parseFloat(b.antal);
-		});
-
-		//Sætter variable
-		var margin = {top: 10, right: 0, bottom: 10, left: 40};
-		var w = 500, h = 500;
-
-		//Laver svg element til at komme figuren
-		var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
-
-		//Laver scale
-		var min = data[0].antal;
-		var max = data[Object.keys(data).length-1].antal;
-		var yScale = d3.scale.linear().domain([0,max]).range([h-margin.top-margin.bottom,margin.top]).nice();
-		var xScale = d3.scale.ordinal().domain(data.map(function (d){return d.region})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
-
-        //From tooltip.js
-        svg.call(tip);
-
-		//Tegner rectangels
-		svg.selectAll("rect").data(data).enter()
-        .append("svg:a")
-        .attr("xlink:href", function(d){return "index.php?" + d.region;})
-        .append("rect")
-        .attr("class",function(d,i){return "rectangle"})
-        .attr("id",function(d,i){return d.region})
-		.attr("x",function(d,i){ return xScale(d.region)})
-		.attr("y", function (d){ return yScale(d.antal)})
-		.attr("width", xScale.rangeBand() )
-		.attr("height", function (d){ return yScale(0) - yScale(d.antal) })
-        .on('mouseover', tip.show)
-        .on('mouseout', tip.hide);
-
-        //Bygger akser
-		var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-		svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis);
-		var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
-		svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
-	}
-
     function drawPie(regionData){
-        d3.select("#pieChart").remove();
+        //d3.select("pieChart").remove();
         var color = d3.scale.category20();
         var pie = d3.layout.pie().value(function(d){return d.antal});
-        var w = 200;
-        var h = 200;
+        var w = 300;
+        var h = 300;
         var outerRadius = w/2;
-        var innerRadius = 60;
+        var innerRadius = 100;
         var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius);
-        var svg2 = d3.select("#dod-graf").append("svg").attr("id","pieChart").attr("width",w).attr("height",h);
-        var arcs = svg2.selectAll("g.arc").data(pie(regionData)).enter().append("g").attr("class", "arc").attr("transform", "translate("+outerRadius+", "+outerRadius+")");
+        var svg = d3.select("#dod").append("svg").attr("id","pieChart").attr("width",w).attr("height",h);
+        var arcs = svg.selectAll("g.arc").data(pie(regionData)).enter().append("g").attr("class", "arc").attr("transform", "translate("+outerRadius+", "+outerRadius+")");
         arcs.append("path").attr("fill", function(d,i){return color(i);}).attr("d",arc);
         arcs.append("text").attr("transform",function(d){return "translate("+arc.centroid(d)+")";}).attr("text-anchor","middle").text(function(d){return d.classifications});
     }
-</script>
 
+</script>
 </body>
+<script src = "js/parametersHistogram.js"></script>
+<script>
+    $(".rectangle").hover(function(event) {
+        //Finde region
+        var region = this.id;
+        //Lave datasæt
+        for (var j = 0; j < Object.keys(newData).length; j++) {
+            if (newData[j].region == region){
+                //Lav grafen
+                drawPie(newData[j].typer);
+            }
+        }
+        //Lav Grafen
+        //Append graf til div: dod
+        //vis div: dod
+        $("#dod").css({top: event.clientY, left: event.clientX}).show();
+    }, function() {
+        $("#dod").hide();
+    });
+</script>
 </head>

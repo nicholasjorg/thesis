@@ -7,10 +7,11 @@
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 </head>
 <body>
-
-<a href="cleanDisplayDate.php">Clean display date</a></br>
-<br/>
-<a href="regionOversigt.php">Regionoversigt</a>
-
+<ul>
+<li><a href="cleanDisplayDate.php">Clean display date</a></li>
+<li><a href="regionOversigt.php">Regionoversigt</a></li>
+<li><a href="regionOversigt.php">dodRegion</a></li>
+<li><a href="regionOversigt.php?regioner=Hovedstaden">dodRegion m hovedstaden</a></li>
+</ul>
 </body>
 </HTML>
