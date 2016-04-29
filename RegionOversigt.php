@@ -124,13 +124,17 @@
                 Alle
             </div>
         </div>
+        
         <!-- Details on demand -->
-        <div id="dod" style="display:none"></div>
+        <div id="dod" style="display:none" class="col-sm-12"><div id="dod-graf" class="col-sm-6"></div><div id="dod-text" class="col-sm-6"></div></div>
+        <!-- Details on demand Div -->
     </div><!-- End of Row -->
 </div><!-- End of container -->
-<!-- Details on demand Div -->
+
 <script src = "js/effects.js"></script>
 <script src = "js/tabMenu.js"></script>
+<script src = "js/parametersHistogram.js"></script>
+<script src = "js/randomColor.js"></script>
 
 <!--Script til at manipulere data via HTML inputs -->
 <script>
@@ -165,7 +169,7 @@
         updateData();
 	});
 
-        $('.onView-filter input:radio').click(function() {
+    $('.onView-filter input:radio').click(function() {
         var name = $(this).val().trim();
         if(name == "til") onView = true;
         else if(name == "fra") onView = false;
@@ -196,6 +200,26 @@
        	updateData();
     });
 
+    $(document).on('mouseenter','.rectangle',function(e){
+        for (var j = 0; j < Object.keys(newData).length; j++) {
+            if (newData[j].region == this.id){
+                drawPie(newData[j].typer);
+                $("#dod-text").empty();
+                for (var i = 0; i < Object.keys(newData[j].typer).length; i++) {
+                    $("#dod-text").append(newData[j].typer[i].classifications+" - "+newData[j].typer[i].antal+"<br />");
+                };
+                break;
+            }
+        }
+        $("#dod").css({top: event.clientY, left: event.clientX}).show();
+    });
+    $(document).on('mouseleave','.rectangle',function(e){
+        $("#dod").hide();
+    });
+
+
+
+
     function updateData(){
         newData = new Array();
         //Kopiere de relevante regioner og typer ind i newData
@@ -209,25 +233,24 @@
                 newData.push(tmpArr);
             }
         }
+        console.log(newData);
 
         if(onView == true)
             {newData = countData("true", "true", newData);}
-
         else if(onView == false)
             {newData = countData("false", "false", newData);}
-
         else if(onView == null)
             {newData = countData("true", "false", newData);}
 
         drawDiagram(newData);
     }
 
-    function countData(what, what2, newData){
+    function countData(onViewInfo1, onViewInfo2, newData){
         //Single år er valgt
             if(year != null){
                 for (var i = 0; i < Object.keys(dataset).length; i++) {
                     if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
-                        && dataset[i].displayDate == year && (dataset[i].onView == what || dataset[i].onView == what2) ){
+                        && dataset[i].displayDate == year && (dataset[i].onView == onViewInfo1 || dataset[i].onView == onViewInfo2) ){
                         for (var j = 0; j < Object.keys(newData).length; j++) {
                             if(newData[j].region == dataset[i].region){
                                 newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
@@ -247,7 +270,7 @@
                 for (var i = 0; i < Object.keys(dataset).length; i++) {
                     if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
                         && dataset[i].displayDate > startYear && dataset[i].displayDate < endYear
-                        && (dataset[i].onView == what || dataset[i].onView == what2) ){
+                        && (dataset[i].onView == onViewInfo1 || dataset[i].onView == onViewInfo2) ){
                         for (var j = 0; j < Object.keys(newData).length; j++) {
                             if(newData[j].region == dataset[i].region){
                                 newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
@@ -266,7 +289,7 @@
             else {
                 for (var i = 0; i < Object.keys(dataset).length; i++) {
                     if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
-                        && (dataset[i].onView == what || dataset[i].onView == what2) ){
+                        && (dataset[i].onView == onViewInfo1 || dataset[i].onView == onViewInfo2) ){
                         for (var j = 0; j < Object.keys(newData).length; j++) {
                             if(newData[j].region == dataset[i].region){
                                 newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
@@ -333,40 +356,20 @@
 	}
 
     function drawPie(regionData){
-        //d3.select("pieChart").remove();
+        d3.select("#pieChart").remove();
         var color = d3.scale.category20();
         var pie = d3.layout.pie().value(function(d){return d.antal});
-        var w = 300;
-        var h = 300;
+        var w = 200;
+        var h = 200;
         var outerRadius = w/2;
-        var innerRadius = 100;
+        var innerRadius = 60;
         var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius);
-        var svg = d3.select("#dod").append("svg").attr("id","pieChart").attr("width",w).attr("height",h);
-        var arcs = svg.selectAll("g.arc").data(pie(regionData)).enter().append("g").attr("class", "arc").attr("transform", "translate("+outerRadius+", "+outerRadius+")");
+        var svg2 = d3.select("#dod-graf").append("svg").attr("id","pieChart").attr("width",w).attr("height",h);
+        var arcs = svg2.selectAll("g.arc").data(pie(regionData)).enter().append("g").attr("class", "arc").attr("transform", "translate("+outerRadius+", "+outerRadius+")");
         arcs.append("path").attr("fill", function(d,i){return color(i);}).attr("d",arc);
         arcs.append("text").attr("transform",function(d){return "translate("+arc.centroid(d)+")";}).attr("text-anchor","middle").text(function(d){return d.classifications});
     }
+</script>
 
-</script>
 </body>
-<script src = "js/parametersHistogram.js"></script>
-<script>
-    $(".rectangle").hover(function(event) {
-        //Finde region
-        var region = this.id;
-        //Lave datasæt
-        for (var j = 0; j < Object.keys(newData).length; j++) {
-            if (newData[j].region == region){
-                //Lav grafen
-                drawPie(newData[j].typer);
-            }
-        }
-        //Lav Grafen
-        //Append graf til div: dod
-        //vis div: dod
-        $("#dod").css({top: event.clientY, left: event.clientX}).show();
-    }, function() {
-        $("#dod").hide();
-    });
-</script>
 </head>

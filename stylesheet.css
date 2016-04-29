@@ -99,6 +99,7 @@ div.bar {
 
 /*STYLING FOR DOD*/
 #dod{
+    background-color: grey;
     border-radius: 25px;
     height: 500px;
     width: 500px;
