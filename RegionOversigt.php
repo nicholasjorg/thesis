@@ -39,9 +39,9 @@
                 <div class = "row">
                 <div class="onView-filter">
                     <h3 id><span id = "hey">OnDisplay</span></h3>
-                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="Begge" checked= "checked"/></div><label>Alle</label></p>
-                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="Til" /></div><label>True</label></p>
-                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="Fra" /></div><label>False</label></p>
+                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="alle" checked= "checked"/></div><label>Alle</label></p>
+                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="til" /></div><label>True</label></p>
+                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="fra" /></div><label>False</label></p>
                 </div>
                 </div>
                 <div id="menu1" class="tab-pane fade col-sm-8">
@@ -138,9 +138,9 @@
             <div id = "onView">
                 <?php
                 if (isset($_GET['onView'])){
-                    echo $regioner;
+                    echo $onView;
                 }
-                else echo 'Begge';
+                else echo 'Alle';
                 ?>
             </div>
         </div>
@@ -171,7 +171,7 @@
         Performance:true, Installation:true, Lys:true}
 	var regions = {Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};
 
-
+    console.log(classification);
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-filters input:checkbox').click(function() {
 		var name = $(this).val().trim();

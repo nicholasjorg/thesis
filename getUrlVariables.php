@@ -1,6 +1,6 @@
 <?php
 if (isset($_GET['region'])){
-    $region = $_GET['region'];
+    $region = '"'.$_GET['region'].'";';
 }
 if (isset($_GET['year'])){
     $year = $_GET['year']. ";";
@@ -15,6 +15,6 @@ if (isset($_GET['typer'])){
     $typer = $_GET['typer'] . ";";
 }
 if (isset($_GET['onView'])){
-    $onView = $_GET['onView'];
+    $onView = $_GET['onView'] . ";";
 }
 ?>

@@ -12,7 +12,6 @@ var outputString = "";
 }
 function updateVærktyper(værktyper){
     var outputString = "";
-
         for (var key in værktyper) {
             if(værktyper[key]==true) {
                 var stringKey = String(key);

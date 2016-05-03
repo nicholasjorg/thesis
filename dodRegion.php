@@ -1,5 +1,5 @@
 <?php require("functions.php"); ?>
-<?php require("getRegionData.php"); ?>
+<?php require("getMunicipalityData.php"); ?>
 
 <!-- Header -->
 <?php require("header.php");?>
@@ -137,48 +137,52 @@
 <!-- Details on demand Div -->
 <script src = "js/effects.js"></script>
 <script src = "js/tabMenu.js"></script>
+<script src = "js/parametersHistogram.js"></script>
 
 <!--Script til at manipulere data via HTML inputs -->
 <script>
     var newData = new Array();
 	var dataset = <?php echo $dataset ?>;
     //Hvis nogle af nedstående variable er sat til null vil de ikke være gældende eller gælde for alle.
-	var year, startYear, endYear;
+	var year, startYear, endYear, onView, classification, currentRegion, municipalities;
     <?php
     if (isset($_GET['year'])){
         echo 'year=' . $year;
+        echo "updateActiveYears();";
     }
     if (isset($_GET['startYear'])){
         echo ' startYear=' . $startYear;
-        echo ' endYear=' . $endYear;    
+        echo ' endYear=' . $endYear;
+        echo "updateActiveYears();";
     }
     ?>
-    onView = null;
-
+    <?php
+    if (isset($_GET['onView'])){
+        echo "onView=".$onView;
+        echo "updateOnView();";
+    }
+    ?>;
     //Filter arrays
-    var classification =
     <?php
         if (isset($_GET['typer'])){
-            echo $typer;
+            echo "classification=".$typer;
+            // echo "updateVærktyper();";
         }
-        else echo '{Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true,
+        else echo 'classification = {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true,
             Design: true, Relief: true, Akvarel: true, Tekstil: true, Keramik: true, Collage: true, Glas: true, Møbel: true,
             Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true, "Grafisk design":true,
-            Performance:true, Installation:true, Lys:true}'
-    ?>;
-    var currentRegion =
+            Performance:true, Installation:true, Lys:true};';
+        echo "updateVærktyper(classification);";
+    ?>
     <?php
         if (isset($_GET['region'])){
-            echo $_GET['region'];
+            echo "currentRegion=".$region;
         }
-        else echo 'Hovedstaden';
-    ?>;
+        else echo 'currentRegion="Hovedstaden";';
+    ?>
 
-    console.log ("year = " + year);
-    console.log ("start= " + startYear);
-    console.log ("end = " + endYear);
-    console.log (classification);
-    console.log ("current region = " + currentRegion);
+    changeRegionMunicipalities();
+
 
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-filters input:checkbox').click(function() {
@@ -228,9 +232,40 @@
        	updateData();
     });
 
+    function changeRegionMunicipalities(){
+        municipalities = new Array();
+        for (var i = 0; i < Object.keys(dataset).length; i++) {
+            if(dataset[i].region == currentRegion){
+                newData.push(dataset[i]);
+                if(!contains(municipalities, dataset[i].municipality)){
+                    console.log(dataset[i].municipality);
+                   municipalities.push({municipality:dataset[i].municipality, display:true});
+                }
+            }
+        };
+        console.log(municipalities);
+        for (var i = 0; i < Object.keys(municipalities).length; i++) {
+            municipalities[i] = true;
+        };
+    }
+
+    function contains(a, obj) {
+    var i = a.length;
+    while (i--) {
+       if (a[i] === obj) {
+           return true;
+       }
+    }
+    return false;
+}
+    console.log(municipalities);
+
+
+
     function updateData(){
         newData = new Array();
         //Kopiere de relevante regioner og typer ind i newData
+
         for (var key in regions) {
             if(regions[key]==true) {
                 var typer = new Array();
@@ -316,7 +351,7 @@
             return newData;
     }
 
-	updateData();
+	// updateData();
 
     function drawPie(regionData){
         //d3.select("pieChart").remove();
@@ -335,7 +370,6 @@
 
 </script>
 </body>
-<script src = "js/parametersHistogram.js"></script>
 <script>
     $(".rectangle").hover(function(event) {
         //Finde region
