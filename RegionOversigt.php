@@ -13,7 +13,7 @@
                 <li><a href="#menu2">Værktyper</a></li>
             </ul>
             <div class="tab-content">
-                <div id="home" class="tab-pane fade in active row">
+                <div id="home" class="tab-pane active row">
                     <h3>Vælg regioner</h3>
                     <div class="col-sm-6 region-filters">
                     	<div class="checkbox">
@@ -34,15 +34,15 @@
                         <div class="checkbox">
                           <label><input type="checkbox" checked="checked" id="Udenfor Danmark" name="Udenfor Danmark" value="UdenforDanmark">Udenfor Danmark</label>
                         </div>
+                        <div class = "row">
+                        <div class="onView-filter">
+                            <h3 id><span id = "hey">OnDisplay</span></h3>
+                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Begge" checked= "checked"/></div><label>Alle</label></p>
+                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Til" /></div><label>True</label></p>
+                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Fra" /></div><label>False</label></p>
+                        </div>
+                        </div>
                     </div>
-                </div>
-                <div class = "row">
-                <div class="onView-filter">
-                    <h3 id><span id = "hey">OnDisplay</span></h3>
-                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="alle" checked= "checked"/></div><label>Alle</label></p>
-                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="til" /></div><label>True</label></p>
-                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="fra" /></div><label>False</label></p>
-                </div>
                 </div>
                 <div id="menu1" class="tab-pane fade col-sm-8">
                     <h3>Single year</h3>
@@ -144,7 +144,7 @@
                 ?>
             </div>
         </div>
-        
+
         <!-- Details on demand -->
         <div id="dod" style="display:none" class="col-sm-12"><div id="dod-graf" class="col-sm-6"></div><div id="dod-text" class="col-sm-6"></div></div>
         <!-- Details on demand Div -->
@@ -171,7 +171,6 @@
         Performance:true, Installation:true, Lys:true}
 	var regions = {Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};
 
-    console.log(classification);
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-filters input:checkbox').click(function() {
 		var name = $(this).val().trim();
@@ -236,8 +235,6 @@
     $(document).on('mouseleave','.rectangle',function(e){
         $("#dod").hide();
     });
-
-
 
 
     function updateData(){
