@@ -18,7 +18,7 @@
 
 <?php 
 	$jsonarray = array();
-	$sql = 'select * from allData WHERE region="Hovedstaden"';
+	$sql = 'select region, municipality, classifications, displayDate, onView, count(*) as antal from allData WHERE region="Hovedstaden" group by region, municipality, classifications, displayDate, onView';
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
     	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"], 
