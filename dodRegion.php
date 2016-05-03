@@ -3,7 +3,10 @@
 
 <!-- Header -->
 <?php require("header.php");?>
+<!-- context php-->
 <?php require("getUrlVariables.php");?>
+<!-- context js -->
+<script src = "js/dodForms.js"></script>
 
 <div class = "container">
     <div class = "row">
@@ -17,34 +20,34 @@
                 <div id="home" class="tab-pane fade in active row">
                     <h3>Vælg regioner</h3>
                     <div class="col-sm-6 region-filters">
-                    	<div class="checkbox">
-                          <label><input type="checkbox" checked="checked" id="Hovedstaden" name="Hovedstaden" value="Hovedstaden">Hovedstaden</label>
+                        <div class ="radio"><label><input type="radio" checked="checked" id="radioHovedstaden" name="regions" value="Hovedstaden">Hovedstaden</label>
                         </div>
-                        <div class="checkbox">
-                          <label><input type="checkbox"  checked="checked" id="Midtjylland" name="Midtjylland" value="Midtjylland">Midtjylland</label>
+                        <div class="radio">
+                          <label><input type="radio" id="radioMidtjylland" name="regions" value="Midtjylland">Midtjylland</label>
                         </div>
-                        <div class="checkbox">
-                          <label><input type="checkbox" checked="checked" id="Nordjylland" name="Nordjylland" value="Nordjylland">Nordjylland</label>
+                        <div class="radio">
+                          <label><input type="radio" id="radioNordjylland" name="regions" value="Nordjylland">Nordjylland</label>
                         </div>
-                        <div class="checkbox">
-                          <label><input type="checkbox"  checked="checked" id="Sjælland" name="Sjælland" value="Sjælland">Sjælland</label>
+                        <div class="radio">
+                          <label><input type="radio" id="radioSjælland" name="regions" value="Sjælland">Sjælland</label>
                         </div>
-                        <div class="checkbox">
-                          <label><input type="checkbox" checked="checked" id="Syddanmark" name="Syddanmark" value="Syddanmark">Syddanmark</label>
+                        <div class="radio">
+                          <label><input type="radio" id="radioSyddanmark" name="regions" value="Syddanmark">Syddanmark</label>
                         </div>
-                        <div class="checkbox">
-                          <label><input type="checkbox" checked="checked" id="Udenfor Danmark" name="Udenfor Danmark" value="UdenforDanmark">Udenfor Danmark</label>
+                        <div class="radio">
+                          <label><input type="radio" id="radioUdenfor Danmark" name="regions" value="UdenforDanmark">Udenfor Danmark</label>
+                        </div>
+                        <div class = "row">
+                        <div class="onView-filter">
+                            <h3 id><span id = "hey">OnDisplay</span></h3>
+                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Begge" checked= "checked"/></div><label>Alle</label></p>
+                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Til" /></div><label>True</label></p>
+                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Fra" /></div><label>False</label></p>
+                        </div>
                         </div>
                     </div>
                 </div>
-                <div class = "row">
-                <div class="onView-filter">
-                    <h3 id><span id = "hey">OnDisplay</span></h3>
-                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="Begge" checked= "checked"/></div><label>Alle</label></p>
-                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="Til" /></div><label>True</label></p>
-                    <p><div class = "col-sm-1"><input type="radio" name="onView" value="Fra" /></div><label>False</label></p>
-                </div>
-                </div>
+
                 <div id="menu1" class="tab-pane fade col-sm-8">
                     <h3>Single year</h3>
                     <select id ="selectSingleYear">
@@ -108,7 +111,7 @@
         </div><!-- End of graph -->
         <div class = "col-sm-2 pull-right" id = "activeParameters">
             <h3> Aktive parametre </h3>
-            <h5><u> Regioner:</u> </h5>
+            <h5><u> Region:</u> </h5>
             <div id = "aktiveRegioner">
                 <?php
                 if (isset($_GET['region'])){
@@ -150,7 +153,7 @@
     }
     if (isset($_GET['startYear'])){
         echo ' startYear=' . $startYear;
-        echo ' endYear=' . $endYear;    
+        echo ' endYear=' . $endYear;
     }
     ?>
     onView = null;
@@ -179,6 +182,9 @@
     console.log ("end = " + endYear);
     console.log (classification);
     console.log ("current region = " + currentRegion);
+
+    updateDashboardRegion("radio" + currentRegion);
+
 
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-filters input:checkbox').click(function() {
@@ -336,6 +342,7 @@
 </script>
 </body>
 <script src = "js/parametersHistogram.js"></script>
+<script src = "js/dodForms.js"></script>
 <script>
     $(".rectangle").hover(function(event) {
         //Finde region
