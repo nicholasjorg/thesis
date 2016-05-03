@@ -40,9 +40,9 @@
                         <div class = "row">
                         <div class="onView-filter">
                             <h3 id><span id = "hey">OnDisplay</span></h3>
-                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Begge" checked= "checked"/></div><label>Alle</label></p>
-                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Til" /></div><label>True</label></p>
-                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Fra" /></div><label>False</label></p>
+                            <p><div class = "col-sm-1"><input type="radio" id ="onDisplayNull" name="onView" value="Begge" checked= "checked"/></div><label>Alle</label></p>
+                            <p><div class = "col-sm-1"><input type="radio" id ="onDisplayTrue" name="onView" value="Til" /></div><label>True</label></p>
+                            <p><div class = "col-sm-1"><input type="radio" id ="onDisplayFalse" name="onView" value="Fra" /></div><label>False</label></p>
                         </div>
                         </div>
                     </div>
@@ -193,13 +193,13 @@
     data.Sjælland = <?php echo $sjælland ?>;
     data.Syddanmark = <?php echo $syddanmark ?>;
     data.UdenforDanmark = <?php echo $udenfordanmark ?>;
- 
+
     chooseRegion();
     console.log(municipalities);
 
 
-
     updateDashboardRegion("radio" + currentRegion);
+    updateDashboardOnDisplay(onView);
 
 
 	//Kører hver gang der ændres på en checkboks under filter
@@ -265,7 +265,7 @@
     function changeRegionMunicipalities(){
 
         for (var i = 0; i < Object.keys(dataset).length; i++) {
-            
+
         }
 
 
@@ -289,7 +289,6 @@
     }
 
     console.log(municipalities[1].municipality);
-
 
     function updateData(){
         newData = new Array();
