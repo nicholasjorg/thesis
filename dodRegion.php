@@ -40,9 +40,9 @@
                         <div class = "row">
                         <div class="onView-filter">
                             <h3 id><span id = "hey">OnDisplay</span></h3>
-                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Begge" checked= "checked"/></div><label>Alle</label></p>
-                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Til" /></div><label>True</label></p>
-                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Fra" /></div><label>False</label></p>
+                            <p><div class = "col-sm-1"><input type="radio" id ="onDisplayNull" name="onView" value="Begge" checked= "checked"/></div><label>Alle</label></p>
+                            <p><div class = "col-sm-1"><input type="radio" id ="onDisplayTrue" name="onView" value="Til" /></div><label>True</label></p>
+                            <p><div class = "col-sm-1"><input type="radio" id ="onDisplayFalse" name="onView" value="Fra" /></div><label>False</label></p>
                         </div>
                         </div>
                     </div>
@@ -187,8 +187,8 @@
 
     changeRegionMunicipalities();
 
-
     updateDashboardRegion("radio" + currentRegion);
+    updateDashboardOnDisplay(onView);
 
 
 	//Kører hver gang der ændres på en checkboks under filter
@@ -245,12 +245,10 @@
             if(dataset[i].region == currentRegion){
                 newData.push(dataset[i]);
                 if(!contains(municipalities, dataset[i].municipality)){
-                    console.log(dataset[i].municipality);
                    municipalities.push({municipality:dataset[i].municipality, display:true});
                 }
             }
         };
-        console.log(municipalities);
         for (var i = 0; i < Object.keys(municipalities).length; i++) {
             municipalities[i] = true;
         };
@@ -265,9 +263,6 @@
     }
     return false;
 }
-    console.log(municipalities);
-
-
 
     function updateData(){
         newData = new Array();

@@ -37,9 +37,9 @@
                         <div class = "row">
                         <div class="onView-filter">
                             <h3 id><span id = "hey">OnDisplay</span></h3>
-                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Begge" checked= "checked"/></div><label>Alle</label></p>
-                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Til" /></div><label>True</label></p>
-                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="Fra" /></div><label>False</label></p>
+                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="alle" checked= "checked"/></div><label>Alle</label></p>
+                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="til" /></div><label>True</label></p>
+                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="fra" /></div><label>False</label></p>
                         </div>
                         </div>
                     </div>
