@@ -193,6 +193,7 @@
     data.Sjælland = <?php echo $sjælland ?>;
     data.Syddanmark = <?php echo $syddanmark ?>;
     data.UdenforDanmark = <?php echo $udenfordanmark ?>;
+    municipalities = <?php echo $municipalities ?>;
 
     chooseRegion();
     console.log(municipalities);
@@ -259,7 +260,7 @@
             case "Syddanmark": dataset = data.Syddanmark; break;
             case "UdenforDanmark": dataset = data.UdenforDanmark; break;
         }
-        changeRegionMunicipalities();
+        // changeRegionMunicipalities();
     }
 
     function changeRegionMunicipalities(){

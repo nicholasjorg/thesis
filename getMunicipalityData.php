@@ -89,3 +89,16 @@
     }
     $udenfordanmark = json_encode($jsonarray);
 ?>
+<?php
+
+    $jsonarray = array();
+    $sql = 'SELECT region, municipality from allData GROUP by region, municipality';
+    $result = queryDB($sql);
+    while ($row = mysqli_fetch_assoc($result)) {
+        $tmp = array(region=>$row["region"], municipality=>$row["municipality"]);
+
+        array_push($jsonarray, $tmp);
+    }
+    $municipalities = json_encode($jsonarray);
+
+?>
