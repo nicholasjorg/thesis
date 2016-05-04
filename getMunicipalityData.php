@@ -1,4 +1,4 @@
-<?php 
+<?php
  //    $local = "";
  //    include 'limit.php';
 	// $jsonarray = array();
@@ -16,74 +16,75 @@
  //    $dataset = json_encode($jsonarray);
 ?>
 
-<?php 
+<?php
 	$jsonarray = array();
 	$sql = 'select region, municipality, classifications, displayDate, onView, count(*) as antal from allData WHERE region="Hovedstaden" group by region, municipality, classifications, displayDate, onView';
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
-    	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"], 
-    		displayDate=>$row["displayDate"], onView=>$row["onView"], primaryMaker=>$row["primaryMaker"]);
-    	
+    	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"],
+    		displayDate=>$row["displayDate"], onView=>$row["onView"]);
+
     	array_push($jsonarray, $tmp);
     }
     $hovedstaden = json_encode($jsonarray);
 ?>
-<?php 
+
+<?php
 	$jsonarray = array();
 	$sql = 'select * from allData WHERE region="midtjylland"';
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
-    	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"], 
+    	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"],
     		displayDate=>$row["displayDate"], onView=>$row["onView"], primaryMaker=>$row["primaryMaker"]);
-    	
+
     	array_push($jsonarray, $tmp);
     }
     $midtjylland = json_encode($jsonarray);
 ?>
-<?php 
+<?php
 	$jsonarray = array();
 	$sql = 'select * from allData WHERE region="nordjylland"';
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
-    	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"], 
+    	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"],
     		displayDate=>$row["displayDate"], onView=>$row["onView"], primaryMaker=>$row["primaryMaker"]);
-    	
+
     	array_push($jsonarray, $tmp);
     }
     $nordjylland = json_encode($jsonarray);
 ?>
-<?php 
+<?php
 	$jsonarray = array();
 	$sql = 'select * from allData WHERE region="sjælland"';
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
-    	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"], 
+    	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"],
     		displayDate=>$row["displayDate"], onView=>$row["onView"], primaryMaker=>$row["primaryMaker"]);
-    	
+
     	array_push($jsonarray, $tmp);
     }
     $sjælland = json_encode($jsonarray);
 ?>
-<?php 
+<?php
 	$jsonarray = array();
 	$sql = 'select * from allData WHERE region="syddanmark"';
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
-    	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"], 
+    	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"],
     		displayDate=>$row["displayDate"], onView=>$row["onView"], primaryMaker=>$row["primaryMaker"]);
-    	
+
     	array_push($jsonarray, $tmp);
     }
     $syddanmark = json_encode($jsonarray);
 ?>
-<?php 
+<?php
 	$jsonarray = array();
 	$sql = 'select * from allData WHERE region="udenfordanmark"';
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
-    	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"], 
+    	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"],
     		displayDate=>$row["displayDate"], onView=>$row["onView"], primaryMaker=>$row["primaryMaker"]);
-    	
+
     	array_push($jsonarray, $tmp);
     }
     $udenfordanmark = json_encode($jsonarray);
