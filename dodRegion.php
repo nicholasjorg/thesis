@@ -269,8 +269,6 @@
 
         }
 
-
-
         municipalities = new Array();
         for (var i = 0; i < Object.keys(dataset).length; i++) {
             if(!contains(municipalities, dataset[i].municipality)){
