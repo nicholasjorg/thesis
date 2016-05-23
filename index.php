@@ -1,5 +1,3 @@
-<?php require("functions.php");?>
-
 <HTML>
 <head>
 <script type="text/javascript" src="d3/d3.js"></script>
@@ -8,10 +6,13 @@
 </head>
 <body>
 <ul>
-<li><a href="cleanDisplayDate.php">Clean display date</a></li>
-<li><a href="regionOversigt.php">Regionoversigt</a></li>
-<li><a href="regionOversigt.php">dodRegion</a></li>
-<li><a href="dodRegion.php?region=Hovedstaden">dodRegion m hovedstaden</a></li>
+<h1>Histogram</h1>
+	<li><a href="Prototype 1 - histogram/regionOversigt.php">Regionoversigt</a></li>
+	<li><a href="Prototype 1 - histogram/regionOversigt.php">Regionoversigt</a></li>
+	<li><a href="Prototype 1 - histogram/regionOversigt.php">dodRegion</a></li>
+	<li><a href="Prototype 1 - histogram/dodRegion.php?region=Hovedstaden">dodRegion m hovedstaden</a></li>
+<h1>Kort</h1>
+	<li><a href="prototype 2 - kort/index.php">Kort index side</a></li>
 </ul>
 </body>
 </HTML>

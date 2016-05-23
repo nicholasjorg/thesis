@@ -18,7 +18,7 @@
             </ul>
             <div class="tab-content">
                 <div id="home" class="tab-pane fade in active row">
-                    <h3>Vælg regioner</h3>
+                    <h3>Vælg region</h3>
                     <div class="col-sm-6 region-filters">
                         <div class ="radio"><label><input type="radio" checked="checked" id="radioHovedstaden" name="regions" value="Hovedstaden">Hovedstaden</label>
                         </div>
@@ -193,23 +193,51 @@
     data.Sjælland = <?php echo $sjælland ?>;
     data.Syddanmark = <?php echo $syddanmark ?>;
     data.UdenforDanmark = <?php echo $udenfordanmark ?>;
-    municipalities = <?php echo $municipalities ?>;
+    
+    function createMunicipalities(){   
+        var tmpMuni = <?php echo $municipalities ?>;
+         municipalities = {Hovedstaden, Midtjylland, Nordjylland, Sjælland, Syddanmark, UdenforDanmark};
+     
+         municipalities.Hovedstaden = {};
+         municipalities.Midtjylland = {};
+         municipalities.Nordjylland = {};
+         municipalities.Sjælland = {};
+         municipalities.Syddanmark = {};
+         municipalities.UdenforDanmark = {};
+         for (var i = 0; i < Object.keys(tmpMuni).length; i++) {
+             var muni = tmpMuni[i].municipality;
+     
+             switch (tmpMuni[i].region){
+             case "Hovedstaden": municipalities.Hovedstaden[muni] = true; break;
+             case "Midtjylland": municipalities.Midtjylland[muni] = true; break;
+             case "Nordjylland": municipalities.Nordjylland[muni] = true; break;
+             case "Sjælland": municipalities.Sjælland[muni] = true; break;
+             case "Syddanmark": municipalities.Syddanmark[muni] = true; break;
+             case "UdenforDanmark": municipalities.UdenforDanmark[muni] = true; break;
+             }
+         }
+    }
 
+    createMunicipalities();
     chooseRegion();
-    console.log(municipalities);
 
+    updateData();
 
     updateDashboardRegion("radio" + currentRegion);
     updateDashboardOnDisplay(onView);
 
 
 	//Kører hver gang der ændres på en checkboks under filter
-	$('.region-filters input:checkbox').click(function() {
+	$('.region-filters input:radio').click(function() {
 		var name = $(this).val().trim();
-		if(regions[name] == true) regions[name] = false;
-        else regions[name] = true;
-        updateRegioner(regions);
+        currentRegion = name;
+        console.log(currentRegion);
+        chooseRegion();
         updateData();
+		// if(regions[name] == true) regions[name] = false;
+  //       else regions[name] = true;
+  //       updateRegioner(regions);
+  //       updateData();
 	});
 
 	$('.classification-filters input:checkbox').click(function() {
@@ -260,53 +288,23 @@
             case "Syddanmark": dataset = data.Syddanmark; break;
             case "UdenforDanmark": dataset = data.UdenforDanmark; break;
         }
-        // changeRegionMunicipalities();
     }
 
-    function changeRegionMunicipalities(){
 
-        for (var i = 0; i < Object.keys(dataset).length; i++) {
-
-        }
-
-        municipalities = new Array();
-        for (var i = 0; i < Object.keys(dataset).length; i++) {
-            if(!contains(municipalities, dataset[i].municipality)){
-                    tmpArr = {municipality:dataset[i].municipality, display:true};
-                    municipalities.push(tmpArr);
-            }
-        };
-    }
-    function contains(a, obj) {
-        var i = Object.keys(a).length;
-        while (i--) {
-           if (a[i].municipality === obj) {
-               return true;
-           }
-        }
-        return false;
-    }
-
-    console.log(municipalities[1].municipality);
 
     function updateData(){
         newData = new Array();
         //Kopiere de relevante regioner og typer ind i newData
-
-        // for (var i = 0; i < Object.keys(dataset).length; i++) {
-        //     if(dataset[i].municipality == municipalities.municipality && municipalities.display == true)
-        // };
-
-        for (var i = 0; i < Object.keys(municipalities).length; i++) {
-            if(municipalities[i].display == true){
+        for(key in municipalities[currentRegion]){
+            if(municipalities[currentRegion][key] == true){
                 var typer = new Array();
                 for(var type in classification){
-                    if(classification[type] == true) typer.push({classifications:type, antal:0});
+                    if(classification[type]==true) typer.push({classifications:type, antal:0});
                 }
-                var tmpArr = {municipality:municipalities[i].municipality, antal:0, typer};
-                newData.push(tmpArr);
             }
-        };
+        var tmpArr = {kommune:key, antal:0, typer};
+        newData.push(tmpArr);
+        }
         console.log(newData);
 
         if(onView == true)
@@ -319,72 +317,33 @@
             {newData = countData("true", "false", newData);}
 
         console.log(newData);
-        drawDiagram(newData);
+        drawPie(newData);
+    
     }
 
     function countData(what, what2, newData){
         console.log("I count data");
         //Single år er valgt
-
-        //kopieret ud af if && (dataset[i].onView == what || dataset[i].onView == what2)
-            //if(year != null){
-                for (var i = 0; i < Object.keys(municipalities).length; i++) {
-                    for (var j = 0; j < Object.keys(dataset).length; j++) {
-                        if(municipalities[i].municipality == dataset[j].municipality && classification[dataset[j].classifications] == true
-                            && dataset[j].displayDate == year){
-                            for (var h = 0; h < Object.keys(newData).length; h++) {
-                                if(newData[h].municipality == dataset[j].municipality)
-                                    newData[h].antal = parseFloat(newData[h].antal) + parseFloat(dataset[j].antal);
-                                for (var g = 0; g < Object.keys(newData[h].typer).length; g++) {
-                                    // console.log("nuværende antal i typer "+newData[h].typer[g].antal);
-                                    // console.log("Vil tilføje "+ dataset[j].antal);
-                                    newData[h].typer[g].antal =parseFloat(newData[h].typer[g].antal) + parseFloat(dataset[j].antal); break;
-                                };
-                            }
+        console.log(municipalities);
+        for (var i = 0; i < Object.keys(dataset).length; i++) {
+            for(kommune in municipalities[currentRegion]){
+                // console.log("dataset[i].municipality "+dataset[i].municipality);
+                // console.log(municipalities[currentRegion][kommune]);
+                // console.log(municipalities[currentRegion][kommune]==true);
+                if (municipalities[currentRegion][kommune] == true && dataset[i].displayDate == year 
+                || (municipalities[currentRegion][kommune] == true && dataset[i].displayDate >= startYear && dataset[i].displayDate <= endYear )
+                || (municipalities[currentRegion][kommune] == true && year == null && startYear == null && endYear == null)) {
+                    for (var h = 0; h < Object.keys(newData).length; h++) {
+                        if(newData[h].kommune == dataset[i].municipality){
+                            // console.log("nuværende: "+newData[h].antal+" vil tilføje "+parseFloat(dataset[i].antal))
+                            newData[h].antal = parseFloat(newData[h].antal) + 1; break;
                         }
-
                     };
-                };
+                break;
+                }
+            }
 
-            // //Interval år er valgt
-            // else if(startYear != null && endYear != null){
-            //     for (var i = 0; i < Object.keys(dataset).length; i++) {
-            //         if(municipalities[dataset[i].municipality] == true && classification[dataset[i].classifications] == true
-            //             && dataset[i].displayDate > startYear && dataset[i].displayDate < endYear
-            //             && (dataset[i].onView == what || dataset[i].onView == what2) ){
-            //             for (var j = 0; j < Object.keys(newData).length; j++) {
-            //                 if(newData[j].municipality == dataset[i].municipality){
-            //                     newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
-            //                     for (var h = 0; h < Object.keys(newData[j].typer).length; h++) {
-            //                         if(newData[j].typer[h].classifications == dataset[i].classifications){
-            //                             newData[j].typer[h].antal =parseFloat(newData[j].typer[h].antal) + parseFloat(dataset[i].antal); break;
-            //                         }
-
-            //                     };
-            //                 }
-            //             };
-            //         }
-            //     };
-            // }
-            // //Intet år er valgt
-            // else {
-            //     for (var i = 0; i < Object.keys(dataset).length; i++) {
-            //         if(municipalities[dataset[i].municipality] == true && classification[dataset[i].classifications] == true
-            //             && (dataset[i].onView == what || dataset[i].onView == what2) ){
-            //             for (var j = 0; j < Object.keys(newData).length; j++) {
-            //                 if(newData[j].municipality == dataset[i].municipality){
-            //                     newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
-            //                     for (var h = 0; h < Object.keys(newData[j].typer).length; h++) {
-            //                         if(newData[j].typer[h].classifications == dataset[i].classifications){
-            //                             newData[j].typer[h].antal =parseFloat(newData[j].typer[h].antal) + parseFloat(dataset[i].antal); break;
-            //                         }
-
-            //                     };
-            //                 }
-            //             };
-            //         }
-            //     };
-            // }
+        };
             return newData;
     }
 
@@ -410,7 +369,7 @@
         var min = data[0].antal;
         var max = data[Object.keys(data).length-1].antal;
         var yScale = d3.scale.linear().domain([0,max]).range([h-margin.top-margin.bottom,margin.top]).nice();
-        var xScale = d3.scale.ordinal().domain(data.map(function (d){return d.municipality})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
+        var xScale = d3.scale.ordinal().domain(data.map(function (d){return d.kommune})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
 
         //From tooltip.js
         svg.call(tip);
@@ -421,7 +380,7 @@
         .attr("xlink:href", function(d){return "dodRegion.php?region="+d.region+"&year="+year+"&startYear="+startYear+"&endYear="+endYear+"&typer="+JSON.stringify(classification)+"&onView="+onView;})
         .append("rect")
         .attr("class",function(d,i){return "rectangle"})
-        .attr("id",function(d,i){return d.municipality})
+        .attr("id",function(d,i){return d.kommune})
         .attr("x",function(d,i){ return xScale(d.municipality)})
         .attr("y", function (d){ return yScale(d.antal)})
         .attr("width", xScale.rangeBand() )
@@ -437,15 +396,15 @@
     }
 
     function drawPie(regionData){
-        //d3.select("pieChart").remove();
+        d3.select("svg").remove();
         var color = d3.scale.category20();
         var pie = d3.layout.pie().value(function(d){return d.antal});
-        var w = 300;
-        var h = 300;
+        var w = 400;
+        var h = 400;
         var outerRadius = w/2;
-        var innerRadius = 100;
+        var innerRadius = 0;
         var arc = d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius);
-        var svg = d3.select("#dod").append("svg").attr("id","pieChart").attr("width",w).attr("height",h);
+        var svg = d3.select("#graphContent").append("svg").attr("id","graf").attr("width",w).attr("height",h);
         var arcs = svg.selectAll("g.arc").data(pie(regionData)).enter().append("g").attr("class", "arc").attr("transform", "translate("+outerRadius+", "+outerRadius+")");
         arcs.append("path").attr("fill", function(d,i){return color(i);}).attr("d",arc);
         arcs.append("text").attr("transform",function(d){return "translate("+arc.centroid(d)+")";}).attr("text-anchor","middle").text(function(d){return d.classifications});

@@ -92,7 +92,7 @@
 <?php
 
     $jsonarray = array();
-    $sql = 'SELECT region, municipality from allData GROUP by region, municipality';
+    $sql = 'SELECT region, municipality from allData WHERE region is not null AND municipality is not null GROUP by region, municipality';
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
         $tmp = array(region=>$row["region"], municipality=>$row["municipality"]);
