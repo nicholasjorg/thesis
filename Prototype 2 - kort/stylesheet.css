@@ -1,0 +1,19 @@
+#map {
+	height:100%; 
+	width:100%;
+}
+.Hovedstaden{
+	fill:red;
+}
+.Nordjylland{
+	fill:green;
+}
+.Syddanmark{
+	fill:blue;
+}
+.Midtjylland{
+	fill:teal;
+}
+.Sjælland{
+	fill:orange;
+}
