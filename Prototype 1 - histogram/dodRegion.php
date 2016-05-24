@@ -38,8 +38,8 @@
                           <label><input type="radio" id="radioUdenfor Danmark" name="regions" value="UdenforDanmark">Udenfor Danmark</label>
                         </div>
                     </div>
+                    <div id="kommuner" class="row col-sm-12">Her ligger kommunerne i den valgte region</div>
                 </div>
-
                 <div id="menu1" class="tab-pane fade col-sm-8">
                     <h3>Single year</h3>
                     <select id ="selectSingleYear">
@@ -82,9 +82,9 @@
                                 $result = getClassifications();
                                 while ($row = mysqli_fetch_array($result)) {
                                     echo '<div class="col-sm-6">';
-                                    echo    '<div class="checkbox">';
-                                    echo    '<label><input type="checkbox" checked="checked" id="'.$row["classifications"].' name="'.$row["classifications"].'      value="'.$row["classifications"].'">'.$row["classifications"].'</label>';
-                                    echo    '</div>';
+                                    echo '<div class="checkbox">';
+                                    echo '<label><input type="checkbox" checked="checked" id="'.$row["classifications"].' name="'.$row["classifications"].'" value="'.$row["classifications"].'">'.$row["classifications"].'</label>';
+                                    echo '</div>';
                                     echo '</div>';
                                 }
                             ?>
@@ -142,6 +142,7 @@
         echo 'year=' . $year;
         echo "updateActiveYears();";
     }
+    else echo 'year=null';
     if (isset($_GET['startYear'])){
         echo ' startYear=' . $startYear;
         echo ' endYear=' . $endYear;
@@ -184,9 +185,9 @@
          municipalities.Sjælland = {};
          municipalities.Syddanmark = {};
          municipalities.UdenforDanmark = {};
+         
          for (var i = 0; i < Object.keys(tmpMuni).length; i++) {
              var muni = tmpMuni[i].municipality;
-     
              switch (tmpMuni[i].region){
              case "Hovedstaden": municipalities.Hovedstaden[muni] = true; break;
              case "Midtjylland": municipalities.Midtjylland[muni] = true; break;
@@ -200,7 +201,7 @@
 
     createMunicipalities();
     chooseRegion();
-
+    updateMunicipalities();
     updateData();
 
     updateDashboardRegion("radio" + currentRegion);
@@ -212,19 +213,25 @@
         console.log(currentRegion);
         chooseRegion();
         updateData();
-		// if(regions[name] == true) regions[name] = false;
-  //       else regions[name] = true;
-  //       updateRegioner(regions);
-  //       updateData();
+        updateMunicipalities();
 	});
 
 	$('.classification-filters input:checkbox').click(function() {
 		var name = $(this).val().trim();
+        console.log("du trykkede på "+name);
         if(classification[name] == true) classification[name] = false;
         else classification[name] = true;
         updateVærktyper(classification);
         updateData();
 	});
+
+    $("#kommuner").on("click", "input", function(){
+        var id = $(this).val().trim();
+        if(municipalities[currentRegion][id] == true) municipalities[currentRegion][id] = false;
+        else municipalities[currentRegion][id] = true;
+        console.log(municipalities[currentRegion]);
+        updateData();
+    });  
 
 	//Ændre i year til single view ved klik på dropdown menu
 	$('#selectSingleYear').change(function() {
@@ -259,66 +266,76 @@
         }
     }
 
+    function updateMunicipalities(){
+        if (window.XMLHttpRequest) {
+            // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        } else {
+            // code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                document.getElementById("kommuner").innerHTML = xmlhttp.responseText;
+            }
+        };
+        xmlhttp.open("GET","changeMuni.php?data="+JSON.stringify(municipalities[currentRegion]),true);
+        xmlhttp.send();
+    }
+
     function updateData(){
         newData = new Array();
         //Kopiere de relevante regioner og typer ind i newData
         for(key in municipalities[currentRegion]){
+            if(municipalities[currentRegion][key] == false) continue;
             if(municipalities[currentRegion][key] == true){
                 var typer = new Array();
                 for(var type in classification){
                     if(classification[type]==true) typer.push({classifications:type, antal:0});
                 }
             }
-        var tmpArr = {kommune:key, antal:0, typer};
+            var tmpArr = {kommune:key, antal:0, typer};
             newData.push(tmpArr);
         }
-
-        newData = countData(newData);
-
-        drawDiagram(newData);
     
+        newData = countData(newData);
+        drawDiagram(newData);    
     }
 
     function countData(newData){
-        console.log("I count data");
-        //Single år er valgt
-        console.log(municipalities);
         for (var i = 0; i < Object.keys(dataset).length; i++) {
+            if(dataset[i].municipality == null){continue;}
             for(kommune in municipalities[currentRegion]){
-                // console.log("dataset[i].municipality "+dataset[i].municipality);
-                // console.log(municipalities[currentRegion][kommune]);
-                // console.log(municipalities[currentRegion][kommune]==true);
-                if (municipalities[currentRegion][kommune] == true && dataset[i].displayDate == year 
+                if(municipalities[currentRegion][kommune] == false) continue;
+                if (municipalities[currentRegion][kommune] == true && dataset[i].displayDate == year && dataset[i].displayDate != null
                 || (municipalities[currentRegion][kommune] == true && dataset[i].displayDate >= startYear && dataset[i].displayDate <= endYear )
                 || (municipalities[currentRegion][kommune] == true && year == null && startYear == null && endYear == null)) {
                     for (var h = 0; h < Object.keys(newData).length; h++) {
                         if(newData[h].kommune == dataset[i].municipality){
-                            // console.log("nuværende: "+newData[h].antal+" vil tilføje "+parseFloat(dataset[i].antal))
                             newData[h].antal = parseFloat(newData[h].antal) + 1; break;
                         }
                     };
                 break;
-                }
+                }   
             }
 
         };
             return newData;
     }
 
-	// updateData();
+
 
     function drawDiagram(data){
         //Fjerner gammel graf
         d3.select("svg").remove();
-
         //Sorterer data fra parametreret ascending order
         data.sort(function(a,b){
             return parseFloat(a.antal) - parseFloat(b.antal);
         });
 
         //Sætter variable
-        var margin = {top: 10, right: 0, bottom: 10, left: 40};
-        var w = 500, h = 500;
+        var margin = {top: 10, right: 0, bottom: 100, left: 40};
+        var w = 500, h = 600;
 
         //Laver svg element til at komme figuren
         var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
@@ -334,23 +351,35 @@
 
         //Tegner rectangels
         svg.selectAll("rect").data(data).enter()
-        .append("svg:a")
-        .attr("xlink:href", function(d){return "dodRegion.php?region="+d.region+"&year="+year+"&startYear="+startYear+"&endYear="+endYear+"&typer="+JSON.stringify(classification);})
+        //.append("svg:a")
+        //.attr("xlink:href", function(d){return "dodRegion.php?region="+d.region+"&year="+year+"&startYear="+startYear+"&endYear="+endYear+"&typer="+JSON.stringify(classification);})
         .append("rect")
         .attr("class",function(d,i){return "rectangle"})
         .attr("id",function(d,i){return d.kommune})
-        .attr("x",function(d,i){ return xScale(d.municipality)})
+        .attr("x",function(d,i){ return xScale(d.kommune);})
         .attr("y", function (d){ return yScale(d.antal)})
         .attr("width", xScale.rangeBand() )
-        .attr("height", function (d){ return yScale(0) - yScale(d.antal) })
-        .on('mouseover', tip.show)
-        .on('mouseout', tip.hide);
+        .attr("height", function (d){ return yScale(0) - yScale(d.antal) });
+        // .on('mouseover', tip.show)
+        // .on('mouseout', tip.hide);
 
         //Bygger akser
         var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-        svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis);
+        svg.append("g")
+        .attr("class", "axis")
+        .attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")")
+        .call(xAxis)
+        .selectAll("text")  
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", function(d) {
+            return "rotate(-65)" 
+        });
+
         var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
         svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
+
     }
 
     function drawPie(regionData){
@@ -370,6 +399,7 @@
 
 </script>
 </body>
+
 <script src = "js/parametersHistogram.js"></script>
 <script src = "js/dodForms.js"></script>
 <script>
