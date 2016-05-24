@@ -34,14 +34,6 @@
                         <div class="checkbox">
                           <label><input type="checkbox" checked="checked" id="Udenfor Danmark" name="Udenfor Danmark" value="UdenforDanmark">Udenfor Danmark</label>
                         </div>
-                        <div class = "row">
-                        <div class="onView-filter">
-                            <h3 id><span id = "hey">OnDisplay</span></h3>
-                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="alle" checked= "checked"/></div><label>Alle</label></p>
-                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="til" /></div><label>True</label></p>
-                            <p><div class = "col-sm-1"><input type="radio" name="onView" value="fra" /></div><label>False</label></p>
-                        </div>
-                        </div>
                     </div>
                 </div>
                 <div id="menu1" class="tab-pane fade col-sm-8">
@@ -87,9 +79,9 @@
                         $result = getClassifications();
                             while ($row = mysqli_fetch_array($result)) {
                                     echo '<div class="col-sm-6">';
-                                    echo    '<div class="checkbox">';
-                                    echo    '<label><input type="checkbox" checked="checked" id="'.$row["classifications"].' name="'.$row["classifications"].'      value="'.$row["classifications"].'">'.$row["classifications"].'</label>';
-                                    echo    '</div>';
+                                    echo '<div class="checkbox">';
+                                    echo '<label><input type="checkbox" checked="checked" id="'.$row["classifications"].' name="'.$row["classifications"].' value="'.$row["classifications"].'">'.$row["classifications"].'</label>';
+                                    echo '</div>';
                                     echo '</div>';
                             }
                     ?>
@@ -134,15 +126,6 @@
                 else echo 'Alle';
                 ?>
             </div>
-            <h5><u> OnView:</u></h5>
-            <div id = "onView">
-                <?php
-                if (isset($_GET['onView'])){
-                    echo $onView;
-                }
-                else echo 'Alle';
-                ?>
-            </div>
         </div>
 
         <!-- Details on demand -->
@@ -162,7 +145,6 @@
 	var dataset = <?php echo $dataset ?>;
     //Hvis nogle af nedstående variable er sat til null vil de ikke være gældende eller gælde for alle.
 	var year, startYear, endYear;
-    onView = null;
 
     //Filter arrays
     var classification = {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true,
@@ -187,15 +169,6 @@
         updateVærktyper(classification);
         updateData();
 	});
-
-    $('.onView-filter input:radio').click(function() {
-        var name = $(this).val().trim();
-        if(name == "til") onView = true;
-        else if(name == "fra") onView = false;
-        else onView = null;
-        updateOnView();
-        updateData();
-    });
 
 	//Ændre i year til single view ved klik på dropdown menu
 	$('#selectSingleYear').change(function() {
@@ -250,30 +223,22 @@
                 newData.push(tmpArr);
             }
         }
-        console.log(newData);
-
-        if(onView == true)
-            {newData = countData("true", "true", newData);}
-        else if(onView == false)
-            {newData = countData("false", "false", newData);}
-        else if(onView == null)
-            {newData = countData("true", "false", newData);}
-
+        newData = countData(newData);
         drawDiagram(newData);
     }
 
-    function countData(onViewInfo1, onViewInfo2, newData){
+    function countData(newData){
         //Single år er valgt
             if(year != null){
                 for (var i = 0; i < Object.keys(dataset).length; i++) {
                     if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
-                        && dataset[i].displayDate == year && (dataset[i].onView == onViewInfo1 || dataset[i].onView == onViewInfo2) ){
+                        && dataset[i].displayDate == year){
                         for (var j = 0; j < Object.keys(newData).length; j++) {
                             if(newData[j].region == dataset[i].region){
                                 newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
                                 for (var h = 0; h < Object.keys(newData[j].typer).length; h++) {
                                     if(newData[j].typer[h].classifications == dataset[i].classifications){
-                                        newData[j].typer[h].antal =parseFloat(newData[j].typer[h].antal) + parseFloat(dataset[i].antal); break;
+                                        newData[j].typer[h].antal = parseFloat(newData[j].typer[h].antal) + parseFloat(dataset[i].antal); break;
                                     }
 
                                 };
@@ -286,14 +251,13 @@
             else if(startYear != null && endYear != null){
                 for (var i = 0; i < Object.keys(dataset).length; i++) {
                     if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
-                        && dataset[i].displayDate > startYear && dataset[i].displayDate < endYear
-                        && (dataset[i].onView == onViewInfo1 || dataset[i].onView == onViewInfo2) ){
+                        && dataset[i].displayDate > startYear && dataset[i].displayDate < endYear){
                         for (var j = 0; j < Object.keys(newData).length; j++) {
                             if(newData[j].region == dataset[i].region){
                                 newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
                                 for (var h = 0; h < Object.keys(newData[j].typer).length; h++) {
                                     if(newData[j].typer[h].classifications == dataset[i].classifications){
-                                        newData[j].typer[h].antal =parseFloat(newData[j].typer[h].antal) + parseFloat(dataset[i].antal); break;
+                                        newData[j].typer[h].antal = parseFloat(newData[j].typer[h].antal) + parseFloat(dataset[i].antal); break;
                                     }
 
                                 };
@@ -305,14 +269,13 @@
             //Intet år er valgt
             else {
                 for (var i = 0; i < Object.keys(dataset).length; i++) {
-                    if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true
-                        && (dataset[i].onView == onViewInfo1 || dataset[i].onView == onViewInfo2) ){
+                    if(regions[dataset[i].region] == true && classification[dataset[i].classifications] == true){
                         for (var j = 0; j < Object.keys(newData).length; j++) {
                             if(newData[j].region == dataset[i].region){
                                 newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
                                 for (var h = 0; h < Object.keys(newData[j].typer).length; h++) {
                                     if(newData[j].typer[h].classifications == dataset[i].classifications){
-                                        newData[j].typer[h].antal =parseFloat(newData[j].typer[h].antal) + parseFloat(dataset[i].antal); break;
+                                        newData[j].typer[h].antal = parseFloat(newData[j].typer[h].antal) + parseFloat(dataset[i].antal); break;
                                     }
 
                                 };
@@ -354,7 +317,7 @@
 		//Tegner rectangels
 		svg.selectAll("rect").data(data).enter()
         .append("svg:a")
-        .attr("xlink:href", function(d){return "dodRegion.php?region="+d.region+"&year="+year+"&startYear="+startYear+"&endYear="+endYear+"&typer="+JSON.stringify(classification)+"&onView="+onView;})
+        .attr("xlink:href", function(d){return "dodRegion.php?region="+d.region+"&year="+year+"&startYear="+startYear+"&endYear="+endYear+"&typer="+JSON.stringify(classification);})
         .append("rect")
         .attr("class",function(d,i){return "rectangle"})
         .attr("id",function(d,i){return d.region})

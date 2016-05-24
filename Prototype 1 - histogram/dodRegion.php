@@ -37,14 +37,6 @@
                         <div class="radio">
                           <label><input type="radio" id="radioUdenfor Danmark" name="regions" value="UdenforDanmark">Udenfor Danmark</label>
                         </div>
-                        <div class = "row">
-                        <div class="onView-filter">
-                            <h3 id><span id = "hey">OnDisplay</span></h3>
-                            <p><div class = "col-sm-1"><input type="radio" id ="onDisplayNull" name="onView" value="Begge" checked= "checked"/></div><label>Alle</label></p>
-                            <p><div class = "col-sm-1"><input type="radio" id ="onDisplayTrue" name="onView" value="Til" /></div><label>True</label></p>
-                            <p><div class = "col-sm-1"><input type="radio" id ="onDisplayFalse" name="onView" value="Fra" /></div><label>False</label></p>
-                        </div>
-                        </div>
                     </div>
                 </div>
 
@@ -57,7 +49,7 @@
                         $result = getDisplayDateYears();
                         while ($row = mysqli_fetch_array($result)) {
                             echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
-                    }
+                        }
                     ?>
 				    </select>
 
@@ -85,19 +77,18 @@
                 <div id="menu2" class="tab-pane fade">
                     <h3>Værktyper</h3>
                     <div class = "row">
-                    <div class="col-sm-12 classification-filters">
-
-                    <?php
-                        $result = getClassifications();
-                            while ($row = mysqli_fetch_array($result)) {
+                        <div class="col-sm-12 classification-filters">
+                            <?php
+                                $result = getClassifications();
+                                while ($row = mysqli_fetch_array($result)) {
                                     echo '<div class="col-sm-6">';
                                     echo    '<div class="checkbox">';
                                     echo    '<label><input type="checkbox" checked="checked" id="'.$row["classifications"].' name="'.$row["classifications"].'      value="'.$row["classifications"].'">'.$row["classifications"].'</label>';
                                     echo    '</div>';
                                     echo '</div>';
-                            }
-                    ?>
-                    </div>
+                                }
+                            ?>
+                        </div>
                     </div>
                 </div>
                 <div id="menu3" class="tab-pane fade">
@@ -128,10 +119,6 @@
             <div id = "aktiveTyper">
                 Alle
             </div>
-            <h5><u> OnView:</u></h5>
-            <div id = "onView">
-                Alle
-            </div>
         </div>
         <!-- Details on demand -->
         <div id="dod" style="display:none"></div>
@@ -149,7 +136,7 @@
 	var data = {Hovedstaden, Midtjylland, Nordjylland, Sjælland, Syddanmark, UdenforDanmark};
     var dataset;
     //Hvis nogle af nedstående variable er sat til null vil de ikke være gældende eller gælde for alle.
-	var year, startYear, endYear, onView, classification, currentRegion, municipalities;
+	var year, startYear, endYear, classification, currentRegion, municipalities;
     <?php
     if (isset($_GET['year'])){
         echo 'year=' . $year;
@@ -158,16 +145,9 @@
     if (isset($_GET['startYear'])){
         echo ' startYear=' . $startYear;
         echo ' endYear=' . $endYear;
-
         echo "updateActiveYears();";
     }
     ?>
-    <?php
-    if (isset($_GET['onView'])){
-        echo "onView=".$onView;
-        echo "updateOnView();";
-    }
-    ?>;
     //Filter arrays
     <?php
         if (isset($_GET['typer'])){
@@ -224,8 +204,6 @@
     updateData();
 
     updateDashboardRegion("radio" + currentRegion);
-    updateDashboardOnDisplay(onView);
-
 
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-filters input:radio').click(function() {
@@ -247,15 +225,6 @@
         updateVærktyper(classification);
         updateData();
 	});
-
-        $('.onView-filter input:radio').click(function() {
-        var name = $(this).val().trim();
-        if(name == "til") onView = true;
-        else if(name == "fra") onView = false;
-        else onView = null;
-        updateOnView();
-        updateData();
-    });
 
 	//Ændre i year til single view ved klik på dropdown menu
 	$('#selectSingleYear').change(function() {
@@ -290,8 +259,6 @@
         }
     }
 
-
-
     function updateData(){
         newData = new Array();
         //Kopiere de relevante regioner og typer ind i newData
@@ -303,25 +270,16 @@
                 }
             }
         var tmpArr = {kommune:key, antal:0, typer};
-        newData.push(tmpArr);
+            newData.push(tmpArr);
         }
-        console.log(newData);
 
-        if(onView == true)
-            {newData = countData("true", "true", newData);}
+        newData = countData(newData);
 
-        else if(onView == false)
-            {newData = countData("false", "false", newData);}
-
-        else if(onView == null)
-            {newData = countData("true", "false", newData);}
-
-        console.log(newData);
-        drawPie(newData);
+        drawDiagram(newData);
     
     }
 
-    function countData(what, what2, newData){
+    function countData(newData){
         console.log("I count data");
         //Single år er valgt
         console.log(municipalities);
@@ -377,7 +335,7 @@
         //Tegner rectangels
         svg.selectAll("rect").data(data).enter()
         .append("svg:a")
-        .attr("xlink:href", function(d){return "dodRegion.php?region="+d.region+"&year="+year+"&startYear="+startYear+"&endYear="+endYear+"&typer="+JSON.stringify(classification)+"&onView="+onView;})
+        .attr("xlink:href", function(d){return "dodRegion.php?region="+d.region+"&year="+year+"&startYear="+startYear+"&endYear="+endYear+"&typer="+JSON.stringify(classification);})
         .append("rect")
         .attr("class",function(d,i){return "rectangle"})
         .attr("id",function(d,i){return d.kommune})
