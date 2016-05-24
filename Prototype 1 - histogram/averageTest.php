@@ -16,7 +16,7 @@
                 <div id="home" class="tab-pane active row">
                     <h3>Vælg regioner</h3>
                     <div class="col-sm-6 region-filters">
-                    	<div class="checkbox">
+                        <div class="checkbox">
                           <label><input type="checkbox" checked="checked" id="Hovedstaden" name="Hovedstaden" value="Hovedstaden">Hovedstaden</label>
                         </div>
                         <div class="checkbox">
@@ -47,28 +47,28 @@
                             echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
                     }
                     ?>
-				    </select>
+                    </select>
 
                     <h3>Interval</h3>
                     <select id ="selectStartYear">
                     <option value="start">Start</option>
                     <?php
-                    	$result = getDisplayDateYears();
+                        $result = getDisplayDateYears();
                         while ($row = mysqli_fetch_array($result)) {
                             echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
                         }
                     ?>
-				    </select>
-			        <select id ="selectEndYear">
+                    </select>
+                    <select id ="selectEndYear">
                     <option value="slut">Slut</option>
                         <?php
-                        	$result = getDisplayDateYears();
+                            $result = getDisplayDateYears();
                             while ($row = mysqli_fetch_array($result)) {
                                 echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
                             }
                         ?>
-			        </select>
-			        <input id="btnSubmit" type="submit" value="Vælg"/>
+                    </select>
+                    <input id="btnSubmit" type="submit" value="Vælg"/>
                 </div>
                 <div id="menu2" class="tab-pane fade">
                     <h3>Værktyper</h3>
@@ -208,27 +208,27 @@
 <!--Script til at manipulere data via HTML inputs -->
 <script>
     var newData = new Array();
-	var dataset = <?php echo $dataset ?>;
+    var dataset = <?php echo $dataset ?>;
     //Hvis nogle af nedstående variable er sat til null vil de ikke være gældende eller gælde for alle.
-	var year, startYear, endYear;
+    var year, startYear, endYear;
 
     //Filter arrays
     var classification = {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true,
         Design: true, Relief: true, Akvarel: true, Tekstil: true, Keramik: true, Collage: true, Glas: true, Møbel: true,
         Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true, "Grafisk design":true,
         Performance:true, Installation:true, Lys:true}
-	var regions = {Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};
+    var regions = {Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};
 
-	//Kører hver gang der ændres på en checkboks under filter
-	$('.region-filters input:checkbox').click(function() {
-		var name = $(this).val().trim();
-		if(regions[name] == true) regions[name] = false;
+    //Kører hver gang der ændres på en checkboks under filter
+    $('.region-filters input:checkbox').click(function() {
+        var name = $(this).val().trim();
+        if(regions[name] == true) regions[name] = false;
         else regions[name] = true;
         updateRegioner(regions);
         updateData();
-	});
+    });
 
-	$('.classification-filters input:checkbox').click(function() {
+    $('.classification-filters input:checkbox').click(function() {
         var name = $(this).val().trim();
         //Hvis det er flere
         if(name === "Væg" || name === "Rum" || name === "Immateriel" || name === "Genstand"){
@@ -262,32 +262,32 @@
         else classification[name] = true;
         updateVærktyper(classification);
         updateData();
-	});
+    });
 
-	//Ændre i year til single view ved klik på dropdown menu
-	$('#selectSingleYear').change(function() {
-		$('#selectStartYear').val("start");
-		$('#selectEndYear').val("slut");
-   		endYear = null;
-    	startYear = null;
-    	year = $(this).val();
-    	if(year=="Alle") year=null;
+    //Ændre i year til single view ved klik på dropdown menu
+    $('#selectSingleYear').change(function() {
+        $('#selectStartYear').val("start");
+        $('#selectEndYear').val("slut");
+        endYear = null;
+        startYear = null;
+        year = $(this).val();
+        if(year=="Alle") year=null;
         updateActiveYears();
-    	updateData();
-	});
+        updateData();
+    });
 
-	//Ændre i intervallet. Denne funktion kalder når knappen vælg trykkes
-	$("#btnSubmit").click(function(){
-		$('#selectSingleYear').val("Vaelg");
-		year = null;
-		startYear = $('#selectStartYear').val();
-		endYear = $('#selectEndYear').val();
+    //Ændre i intervallet. Denne funktion kalder når knappen vælg trykkes
+    $("#btnSubmit").click(function(){
+        $('#selectSingleYear').val("Vaelg");
+        year = null;
+        startYear = $('#selectStartYear').val();
+        endYear = $('#selectEndYear').val();
         if(startYear>endYear){
             alert("Start-året skal være mindre end slut-året");
             return;
         }
         updateActiveYears();
-       	updateData();
+        updateData();
     });
 
     $(document).on('mouseenter','.rectangle',function(e){
@@ -385,52 +385,52 @@
             return newData;
     }
 
-	updateData();
+    updateData();
 
-	function drawDiagram(data){
-		//Fjerner gammel graf
+    function drawDiagram(data){
+        //Fjerner gammel graf
         d3.select("svg").remove();
 
         //Sorterer data fra parametreret ascending order
-		data.sort(function(a,b){
-			return parseFloat(a.antal) - parseFloat(b.antal);
-		});
+        data.sort(function(a,b){
+            return parseFloat(a.antal) - parseFloat(b.antal);
+        });
 
-		//Sætter variable
-		var margin = {top: 10, right: 0, bottom: 10, left: 40};
-		var w = 500, h = 500;
+        //Sætter variable
+        var margin = {top: 10, right: 0, bottom: 10, left: 40};
+        var w = 500, h = 500;
 
-		//Laver svg element til at komme figuren
-		var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
+        //Laver svg element til at komme figuren
+        var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
 
-		//Laver scale
-		var min = data[0].antal;
-		var max = data[Object.keys(data).length-1].antal;
-		var yScale = d3.scale.linear().domain([0,max]).range([h-margin.top-margin.bottom,margin.top]).nice();
-		var xScale = d3.scale.ordinal().domain(data.map(function (d){return d.region})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
+        //Laver scale
+        var min = data[0].antal;
+        var max = data[Object.keys(data).length-1].antal;
+        var yScale = d3.scale.linear().domain([0,max]).range([h-margin.top-margin.bottom,margin.top]).nice();
+        var xScale = d3.scale.ordinal().domain(data.map(function (d){return d.region})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
 
         //From tooltip.js
         svg.call(tip);
 
-		//Tegner rectangels
-		svg.selectAll("rect").data(data).enter()
+        //Tegner rectangels
+        svg.selectAll("rect").data(data).enter()
         .append("svg:a")
         .attr("xlink:href", function(d){return "dodRegion.php?region="+d.region+"&year="+year+"&startYear="+startYear+"&endYear="+endYear+"&typer="+JSON.stringify(classification);})
         .append("rect")
         .attr("class",function(d,i){return "rectangle"})
         .attr("id",function(d,i){return d.region})
-		.attr("x",function(d,i){ return xScale(d.region)})
-		.attr("y", function (d){ return yScale(d.antal)})
-		.attr("width", xScale.rangeBand() )
-		.attr("height", function (d){ return yScale(0) - yScale(d.antal) })
+        .attr("x",function(d,i){ return xScale(d.region)})
+        .attr("y", function (d){ return yScale(d.antal)})
+        .attr("width", xScale.rangeBand() )
+        .attr("height", function (d){ return yScale(0) - yScale(d.antal) })
         .on('mouseover', tip.show)
         .on('mouseout', tip.hide);
 
         //Bygger akser
-		var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-		svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis);
-		var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
-		svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
+        var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+        svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis);
+        var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
+        svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
 
         //Tegner gennemsnitsstreg
         var xScale2 = d3.scale.ordinal().domain(data.map(function (d){return d.region})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
@@ -447,7 +447,7 @@
         .datum(data)
         .attr("class", "line")
         .attr("d", line);
-	}
+    }
 
     function drawPie(regionData){
         d3.select("#pieChart").remove();
