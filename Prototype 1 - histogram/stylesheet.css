@@ -106,3 +106,8 @@ div.bar {
     position: fixed;
     display: none;
 }
+/* LINES */
+#averageLine{
+	stroke:red;
+	stroke-width:2;
+}

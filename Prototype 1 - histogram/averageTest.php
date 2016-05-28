@@ -406,9 +406,13 @@
         //Laver scale
         var min = data[0].antal;
         var max = data[Object.keys(data).length-1].antal;
-        var yScale = d3.scale.linear().domain([0,max]).range([h-margin.top-margin.bottom,margin.top]).nice();
-        var xScale = d3.scale.ordinal().domain(data.map(function (d){return d.region})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
+        var yScale = d3.scale.linear().range([h-margin.top-margin.bottom,margin.top]).nice();
+        var xScale = d3.scale.ordinal().rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
+        var xScale2 = d3.scale.ordinal().rangeBands([0+margin.left, w+margin.left],0);
 
+        yScale.domain([0,max]);
+        xScale.domain(data.map(function (d){return d.region}));
+        xScale2.domain(data.map(function (d){return d.region}));
         //From tooltip.js
         svg.call(tip);
 
@@ -433,18 +437,18 @@
         svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
 
         //Tegner gennemsnitsstreg
-        var xScale2 = d3.scale.ordinal().domain(data.map(function (d){return d.region})).rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
         var dataSum = d3.sum(data, function(d) { return d.antal; });
         console.log(dataSum/data.length);
 
         var line = d3.svg.line()
-            .xScale(function(d, i) {
-            return xScale2(d.letter) + i; })
-            .yScale(function(d, i) { return y(dataSum/data.length);
+            .x(function(d, i) {
+            return xScale2(d.region) + i; })
+            .y(function(d, i) { return yScale(dataSum/data.length);
         });
 
         svg.append("path")
         .datum(data)
+        .attr("id","averageLine")
         .attr("class", "line")
         .attr("d", line);
     }

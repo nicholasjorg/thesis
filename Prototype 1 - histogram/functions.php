@@ -45,7 +45,12 @@ function getClassifications(){
     $sql = 'select distinct classifications from allData WHERE classifications is not null';
     $result = queryDB($sql);
     return $result;
+}
 
+function getMunicipalities(){
+    $sql = 'select distinct municipality from allData where municipality is not null';
+    $result = queryDB($sql);
+    return $result;
 }
 
 
