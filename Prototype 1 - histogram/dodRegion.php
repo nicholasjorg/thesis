@@ -174,18 +174,18 @@
     data.Sjælland = <?php echo $sjælland ?>;
     data.Syddanmark = <?php echo $syddanmark ?>;
     data.UdenforDanmark = <?php echo $udenfordanmark ?>;
-    
-    function createMunicipalities(){   
+
+    function createMunicipalities(){
         var tmpMuni = <?php echo $municipalities ?>;
          municipalities = {Hovedstaden, Midtjylland, Nordjylland, Sjælland, Syddanmark, UdenforDanmark};
-     
+
          municipalities.Hovedstaden = {};
          municipalities.Midtjylland = {};
          municipalities.Nordjylland = {};
          municipalities.Sjælland = {};
          municipalities.Syddanmark = {};
          municipalities.UdenforDanmark = {};
-         
+
          for (var i = 0; i < Object.keys(tmpMuni).length; i++) {
              var muni = tmpMuni[i].municipality;
              switch (tmpMuni[i].region){
@@ -231,7 +231,7 @@
         else municipalities[currentRegion][id] = true;
         console.log(municipalities[currentRegion]);
         updateData();
-    });  
+    });
 
 	//Ændre i year til single view ved klik på dropdown menu
 	$('#selectSingleYear').change(function() {
@@ -297,9 +297,9 @@
             var tmpArr = {kommune:key, antal:0, typer};
             newData.push(tmpArr);
         }
-    
+
         newData = countData(newData);
-        drawDiagram(newData);    
+        drawDiagram(newData);
     }
 
     function countData(newData){
@@ -316,7 +316,7 @@
                         }
                     };
                 break;
-                }   
+                }
             }
 
         };
@@ -369,12 +369,12 @@
         .attr("class", "axis")
         .attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")")
         .call(xAxis)
-        .selectAll("text")  
+        .selectAll("text")
         .style("text-anchor", "end")
         .attr("dx", "-.8em")
         .attr("dy", ".15em")
         .attr("transform", function(d) {
-            return "rotate(-65)" 
+            return "rotate(-65)"
         });
 
         var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);

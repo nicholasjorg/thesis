@@ -11,15 +11,37 @@ var outputString = "";
     $("#aktiveRegioner").text(outputString);
 }
 function updateVærktyper(værktyper){
+    var count = 0;
     var outputString = "";
         for (var key in værktyper) {
             if(værktyper[key]==true){
                 var stringKey = String(key);
                 outputString = outputString + stringKey + " ";
+                count++;
             }
         }
-        $("#aktiveTyper").text(outputString);
+        if(count == 25){
+           $("#aktiveTyper").text("Alle værktyper");
+        }
+        else{
+            $("#aktiveTyper").text(outputString);
+
+        }
 }
+
+/*function updateVærktyper(strCheckbox,boolKategori){
+    if(boolKategori == true){
+        if ($('#'+strCheckbox).prop('checked')){
+
+        }
+        else{
+
+        }
+    }
+    else if(boolKategori == false){
+
+    }
+}*/
 
 function updateOnView(){
     if(onView == true)
