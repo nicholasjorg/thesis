@@ -9,36 +9,42 @@
 <script src = "js/dodForms.js"></script>
 
 <div class = "container">
+    <div class = "row text-center">
+        <h1><span style="visibility: hidden">Region:&nbsp;</span><span id = "overskrift">Hovedstaden</span></h1>
+    </div>
     <div class = "row">
         <div class = "col-sm-4">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="#home">Regioner</a></li>
+                <li class="active"><a href="#home">Region</a></li>
                 <li><a href="#menu1">Årstal</a></li>
                 <li><a href="#menu2">Værktyper</a></li>
             </ul>
             <div class="tab-content">
                 <div id="home" class="tab-pane fade in active row">
-                    <h3>Vælg region</h3>
-                    <div class="col-sm-6 region-filters">
-                        <div class ="radio"><label><input type="radio" checked="checked" id="radioHovedstaden" name="regions" value="Hovedstaden">Hovedstaden</label>
+                    <div class="col-sm-12 region-filters">
+                    <h3>Region</h3>
+                        <div class ="radio"><label><input type="radio" checked="checked" onchange="updateSingleRegion(this);" id="radioHovedstaden" name="regions" value="Hovedstaden">Hovedstaden</label>
                         </div>
                         <div class="radio">
-                          <label><input type="radio" id="radioMidtjylland" name="regions" value="Midtjylland">Midtjylland</label>
+                          <label><input type="radio" onchange="updateSingleRegion(this);" id="radioMidtjylland"  name="regions" value="Midtjylland">Midtjylland</label>
                         </div>
                         <div class="radio">
-                          <label><input type="radio" id="radioNordjylland" name="regions" value="Nordjylland">Nordjylland</label>
+                          <label><input type="radio" onchange="updateSingleRegion(this);" id="radioNordjylland" name="regions" value="Nordjylland">Nordjylland</label>
                         </div>
                         <div class="radio">
-                          <label><input type="radio" id="radioSjælland" name="regions" value="Sjælland">Sjælland</label>
+                          <label><input type="radio" onchange="updateSingleRegion(this);" id="radioSjælland" name="regions" value="Sjælland">Sjælland</label>
                         </div>
                         <div class="radio">
-                          <label><input type="radio" id="radioSyddanmark" name="regions" value="Syddanmark">Syddanmark</label>
+                          <label><input type="radio" onchange="updateSingleRegion(this);" id="radioSyddanmark" name="regions" value="Syddanmark">Syddanmark</label>
                         </div>
                         <div class="radio">
-                          <label><input type="radio" id="radioUdenfor Danmark" name="regions" value="UdenforDanmark">Udenfor Danmark</label>
+                          <label><input type="radio" onchange="updateSingleRegion(this);" id="radioUdenfor Danmark" name="regions" value="UdenforDanmark">Udenfor Danmark</label>
                         </div>
                     </div>
-                    <div id="kommuner" class="row col-sm-12">Her ligger kommunerne i den valgte region</div>
+                    <div class = "row">
+                        <div id="kommuner" class="col-sm-12">Her ligger kommunerne i den valgte region
+                        </div>
+                    </div>
                 </div>
                 <div id="menu1" class="tab-pane fade col-sm-8">
                     <h3>Single year</h3>
@@ -78,16 +84,83 @@
                     <h3>Værktyper</h3>
                     <div class = "row">
                         <div class="col-sm-12 classification-filters">
-                            <?php
-                                $result = getClassifications();
-                                while ($row = mysqli_fetch_array($result)) {
-                                    echo '<div class="col-sm-6">';
-                                    echo '<div class="checkbox">';
-                                    echo '<label><input type="checkbox" checked="checked" id="'.$row["classifications"].' name="'.$row["classifications"].'" value="'.$row["classifications"].'">'.$row["classifications"].'</label>';
-                                    echo '</div>';
-                                    echo '</div>';
-                                }
-                            ?>
+                            <div class ="row">
+                                <div class="col-sm-6">
+                                    <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Væg" name ="Væg" value ="Væg"><b>Væg</b></label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Foto" name ="Foto" value =""Foto>Foto</label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Maleri" name ="Maleri" value ="Maleri">Maleri</label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Tegning" name ="Tegning" value ="Tegning">Tegning</label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Grafik" name ="Grafik" value ="Grafik">Grafik</label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Collage" name ="Collage" value ="Collage">Collage</label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Akvarel" name ="Akvarel" value ="Akvarel">Akvarel</label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Print" name ="Print" value ="Print">Print</label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Grafisk design" name ="Grafisk design" value ="Grafisk design">Grafisk Design</label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <!-- Rum -->
+                                    <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Rum" name ="Rum" value ="Rum"><b>Rum</b></label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Lys" name ="Lys" value ="Lys">Lys</label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Indretning" name ="Indretning" value ="Indretning">Indretning</label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Integreret kunst" name ="Integreret kunst" value ="Integreret kunst">Integreret kunst</label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Møbel" name ="Møbel" value ="Møbel">Møbel</label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Skulptur" name ="Skulptur" value ="Skulptur">Skulptur</label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Relief" name ="Relief" value ="Relief">Relief</label>
+                                    </div>
+                                    <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Installation" name ="Installation" value ="Installation">Installation</label>
+                                    </div>
+                                </div>
+                            </div><!-- END ROW-->
+                                <div class ="row">
+                                    <div class="col-sm-6">
+                                        <!-- Immateriel-->
+                                        <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Immateriel" name ="Immateriel" value ="Immateriel"><b>Immateriel</b></label>
+                                        </div>
+                                        <div class="checkbox subCheck"><label><input class ="subImmateriel" type ="checkbox"checked="checked" id ="Performance" name ="Performance" value ="Performance">Performance</label>
+                                        </div>
+                                        <div class="checkbox subCheck"><label><input class ="subImmateriel" type ="checkbox"checked="checked" id ="Mixed Media" name ="Mixed Media" value ="Mixed Media">Mixed Media</label>
+                                        </div>
+                                        <div class="checkbox subCheck"><label><input class ="subImmateriel" type ="checkbox"checked="checked" id ="Video" name ="Video" value ="Video">Video</label>
+                                        </div>
+                                        <div class="checkbox subCheck"><label><input class ="subImmateriel" type ="checkbox"checked="checked" id ="Digital" name ="Digital" value ="Digital">Digital</label>
+                                        </div>
+                                    </div>
+                                    <div class ="col-sm-6">
+                                        <!-- Genstand-->
+                                        <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Genstand" name ="Genstand" value ="Genstand"><b>Genstand</b></label>
+                                        </div>
+                                        <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Smykker" name ="Smykker" value ="Smykker">Smykker</label>
+                                        </div>
+                                        <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Design" name ="Design" value ="Design">Design</label>
+                                        </div>
+                                        <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Tekstil" name ="Tekstil" value ="Tekstil">Tekstil</label>
+                                        </div>
+                                        <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Keramik" name ="Keramik" value ="Keramik">Keramik</label>
+                                        </div>
+                                        <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Glas" name ="Glas" value ="Glas">Glas</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class ="row">
+                                    <div class ="col-sm-6">
+                                        <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Andet" name ="Andet" value ="Andet"><b>Andet</b></label>
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -101,21 +174,20 @@
         <!-- Graph will be appended here -->
         </div><!-- End of graph -->
         <div class = "col-sm-2 pull-right" id = "activeParameters">
-            <h3> Aktive parametre </h3>
-            <h5><u> Region:</u> </h5>
-            <div id = "aktiveRegioner">
+            <h3> Region: </h3>
+            <div id = "aktiveRegion">
                 <?php
                 if (isset($_GET['region'])){
-                    echo $region;
+                    echo $_GET['region'];
                 }
                 else echo "Hovedstaden";
                 ?>
             </div>
-            <h5><u> Årstal:</u> </h5>
+            <h3>Årstal:</h3>
             <div id = "aktiveÅr">
                 1918 - 2016
             </div>
-            <h5><u> Værktyper:</u></h5>
+            <h3> Værktyper:</h3>
             <div id = "aktiveTyper">
                 Alle
             </div>
@@ -216,14 +288,41 @@
         updateMunicipalities();
 	});
 
-	$('.classification-filters input:checkbox').click(function() {
-		var name = $(this).val().trim();
-        console.log("du trykkede på "+name);
+    $('.classification-filters input:checkbox').click(function() {
+        var name = $(this).val().trim();
+        //Hvis det er flere
+        if(name === "Væg" || name === "Rum" || name === "Immateriel" || name === "Genstand"){
+            var className = "sub"+name;
+            var relevantCheckboxes = $(".sub"+name);
+            if($("#"+name).is(':checked')){
+                //Put alle på
+                relevantCheckboxes.prop("checked",true);
+                var ids = $("."+className).map(function() { return this.id; });
+
+                for(var i = 0; i<ids.length;i++){
+                    classification[ids[i]]=true;
+                }
+                updateVærktyper(classification);
+                updateData();
+            }
+            else{
+                //Tag alle fra
+                relevantCheckboxes.prop("checked",false);
+                var ids = $("."+className).map(function() { return this.id; });
+                for(var i = 0; i<ids.length;i++){
+                    classification[ids[i]]=false;
+                }
+                updateVærktyper(classification);
+                updateData();
+            }
+            return;
+        }
+        //Hvis det er en single
         if(classification[name] == true) classification[name] = false;
         else classification[name] = true;
         updateVærktyper(classification);
         updateData();
-	});
+    });
 
     $("#kommuner").on("click", "input", function(){
         var id = $(this).val().trim();
@@ -339,6 +438,7 @@
 
         //Laver svg element til at komme figuren
         var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
+
 
         //Laver scale
         var min = data[0].antal;

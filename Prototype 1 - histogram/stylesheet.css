@@ -1,6 +1,9 @@
 body {
     position: relative;
 }
+#overskrift{
+  padding-left: 12%;
+}
 #graph{
   margin-top: 100px;
 }
@@ -58,6 +61,11 @@ div.bar {
     font-family: sans-serif;
     font-size: 11px;
 }
+
+.kommune-filter{
+  padding-left: 15px;
+}
+
 /* STYLING FOR RECT BARS */
 .rectangle{
   fill:teal;

@@ -1,6 +1,5 @@
 function updateRegioner(regioner){
 var outputString = "";
-
     for (var key in regioner) {
         if(regions[key]==true) {
             var stringKey = String(key);
@@ -10,6 +9,14 @@ var outputString = "";
     console.log(outputString);
     $("#aktiveRegioner").text(outputString);
 }
+
+//Single region DOD
+function updateSingleRegion(region){
+    var outputString = region.value;
+    $("#aktiveRegion").text(outputString);
+    $("#overskrift").text(outputString);
+}
+
 function updateVærktyper(værktyper){
     var count = 0;
     var outputString = "";
@@ -28,7 +35,6 @@ function updateVærktyper(værktyper){
 
         }
 }
-
 /*function updateVærktyper(strCheckbox,boolKategori){
     if(boolKategori == true){
         if ($('#'+strCheckbox).prop('checked')){

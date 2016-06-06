@@ -6,7 +6,7 @@
 
 <div class = "container">
     <div class = "row text-center">
-        <h1>OVERSKRIFT</h1>
+        <h1><span id = "overskrift">Landsdækkende distribution</span></h1>
     </div>
     <div class = "row">
         <div class = "col-sm-4">
@@ -18,7 +18,6 @@
             </ul>
             <div class="tab-content">
                 <div id="home" class="tab-pane active row">
-                    <h3>Vælg regioner</h3>
                     <div class="col-sm-6 region-filters">
                         <div class="checkbox">
                           <label><input type="checkbox" checked="checked" id="Hovedstaden" name="Hovedstaden" value="Hovedstaden">Hovedstaden</label>
@@ -238,7 +237,7 @@
         //Hvis det er flere
         if(name === "Væg" || name === "Rum" || name === "Immateriel" || name === "Genstand"){
             var className = "sub"+name;
-;            var relevantCheckboxes = $(".sub"+name);
+            var relevantCheckboxes = $(".sub"+name);
             if($("#"+name).is(':checked')){
                 //Put alle på
                 relevantCheckboxes.prop("checked",true);
