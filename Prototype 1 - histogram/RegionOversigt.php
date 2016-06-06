@@ -1,6 +1,7 @@
 <?php require("functions.php"); ?>
 <?php require("getRegionData.php"); ?>
-<?php require("getUrlVariables.php");?>
+<?php require("getUrlVariables.php"); ?>
+<?php require("getNogletal.php"); ?>
 <!-- Header -->
 <?php require("header.php");?>
 
@@ -161,6 +162,9 @@
                     <div class="checkbox" id ="gennemsnitWrapper">
                         <label><input type="checkbox" id="gennemsnit" name="gennemsnit" value="gennemsnit">Gennemsnit</label>
                     </div>
+                    <div class="checkbox" id="indbyggertalWrapper">
+                        <label><input type="checkbox" id="indbyggertalCheck" value="indbyggertal">Indbyggertal</label>
+                    </div>
                 </div>
             </div><!-- end of tabs -->
         </div><!-- End of dashboard menu -->
@@ -215,6 +219,8 @@
     var dataset = <?php echo $dataset ?>;
     //Hvis nogle af nedstående variable er sat til null vil de ikke være gældende eller gælde for alle.
     var year, startYear, endYear;
+    var indbyggerTabel = <?php echo $indbyggertal ?>;
+    var indbyggertal = {Hovedstaden:0, Midtjylland:0, Nordjylland:0, Sjælland:0, Syddanmark:0, UdenforDanmark:0};
 
     //Filter arrays
     var classification = {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true,
@@ -294,6 +300,48 @@
         updateData();
     });
 
+    //Ændre i tabellen udfra indbyggertallet i kommunen.
+    $("#indbyggertalCheck").click(function(){
+        if($("#indbyggertalCheck").prop('checked')){
+            if(year != null && year>=1993){
+                for(var i=0; i<Object.keys(indbyggerTabel).length; i++){
+                 switch (indbyggerTabel[i].region){
+                     case "Hovedstaden": indbyggertal.Hovedstaden = indbyggertal.Hovedstaden + parseFloat(indbyggerTabel[i][year]); break;
+                     case "Midtjylland": indbyggertal.Midtjylland = indbyggertal.Midtjylland + parseFloat(indbyggerTabel[i][year]); break;
+                     case "Nordjylland": indbyggertal.Nordjylland = indbyggertal.Nordjylland + parseFloat(indbyggerTabel[i][year]); break;
+                     case "Sjælland": indbyggertal.Sjælland = indbyggertal.Sjælland + parseFloat(indbyggerTabel[i][year]); break;
+                     case "Syddanmark": indbyggertal.Syddanmark = indbyggertal.Syddanmark + parseFloat(indbyggerTabel[i][year]); break;
+                     case "UdenforDanmark": indbyggertal.UdenforDanmark = indbyggertal.UdenforDanmark + parseFloat(indbyggerTabel[i][year]); break;
+                    }
+                }
+                updateIndbyggerDiagram(newData);
+            }
+            else if(startYear>=1993 && endYear<=2016){
+                for(var i=0; i<Object.keys(indbyggerTabel).length; i++){
+                 switch (indbyggerTabel[i].region){
+                     case "Hovedstaden": indbyggertal.Hovedstaden = indbyggertal.Hovedstaden + parseFloat(indbyggerTabel[i][endYear]); break;
+                     case "Midtjylland": indbyggertal.Midtjylland = indbyggertal.Midtjylland + parseFloat(indbyggerTabel[i][endYear]); break;
+                     case "Nordjylland": indbyggertal.Nordjylland = indbyggertal.Nordjylland + parseFloat(indbyggerTabel[i][endYear]); break;
+                     case "Sjælland": indbyggertal.Sjælland = indbyggertal.Sjælland + parseFloat(indbyggerTabel[i][endYear]); break;
+                     case "Syddanmark": indbyggertal.Syddanmark = indbyggertal.Syddanmark + parseFloat(indbyggerTabel[i][endYear]); break;
+                     case "UdenforDanmark": indbyggertal.UdenforDanmark = indbyggertal.UdenforDanmark + parseFloat(indbyggerTabel[i][endYear]); break;
+                    }
+                }
+                updateIndbyggerDiagram(newData);
+            }
+            else{
+                alert("Du har valgt et år hvor der ikke findes data. Vælg et år eller interval mellem 1993 og 2016");
+                document.getElementById("indbyggertalCheck").checked = false;
+            }
+        }
+        else{ 
+            updateData();
+            for (var key in indbyggertal) {
+                 indbyggertal[key] = 0;
+            }
+        }
+    });
+
     $(document).on('mouseenter','.rectangle',function(e){
         for (var j = 0; j < Object.keys(newData).length; j++) {
             if (newData[j].region == this.id){
@@ -326,7 +374,16 @@
             }
         }
         newData = countData(newData);
+        //Sorterer data fra parametreret ascending order
+        newData.sort(function(a,b){
+            return parseFloat(a.antal) - parseFloat(b.antal);
+        });
         drawDiagram(newData);
+
+
+        //Fjerner checkbox fra indbyggertal og gennemsnitsstreg
+        document.getElementById("indbyggertalCheck").checked = false;
+        document.getElementById("gennemsnit").checked = false;
     }
 
     function countData(newData){
@@ -391,14 +448,20 @@
 
     updateData();
 
+    function updateIndbyggerDiagram(newData){
+        for(var i=0; i<Object.keys(newData).length; i++){
+            var key = newData[i].region;
+            if(indbyggertal[key] == 0)
+                newData[i].antal = 0;
+            else
+                newData[i].antal = newData[i].antal / indbyggertal[key];
+        }
+        drawDiagram(newData);
+    }
+
     function drawDiagram(data){
         //Fjerner gammel graf
         d3.select("svg").remove();
-
-        //Sorterer data fra parametreret ascending order
-        data.sort(function(a,b){
-            return parseFloat(a.antal) - parseFloat(b.antal);
-        });
 
         //Sætter variable
         var margin = {top: 10, right: 0, bottom: 10, left: 40};
@@ -442,7 +505,7 @@
 
         //Tegner gennemsnitsstreg
         var dataSum = d3.sum(data, function(d) { return d.antal; });
-        console.log(dataSum/data.length);
+        //console.log(dataSum/data.length);
 
         var line = d3.svg.line()
             .x(function(d, i) {
