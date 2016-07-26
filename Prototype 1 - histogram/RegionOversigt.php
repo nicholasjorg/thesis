@@ -472,7 +472,7 @@
 
         //Laver scale
         var min = data[0].antal;
-        var max = data[Object.keys(data).length-1].antal;
+        var max = data[Object.keys(newData).length-1].antal;
         var yScale = d3.scale.linear().range([h-margin.top-margin.bottom,margin.top]).nice();
         var xScale = d3.scale.ordinal().rangeRoundBands([margin.left, w-margin.left-margin.right], 0.1);
         var xScale2 = d3.scale.ordinal().rangeBands([0+margin.left, w+margin.left],0);
@@ -506,12 +506,14 @@
         //Tegner gennemsnitsstreg
         var dataSum = d3.sum(data, function(d) { return d.antal; });
         //console.log(dataSum/data.length);
+        var avg = dataSum/data.length;
 
         var line = d3.svg.line()
             .x(function(d, i) {
             return xScale2(d.region) + i; })
             .y(function(d, i) { return yScale(dataSum/data.length);
         });
+
 
         svg.append("path")
         .datum(data)

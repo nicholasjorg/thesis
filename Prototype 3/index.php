@@ -151,7 +151,7 @@
                 </div>
                 <div id="menu3" class="tab-pane fade">
                     <div class="checkbox" id ="gennemsnitWrapper">
-                        <label><input type="checkbox" id="gennemsnit" name="gennemsnit" value="gennemsnit">Gennemsnit</label>
+                        <label><input type="checkbox" id="gennemsnitCheck" name="gennemsnit" value="gennemsnit">Gennemsnit</label>
                     </div>
                     <div class="checkbox" id="indbyggertalWrapper">
                         <label><input type="checkbox" id="indbyggertalCheck" value="indbyggertal">Indbyggertal</label>
@@ -217,7 +217,7 @@ var newData = new Array();
     var dataset = <?php echo $dataset ?>;
     var indbyggerTabel = <?php echo $indbyggertal ?>;
     var indbyggertal;
-    var gennemsnit = null;
+    var gennemsnit = false;
     var active;
     var currentRegion = null, currentMunicipality=null;
     var colors = {"min":"#b3d9ff", "q1":"#66b3ff", "q2":"#1a8cff", "q3":"#0066cc", "max":"#004080"};
@@ -266,7 +266,6 @@ var newData = new Array();
 		}
 		else{
             // regionEllerKommune = "kommune";
-            // giveColors();
 		}
         // chooseRegion();
         // updateData();
@@ -334,6 +333,7 @@ var newData = new Array();
     //Ændre i tabellen udfra indbyggertallet i kommunen.
     $("#indbyggertalCheck").click(function(){
         if($("#indbyggertalCheck").prop('checked')){
+            document.getElementById("gennemsnitCheck").checked = false;
             if(year != null && year>=1993){
                 indbyggertal = new Array();
                 for(var i=0; i<Object.keys(indbyggerTabel).length; i++){
@@ -349,14 +349,32 @@ var newData = new Array();
                 updateIndbyggerDiagram(newData, indbyggertal);
             }
             else{
-                alert("Du har valgt et år hvor der ikke findes data. Vælg et år eller interval mellem 1993 og 2016");
-                document.getElementById("indbyggertalCheck").checked = false;
+                alert("Du har valgt et år hvor der ikke findes data. \n Derfor vælges årene 1993 - 2016");
+                startYear = 1993;
+                endYear = 2016;
+                indbyggertal = new Array();
+                for(var i=0; i<Object.keys(indbyggerTabel).length; i++){
+                    indbyggertal.push({kommune:indbyggerTabel[i].kommune, antal:parseFloat(indbyggerTabel[i][endYear])});
+                }
+                updateIndbyggerDiagram(newData, indbyggertal);
             }
         }
         else{
             indbyggertal = null; 
             updateData();
         }
+    });
+
+    $("#gennemsnitCheck").click(function(){
+        if($("#gennemsnitCheck").prop('checked')) {
+            document.getElementById("indbyggertalCheck").checked = false;
+            gennemsnit = true;
+            drawDiagram(newData);
+        }
+        else{
+            gennemsnit = false;
+            updateData();
+            }
     });
 
     //Tilbageknap i histogram. Kom fra kommuneniveau til regionsniveau
@@ -413,7 +431,7 @@ var newData = new Array();
         drawDiagram(newData);
         
         document.getElementById("indbyggertalCheck").checked = false;
-        document.getElementById("gennemsnit").checked = false;
+        document.getElementById("gennemsnitCheck").checked = false;
         
     }
     function countData(newData){

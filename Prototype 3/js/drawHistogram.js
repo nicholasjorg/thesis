@@ -87,21 +87,21 @@ function drawHistogramRegion(data){
         var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
         svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
 
-        //Tegner gennemsnitsstreg
-        var dataSum = d3.sum(newData, function(d) { return d.antal; });
-        //console.log(dataSum/data.length);
+        if(gennemsnit === true){
+            //Tegner gennemsnitsstreg
+            var dataSum = d3.sum(newData, function(d) { return d.antal; });
 
-        var line = d3.svg.line()
-        .x(function(d, i) {
-            return xScale2(d.region) + i; })
-        .y(function(d, i) { return yScale(dataSum/data.length);
-        });
+            var avg = dataSum/newData.length;
 
-        svg.append("path")
-        .datum(data)
-        .attr("id","averageLine")
-        .attr("class", "line")
-        .attr("d", line);
+            svg.append("line")
+            .style("stroke", "black")
+            .attr("x1", 0+margin.left)
+            .attr("y1", yScale(avg))
+            .attr("x2", w-margin.right)
+            .attr("y2", yScale(avg))
+            .attr("id", "averageLine")
+            .attr("class", "line");
+        }
     }
 
     function clickedRegion(data, d){
@@ -126,7 +126,7 @@ function drawHistogramKommune(data){
             var tmpKommune = data[i].kommune;
             if (result.length === 0) {
                 // not found
-                var tmpArr = {region:tmpKommune, antal:antalVærker};
+                var tmpArr = {kommune:tmpKommune, antal:antalVærker};
                 newData.push(tmpArr);
             } else if (result.length == 1) {
                 // access the foo property using result[0].foo
@@ -134,6 +134,8 @@ function drawHistogramKommune(data){
             }
         }
     }
+    console.log(newData);
+
         //Sorterer data fra parametreret ascending order
         newData.sort(function(a,b){
             return parseFloat(a.antal) - parseFloat(b.antal);
@@ -154,8 +156,8 @@ function drawHistogramKommune(data){
         var xScale2 = d3.scale.ordinal().rangeBands([0+margin.left, w+margin.left],0);
 
         yScale.domain([0,max]);
-        xScale.domain(newData.map(function (d){return d.region;}));
-        xScale2.domain(newData.map(function (d){return d.region;}));
+        xScale.domain(newData.map(function (d){return d.kommune;}));
+        xScale2.domain(newData.map(function (d){return d.kommune;}));
         //From tooltip.js
         // svg.call(tip);
 
@@ -164,8 +166,8 @@ function drawHistogramKommune(data){
         .append("svg:a")
         .append("rect")
         .attr("class",function(d,i){return "rectangle";})
-        .attr("id",function(d,i){return d.region;})
-        .attr("x",function(d,i){ return xScale(d.region);})
+        .attr("id",function(d,i){return d.kommune;})
+        .attr("x",function(d,i){ return xScale(d.kommune);})
         .attr("y", function (d){ return yScale(d.antal);})
         .attr("width", xScale.rangeBand() )
         .attr("height", function (d){ return yScale(0) - yScale(d.antal);})
@@ -186,21 +188,21 @@ function drawHistogramKommune(data){
         var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
         svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
 
-        //Tegner gennemsnitsstreg
-        var dataSum = d3.sum(newData, function(d) { return d.antal; });
-        //console.log(dataSum/data.length);
+        if(gennemsnit === true){
+            //Tegner gennemsnitsstreg
+            var dataSum = d3.sum(newData, function(d) { return d.antal; });
 
-        var line = d3.svg.line()
-        .x(function(d, i) {
-            return xScale2(d.region) + i; })
-        .y(function(d, i) { return yScale(dataSum/data.length);
-        });
+            var avg = dataSum/newData.length;
 
-        svg.append("path")
-        .datum(data)
-        .attr("id","averageLine")
-        .attr("class", "line")
-        .attr("d", line);
+            svg.append("line")
+            .style("stroke", "black")
+            .attr("x1", 0+margin.left)
+            .attr("y1", yScale(avg))
+            .attr("x2", w-margin.right)
+            .attr("y2", yScale(avg))
+            .attr("id", "averageLine")
+            .attr("class", "line");
+        }
     }
 
     function clickedKommune(data, d){

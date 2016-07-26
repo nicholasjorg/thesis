@@ -1,14 +1,16 @@
     var colors = {"min":"#b3d9ff", "q1":"#66b3ff", "q2":"#1a8cff", "q3":"#0066cc", "max":"#004080"};
 
-    function giveColors(){
-        // console.log("Så skal der farve på drengen! med region: "+currentRegion);
-        var q = calculateQuatil(currentRegion);
+    function giveColors(newData){
+        console.log("Så skal der farve på drengen!");
+        var q = calculateQuatil(newData);
         // updateFarvekode(q);
         // console.log(q);
         //console.log("min: "+q.min+" q1: "+q.q1+" q2: "+q.q2+" q3: "+q.q1+" max: "+q.max);
         // console.log("currentRegion: "+currentRegion);
-        console.log("CurrentRegion: "+currentRegion+ "  currentMunicipality: "+currentMunicipality);
-        if(gennemsnit != null){
+        // console.log("CurrentRegion: "+currentRegion+ "  currentMunicipality: "+currentMunicipality);
+        if(gennemsnit === true){
+            console.log("gennemsnit er true");
+            console.log(q);
             for (var i = 0; i < Object.keys(newData).length; i++) {
                 if(newData[i].region == "UdenforDanmark") continue;
                 var string = "#".concat(newData[i].kommune);
@@ -20,7 +22,7 @@
         }
 
         //Fuldt overblik. Ser hele kortet
-        else if(currentRegion == null){
+        else if(currentRegion === null){
              for(var key in q){
                 var string = ".".concat(q[key][0]);
                 if(key == "min"){$(string).css("fill", colors.min); $(string).css("opacity", 1);}
@@ -31,7 +33,7 @@
             }
         }
         //Zoomet ind på enkelt kommune
-        else if(currentMunicipality != null){
+        else if(currentMunicipality !== null){
             console.log("Skal farver en enkelt kommune");
             for (var i = 0; i < Object.keys(newData).length; i++) {
             var string = "#".concat(newData[i].kommune);
@@ -55,7 +57,7 @@
             }
         }
         //Zoomet ind på en region
-        else if (currentRegion !== null && currentMunicipality == null){
+        else if (currentRegion !== null && currentMunicipality === null){
             for (var i = 0; i < Object.keys(newData).length; i++) {
                 if(newData[i].region == "UdenforDanmark") continue;
                 var string = "#".concat(newData[i].kommune);
@@ -93,20 +95,30 @@
     }
 
 
-    function calculateQuatil() {
+    function calculateQuatil(newData) {
         var quar = new Array();
         var min, q1, q2, q3, max;
-        if(currentRegion !== null){
-            for (var i = 0; i < Object.keys(newData).length; i++)
-                {if(newData[i].region === currentRegion) quar.push(newData[i].antal);}
-            
-            quar = sortArray(quar);
+        if(currentRegion !== null || gennemsnit === true){
+            // for (var i = 0; i < Object.keys(newData).length; i++)
+            //     {if(newData[i].region === currentRegion) quar.push(newData[i].antal);}
+            console.log(newData);
+            for (var i = 0; i < Object.keys(newData).length; i++){
+                quar.push(newData[i].antal);
+            }
+            console.log(quar);
+            // quar = sortArray(quar);
+            quar.sort(function(a, b){return a-b});
+
+            console.log(quar);
+
 
             min = quar[0];
-            q1 = quar[Math.floor((quar.length / 4))]; 
-            q2 = median(quar);
+            q1 = quar[Math.floor((quar.length / 4))];
+            q2 = Math.floor(quar.length/2);   //median(quar);
             q3 = quar[Math.ceil((quar.length * (3 / 4)))];
             max = quar[quar.length-1];
+
+            console.log("Min: "+min+" q1: "+q1+" q2: "+q2+" q3: "+q3+" Max: "+max);
         }
         else if(regionEllerKommune  == "region"){
             Hovedstaden=0, Midtjylland=0, Nordjylland=0, Sjælland=0, Syddanmark=0, UdenforDanmark=0;
@@ -119,7 +131,7 @@
                     case "Syddanmark": Syddanmark = Syddanmark + newData[i].antal; break;
                     case "UdenforDanmark": UdenforDanmark = UdenforDanmark + newData[i].antal; break;
                 }
-            };
+            }
             quar.push(["Hovedstaden",Hovedstaden]);
             quar.push(["Midtjylland",Midtjylland]);
             quar.push(["Nordjylland",Nordjylland]);
@@ -135,20 +147,20 @@
             max = quar[4];
         }
         else{
-            for (var i = 0; i < Object.keys(newData).length; i++){ 
-                quar.push(newData[i].antal); 
+            for (var i = 0; i < Object.keys(newData).length; i++){
+                quar.push(newData[i].antal);
             }
             quar = sortArray(quar);
 
             min = quar[0];
-            q1 = quar[Math.floor((quar.length / 4))]; 
+            q1 = quar[Math.floor((quar.length / 4))];
             q2 = median(quar);
             q3 = quar[Math.ceil((quar.length * (3 / 4)))];
             max = quar[quar.length-1];
         }
 
         return {min, q1, q2, q3, max};
-    }
+    };
 
     function sortArray(array){
         array.sort(function(a,b){
@@ -185,18 +197,15 @@ function drawMap(newData){
         var masterGroup = d3.select("#masterGroup");
         d3.selectAll(b).style("stroke","brown").attr("stroke-width","0.2").on("click", function(){ clicked(this);});
 
-        giveColors();
-        
-
         //Hvis ingen regioner er valgt
-        if(currentRegion == null){  
+        if(currentRegion === null){
             d3.select("#masterGroup").attr('transform', function(d) {
               return 'translate(' + 0 + ',' + 0 + ')scale(' + 1 + ')';
               });
         }
         
         //Hvis der er en aktiv valgt region. Vil dette sørge for at denne vil være zommet ind på, hvis man forlader kortet
-        if(currentRegion != null){
+        if(currentRegion !== null){
             var string = ".".concat(currentRegion);
             var allChildNodes = d3.select("#masterGroup").selectAll(string)[0];
 
@@ -221,9 +230,9 @@ function drawMap(newData){
                 transY = -(y) * scale;
                 return 'translate(' + transX + ',' + transY + ')scale(' + scale + ')';
             }).attr('stroke-width','0.2');
-            giveColors();
         }
 
+        giveColors(newData);
 
     });
 }
@@ -269,12 +278,12 @@ function clicked(d) {
         width: bbox.width,
         height: bbox.height,
       };
-    var transX, transY;  
+    var transX, transY;
     
     var reg = d.className.baseVal;
     var muni = d.id;
 
-    if(currentRegion != null && currentMunicipality == null || currentRegion != null && currentMunicipality != muni){
+    if(currentRegion !== null && currentMunicipality === null || currentRegion !== null && currentMunicipality !== muni){
         d3.select("#masterGroup").transition().duration(1000).attr('transform', function(d) {
         var testScale = Math.max(rectAttr.width+10, rectAttr.height+10);
         var widthScale = 472 / testScale;
@@ -287,10 +296,10 @@ function clicked(d) {
         return 'translate(' + transX + ',' + transY + ')scale(' + scale + ')';
         }).attr('stroke-width', '0.2');
         currentMunicipality = muni;
-        giveColors();
+        giveColors(newData);
         active = d;
     }
-    else if(currentRegion == null){ 
+    else if(currentRegion === null){
         var string = ".".concat(reg);
         currentRegion = reg;
 
@@ -327,10 +336,10 @@ function clicked(d) {
 
             return 'translate(' + transX + ',' + transY + ')scale(' + scale + ')';
         }).attr('stroke-width','0.2');
-        giveColors();
+        giveColors(newData);
         regionEllerKommune = "kommune";
         active=d;
-    }    
+    }
     else {
         d3.select("#masterGroup").transition().duration(1000).attr('transform', function(d) {
         return 'translate(' + 0 + ',' + 0 + ')scale(' + 1 + ')';
@@ -339,7 +348,7 @@ function clicked(d) {
         active = null;
         currentMunicipality = null;
         currentRegion = null;
-        giveColors();
+        giveColors(newData);
     }
     
 }
