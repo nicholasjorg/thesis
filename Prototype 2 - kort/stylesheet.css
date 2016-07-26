@@ -2,18 +2,8 @@
 	height:100%; 
 	width:100%;
 }
-.Hovedstaden{
-	fill:red;
+.feature {
+  fill: #ccc;
+  cursor: pointer;
 }
-.Nordjylland{
-	fill:green;
-}
-.Syddanmark{
-	fill:blue;
-}
-.Midtjylland{
-	fill:teal;
-}
-.Sjælland{
-	fill:orange;
-}
+

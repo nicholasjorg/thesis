@@ -52,4 +52,7 @@ function getMunicipalities(){
     $result = queryDB($sql);
     return $result;
 }
+
+
+
 ?>

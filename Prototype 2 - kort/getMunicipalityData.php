@@ -1,20 +1,25 @@
 <?php
+ //    $local = "";
+ //    include 'limit.php';
+	// $jsonarray = array();
+	// //$region = "region";
+	// //$class = "classifications";
+	// //$displayDate = "displayDate";
+	// //$onView = "onView";
+	// $sql = 'select region, municipality, classifications, displayDate, onView, count(*) as antal from allData where region is not null AND municipality is not null group by region, municipality, classifications, displayDate, onView' . $local;
+
+ //    $result = queryDB($sql);
+ //    while ($row = mysqli_fetch_assoc($result)) {
+ //    	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"], displayDate=>$row["displayDate"], onView=>$row["onView"], antal=>$row["antal"]);
+ //    	array_push($jsonarray, $tmp);
+ //    }
+ //    $dataset = json_encode($jsonarray);
 include 'limit.php';
-?>
-<?php 
-    $jsonarray = array();
-    $sql = 'SELECT municipality, region FROM allData where municipality is not null and region is not null group by region, municipality';
-    $result = queryDB($sql);
-    while ($row = mysqli_fetch_assoc($result)) {
-        $tmp = array(municipality=>$row["municipality"], region=>$row["region"]);
-        array_push($jsonarray, $tmp);
-    }
-    $regionMunicipality = json_encode($jsonarray);
 ?>
 
 <?php
 	$jsonarray = array();
-	$sql = 'SELECT * from allData WHERE region="Hovedstaden"'. $local;
+	$sql = 'select * from allData WHERE region="Hovedstaden"'. $local;
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
     	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"],
@@ -27,7 +32,7 @@ include 'limit.php';
 
 <?php
 	$jsonarray = array();
-	$sql = 'SELECT * from allData WHERE region="midtjylland"'. $local;
+	$sql = 'select * from allData WHERE region="midtjylland"'. $local;
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
     	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"],
@@ -39,7 +44,7 @@ include 'limit.php';
 ?>
 <?php
 	$jsonarray = array();
-	$sql = 'SELECT * from allData WHERE region="nordjylland"'. $local;
+	$sql = 'select * from allData WHERE region="nordjylland"'. $local;
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
     	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"],
@@ -51,7 +56,7 @@ include 'limit.php';
 ?>
 <?php
 	$jsonarray = array();
-	$sql = 'SELECT * from allData WHERE region="sjælland"'. $local;
+	$sql = 'select * from allData WHERE region="sjælland"'. $local;
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
     	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"],
@@ -63,7 +68,7 @@ include 'limit.php';
 ?>
 <?php
 	$jsonarray = array();
-	$sql = 'SELECT * from allData WHERE region="syddanmark"'. $local;
+	$sql = 'select * from allData WHERE region="syddanmark"'. $local;
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
     	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"],
@@ -75,7 +80,7 @@ include 'limit.php';
 ?>
 <?php
 	$jsonarray = array();
-	$sql = 'SELECT * from allData WHERE region="udenfordanmark"'. $local;
+	$sql = 'select * from allData WHERE region="udenfordanmark"'. $local;
     $result = queryDB($sql);
     while ($row = mysqli_fetch_assoc($result)) {
     	$tmp = array(region=>$row["region"], municipality=>$row["municipality"], classifications=>$row["classifications"],

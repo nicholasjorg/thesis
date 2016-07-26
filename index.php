@@ -12,6 +12,8 @@
 	<li><a href="Prototype 1 - histogram/dodRegion.php?region=Hovedstaden">dodRegion m hovedstaden</a></li>
 <h1>Kort</h1>
 	<li><a href="prototype 2 - kort/index.php">Kort index side</a></li>
+<h1>Prototype 3</h1>
+<li><a href="prototype 3/index.php">Prototype 3</a></li>
 </ul>
 </body>
 </HTML>

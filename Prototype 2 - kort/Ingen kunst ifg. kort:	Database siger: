@@ -1,0 +1,143 @@
+Ingen kunst ifg. kort:	Database siger:
+Hedenstad 				0
+Samsø					0
+Fanø					0
+Nordfyn					0
+Nyborg					0
+Langeland				0
+Solrød					0
+Tårnby					18
+Gladsaxe				18
+
+
+
+Kommuner med nul kunst:
+Fanø
+Langeland
+Nordfyn
+Nyborg
+Samsø
+Solrød
+
+
+
+
+
+
+translate(-360,-2000),scale(7.5,7.5)
+
+
+
+
+index.php:996 Object {municipality: "Albertslund", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Allerød", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Ballerup", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Bornholm", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Brøndby", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Dragør", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Egedal", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Fredensborg", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Frederiksberg", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Frederikssund", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Furesø", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Gentofte", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Gladsaxe", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Glostrup", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Gribskov ", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Halsnæs", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Helsingør", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Herlev", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Hillerød", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Holbæk", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Hvidovre", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Høje-Taastrup", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Hørsholm", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Ishøj", region: "Hovedstaden"}
+index.php:996 Object {municipality: "København", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Lyngby-Taarbæk", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Rudersdal", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Rødovre", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Tårnby", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Vallensbæk", region: "Hovedstaden"}
+index.php:996 Object {municipality: "Favrskov", region: "Midtjylland"}
+index.php:996 Object {municipality: "Hedensted", region: "Midtjylland"}
+index.php:996 Object {municipality: "Herning", region: "Midtjylland"}
+index.php:996 Object {municipality: "Holstebro", region: "Midtjylland"}
+index.php:996 Object {municipality: "Horsens", region: "Midtjylland"}
+index.php:996 Object {municipality: "Ikast-Brande", region: "Midtjylland"}
+index.php:996 Object {municipality: "Lemvig", region: "Midtjylland"}
+index.php:996 Object {municipality: "Norddjurs", region: "Midtjylland"}
+index.php:996 Object {municipality: "Odder", region: "Midtjylland"}
+index.php:996 Object {municipality: "Randers", region: "Midtjylland"}
+index.php:996 Object {municipality: "Ringkøbing-Skjern", region: "Midtjylland"}
+index.php:996 Object {municipality: "Silkeborg", region: "Midtjylland"}
+index.php:996 Object {municipality: "Skanderborg", region: "Midtjylland"}
+index.php:996 Object {municipality: "Skive", region: "Midtjylland"}
+index.php:996 Object {municipality: "Struer", region: "Midtjylland"}
+index.php:996 Object {municipality: "Syddjurs", region: "Midtjylland"}
+index.php:996 Object {municipality: "Vejle", region: "Midtjylland"}
+index.php:996 Object {municipality: "Viborg", region: "Midtjylland"}
+index.php:996 Object {municipality: "Aarhus", region: "Midtjylland"}
+index.php:996 Object {municipality: "Brønderslev", region: "Nordjylland"}
+index.php:996 Object {municipality: "Frederikshavn", region: "Nordjylland"}
+index.php:996 Object {municipality: "Hjørring", region: "Nordjylland"}
+index.php:996 Object {municipality: "Jammerbugt", region: "Nordjylland"}
+index.php:996 Object {municipality: "Læsø", region: "Nordjylland"}
+index.php:996 Object {municipality: "Mariagerfjord", region: "Nordjylland"}
+index.php:996 Object {municipality: "Morsø", region: "Nordjylland"}
+index.php:996 Object {municipality: "Rebild", region: "Nordjylland"}
+index.php:996 Object {municipality: "Thisted", region: "Nordjylland"}
+index.php:996 Object {municipality: "Vesthimmerland", region: "Nordjylland"}
+index.php:996 Object {municipality: "Aalborg", region: "Nordjylland"}
+index.php:996 Object {municipality: "Faxe", region: "Sjælland"}
+index.php:996 Object {municipality: "Frederikssund", region: "Sjælland"}
+index.php:996 Object {municipality: "Greve", region: "Sjælland"}
+index.php:996 Object {municipality: "Guldborgsund", region: "Sjælland"}
+index.php:996 Object {municipality: "Holbæk", region: "Sjælland"}
+index.php:996 Object {municipality: "Kalundborg", region: "Sjælland"}
+index.php:996 Object {municipality: "København", region: "Sjælland"}
+index.php:996 Object {municipality: "Køge", region: "Sjælland"}
+index.php:996 Object {municipality: "Lejre", region: "Sjælland"}
+index.php:996 Object {municipality: "Lolland", region: "Sjælland"}
+index.php:996 Object {municipality: "Næstved", region: "Sjælland"}
+index.php:996 Object {municipality: "Odsherred", region: "Sjælland"}
+index.php:996 Object {municipality: "Ringsted", region: "Sjælland"}
+index.php:996 Object {municipality: "Roskilde", region: "Sjælland"}
+index.php:996 Object {municipality: "Slagelse", region: "Sjælland"}
+index.php:996 Object {municipality: "Sorø", region: "Sjælland"}
+index.php:996 Object {municipality: "Stevns", region: "Sjælland"}
+index.php:996 Object {municipality: "Vordingborg", region: "Sjælland"}
+index.php:996 Object {municipality: "Assens", region: "Syddanmark"}
+index.php:996 Object {municipality: "Billund", region: "Syddanmark"}
+index.php:996 Object {municipality: "Esbjerg", region: "Syddanmark"}
+index.php:996 Object {municipality: "Fredericia", region: "Syddanmark"}
+index.php:996 Object {municipality: "Faaborg-Midtfyn", region: "Syddanmark"}
+index.php:996 Object {municipality: "Haderslev", region: "Syddanmark"}
+index.php:996 Object {municipality: "Kerteminde", region: "Syddanmark"}
+index.php:996 Object {municipality: "Kolding", region: "Syddanmark"}
+index.php:996 Object {municipality: "Køge", region: "Syddanmark"}
+index.php:996 Object {municipality: "Middelfart", region: "Syddanmark"}
+index.php:996 Object {municipality: "Odense", region: "Syddanmark"}
+index.php:996 Object {municipality: "Skive", region: "Syddanmark"}
+index.php:996 Object {municipality: "Svendborg", region: "Syddanmark"}
+index.php:996 Object {municipality: "Sønderborg", region: "Syddanmark"}
+index.php:996 Object {municipality: "Tønder", region: "Syddanmark"}
+index.php:996 Object {municipality: "Varde", region: "Syddanmark"}
+index.php:996 Object {municipality: "Vejen", region: "Syddanmark"}
+index.php:996 Object {municipality: "Vejle", region: "Syddanmark"}
+index.php:996 Object {municipality: "Ærø", region: "Syddanmark"}
+index.php:996 Object {municipality: "Aabenraa", region: "Syddanmark"}
+index.php:996 Object {municipality: "Bruxelles", region: "UdenforDanmark"}
+index.php:996 Object {municipality: "Christianshåb", region: "UdenforDanmark"}
+index.php:996 Object {municipality: "Egedesminde", region: "UdenforDanmark"}
+index.php:996 Object {municipality: "Eysturkommuna", region: "UdenforDanmark"}
+index.php:996 Object {municipality: "Húsavík", region: "UdenforDanmark"}
+index.php:996 Object {municipality: "Julianehåb", region: "UdenforDanmark"}
+index.php:996 Object {municipality: "Midvåg-Sandevåg", region: "UdenforDanmark"}
+index.php:996 Object {municipality: "Nuuk", region: "UdenforDanmark"}
+index.php:996 Object {municipality: "Qaqortoq", region: "UdenforDanmark"}
+index.php:996 Object {municipality: "Sisimiut", region: "UdenforDanmark"}
+index.php:996 Object {municipality: "Sukkertoppen", region: "UdenforDanmark"}
+index.php:996 Object {municipality: "Tórshavn", region: "UdenforDanmark"}
+index.php:996 Object {municipality: "Udenfor Danmark", region: "UdenforDanmark"}
+index.php:996 Object {municipality: "Vestmanna", region: "UdenforDanmark"}

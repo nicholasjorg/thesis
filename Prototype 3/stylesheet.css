@@ -1,0 +1,131 @@
+#map {
+	height:100%; 
+	width:100%;
+}
+.feature {
+  fill: #ccc;
+  cursor: pointer;
+}
+
+body {
+    position: relative;
+}
+#overskrift{
+  padding-left: 12%;
+}
+#graph{
+  margin-top: 100px;
+}
+
+div.bar {
+	display: inline-block;
+	width: 20px;
+	background-color: teal;
+}
+.tabs {
+  position: relative;
+  min-height: 400px; /* This part sucks */
+  clear: both;
+  margin: 25px 0;
+}
+.tab {
+  float: left;
+}
+.tab label {
+  background: #eee;
+  padding: 10px;
+  border: 1px solid #ccc;
+  margin-left: -1px;
+  position: relative;
+  left: 1px;
+}
+.tab [type=radio] {
+  display: none;
+}
+.content {
+  position: absolute;
+  top: 28px;
+  left: 0;
+  background: white;
+  right: 0;
+  bottom: 0;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+[type=radio]:checked ~ label {
+  background: white;
+  border-bottom: 1px solid white;
+  z-index: 2;
+}
+[type=radio]:checked ~ label ~ .content {
+  z-index: 1;
+}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
+.kommune-filter{
+  padding-left: 15px;
+}
+
+/* STYLING FOR RECT BARS */
+.rectangle{
+  fill:teal;
+  cursor: pointer;
+}
+
+/* STYLING FOR TOOLTIP */
+
+.rectangle:hover {
+  fill: orangered;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+/*STYLING FOR DOD*/
+#dod{
+    background-color: grey;
+    border-radius: 25px;
+    height: 500px;
+    width: 500px;
+    position: fixed;
+    display: none;
+}
+/* LINES */
+#averageLine{
+	stroke:red;
+	stroke-width:1;
+  display:none;
+}
