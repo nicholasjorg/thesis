@@ -114,7 +114,7 @@ div.bar {
   left: 0;
 }
 
-/*STYLING FOR DOD*/
+/*STYLING FOR DOD
 #dod{
     background-color: grey;
     border-radius: 25px;
@@ -123,6 +123,7 @@ div.bar {
     position: fixed;
     display: none;
 }
+*/
 /* LINES 
 #averageLine{
 	stroke:red;

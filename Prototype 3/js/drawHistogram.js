@@ -1,6 +1,6 @@
 function drawHistogram(data){
     // console.log("CurrentRegion: "+currentRegion+ "  currentMunicipality: "+currentMunicipality);
-        if(currentRegion !== null && currentMunicipality === null)
+        if(currentRegion !== null && currentMunicipality === null || kunKommune === true)
             drawHistogramKommune(data);
         else if(currentMunicipality !== null)
             drawHistogramInstitutions(data);
@@ -101,6 +101,8 @@ function drawHistogramRegion(data){
             .attr("y2", yScale(avg))
             .attr("id", "averageLine")
             .attr("class", "line");
+
+            $("#gennemsnitsInfo").empty().append("<h3>Gennemsnit:</h3><b>Gennemsnitstal: </b>"+avg);
         }
     }
 
@@ -118,22 +120,28 @@ function drawHistogramKommune(data){
     d3.select("svg").remove();
 
     var newData = Array();
-    //Kopiere de relevante regioner og typer ind i newData
-    for(var i=0; i<Object.keys(data).length; i++){
-        if(data[i].region == currentRegion){
-            var result = $.grep(newData, function(e){ return e.region == currentRegion;});
-            var antalVærker = data[i].antal;
-            var tmpKommune = data[i].kommune;
-            if (result.length === 0) {
-                // not found
-                var tmpArr = {kommune:tmpKommune, antal:antalVærker};
-                newData.push(tmpArr);
-            } else if (result.length == 1) {
-                // access the foo property using result[0].foo
-                result[0].antal = result[0].antal+antalVærker;
+    console.log(data);
+
+
+    //Kopiere de relevante regioner og typer ind i newData, hvis dette er ingen for en enkelt region
+    if(kunKommune === false){
+        for(var i=0; i<Object.keys(data).length; i++){
+                if(data[i].region == currentRegion){
+                    var result = $.grep(newData, function(e){ return e.region == currentRegion;});
+                    var antalVærker = data[i].antal;
+                    var tmpKommune = data[i].kommune;
+                    if (result.length === 0) {
+                        // not found
+                        var tmpArr = {kommune:tmpKommune, antal:antalVærker};
+                        newData.push(tmpArr);
+                    } else if (result.length == 1) {
+                        // access the foo property using result[0].foo
+                        result[0].antal = result[0].antal+antalVærker;
+                    }
+                }
             }
-        }
     }
+    else newData = data;
     console.log(newData);
 
         //Sorterer data fra parametreret ascending order
@@ -142,8 +150,8 @@ function drawHistogramKommune(data){
         });
 
         //Sætter variable
-        var margin = {top: 10, right: 0, bottom: 10, left: 40};
-        var w = 500, h = 500;
+        var margin = {top: 10, right: 0, bottom: 100, left: 40};
+        var w = 500, h = 600;
 
         //Laver svg element til at komme figuren
         var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
@@ -184,7 +192,13 @@ function drawHistogramKommune(data){
 
         //Bygger akser
         var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-        svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis);
+        svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis)
+        .selectAll("text")
+        .attr("y", 0)
+        .attr("x", 9)
+        .attr("dy", ".35em")
+        .attr("transform", "rotate(90)")
+        .style("text-anchor", "start");
         var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
         svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
 
@@ -202,6 +216,13 @@ function drawHistogramKommune(data){
             .attr("y2", yScale(avg))
             .attr("id", "averageLine")
             .attr("class", "line");
+
+            var landMed = d3.median(data, function(d) { return d.antal; });
+            console.log("meidan: "+landMed);
+            var landMean = d3.mean(data, function(d) { return d.antal; });
+            console.log("Mean: "+landMean);
+
+            $("#gennemsnitsInfo").empty().append("<h3>Gennemsnit:</h3><b>Gennemsnitstal: </b>"+avg);
         }
     }
 
@@ -232,8 +253,8 @@ function drawHistogramKommune(data){
         });
 
         //Sætter variable
-        var margin = {top: 10, right: 0, bottom: 10, left: 40};
-        var w = 500, h = 500;
+        var margin = {top: 10, right: 0, bottom: 100, left: 40};
+        var w = 500, h = 600;
 
         //Laver svg element til at komme figuren
         var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
@@ -273,23 +294,13 @@ function drawHistogramKommune(data){
 
         //Bygger akser
         var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-        svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis);
+        svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis)
+        .selectAll("text")
+        .attr("y", 0)
+        .attr("x", 9)
+        .attr("dy", ".35em")
+        .attr("transform", "rotate(90)")
+        .style("text-anchor", "start");
         var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
         svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
-
-        //Tegner gennemsnitsstreg
-        var dataSum = d3.sum(newData, function(d) { return d.antal; });
-        //console.log(dataSum/data.length);
-
-        var line = d3.svg.line()
-        .x(function(d, i) {
-            return xScale2(d.institution) + i; })
-        .y(function(d, i) { return yScale(dataSum/data.length);
-        });
-
-        svg.append("path")
-        .datum(data)
-        .attr("id","averageLine")
-        .attr("class", "line")
-        .attr("d", line);
     }

@@ -1,16 +1,16 @@
     var colors = {"min":"#b3d9ff", "q1":"#66b3ff", "q2":"#1a8cff", "q3":"#0066cc", "max":"#004080"};
 
     function giveColors(newData){
-        console.log("Så skal der farve på drengen!");
+        // console.log("Så skal der farve på drengen!");
         var q = calculateQuatil(newData);
+        // console.log(q);
         // updateFarvekode(q);
         // console.log(q);
         //console.log("min: "+q.min+" q1: "+q.q1+" q2: "+q.q2+" q3: "+q.q1+" max: "+q.max);
         // console.log("currentRegion: "+currentRegion);
         // console.log("CurrentRegion: "+currentRegion+ "  currentMunicipality: "+currentMunicipality);
         if(gennemsnit === true){
-            console.log("gennemsnit er true");
-            console.log(q);
+            // console.log("gennemsnit er true");
             for (var i = 0; i < Object.keys(newData).length; i++) {
                 if(newData[i].region == "UdenforDanmark") continue;
                 var string = "#".concat(newData[i].kommune);
@@ -22,7 +22,7 @@
         }
 
         //Fuldt overblik. Ser hele kortet
-        else if(currentRegion === null){
+        else if(currentRegion === null && kunKommune === false){
              for(var key in q){
                 var string = ".".concat(q[key][0]);
                 if(key == "min"){$(string).css("fill", colors.min); $(string).css("opacity", 1);}
@@ -34,7 +34,7 @@
         }
         //Zoomet ind på enkelt kommune
         else if(currentMunicipality !== null){
-            console.log("Skal farver en enkelt kommune");
+            // console.log("Skal farver en enkelt kommune");
             for (var i = 0; i < Object.keys(newData).length; i++) {
             var string = "#".concat(newData[i].kommune);
                 //Giver fuld farve til valgt kommune
@@ -45,14 +45,16 @@
                     else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1); $(string).css("opacity", 1);}
                     else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2); $(string).css("opacity", 1);}
                     else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3); $(string).css("opacity", 1);}
+                    else if(newData[i].antal==q.max) {$(string).css("fill", colors.max); $(string).css("opacity", 1);}
                 }
                 //Giver mindre farve til ikke valgte kommuner
                 else{
-                    if(newData[i].antal === 0) {$(string).css("fill", "grey"); $(string).css("opacity", 0.7);}
-                    else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min); $(string).css("opacity", 0.7);}
-                    else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1); $(string).css("opacity", 0.7);}
-                    else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2); $(string).css("opacity", 0.7);}
-                    else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3); $(string).css("opacity", 0.7);}
+                    if(newData[i].antal === 0) {$(string).css("fill", "grey"); $(string).css("opacity", 0.5);}
+                    else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min); $(string).css("opacity", 0.5);}
+                    else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1); $(string).css("opacity", 0.5);}
+                    else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2); $(string).css("opacity", 0.5);}
+                    else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3); $(string).css("opacity", 0.5);}
+                    else if(newData[i].antal==q.max) {$(string).css("fill", colors.max); $(string).css("opacity", 0.5);}
                 }
             }
         }
@@ -68,60 +70,52 @@
                 else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1); $(string).css("opacity", 1);}
                 else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2); $(string).css("opacity", 1);}
                 else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3); $(string).css("opacity", 1);}
+                else if(newData[i].antal==q.max) {$(string).css("fill", colors.max); $(string).css("opacity", 1);}
             }
         }
+        //Her  farves alle kommuner
         else{
-            console.log("I else statement. Her skal fuck farves");
             for (var i = 0; i < Object.keys(newData).length; i++) {
                 if(newData[i].region == "UdenforDanmark") continue;
                 var string = "#".concat(newData[i].kommune);
                 //Giver forskellige farver baseret på værdi ifht. kvartil
-                if(newData[i].antal === 0)
-                    $(string).css("fill", colors.min);
-                else if(newData[i].antal<=q.q1)
-                    $(string).css("fill", colors.q1);
-                else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2)
-                    $(string).css("fill", colors.q2);
-                else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3)
-                    $(string).css("fill", colors.q3);
-                else if(newData[i].antal>=q.q3)
-                    $(string).css("fill", colors.max);
+                if(newData[i].antal === 0) {$(string).css("fill", "grey"); $(string).css("opacity", 1);}
+                else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min); $(string).css("opacity", 1);}
+                else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1); $(string).css("opacity", 1);}
+                else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2); $(string).css("opacity", 1);}
+                else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3); $(string).css("opacity", 1);}
+                else if(newData[i].antal==q.max) {$(string).css("fill", colors.max); $(string).css("opacity", 1);}
             }
         }
     }
-
-    function colorAllMunicipalities(){
-
-    }
-
 
     function calculateQuatil(newData) {
         var quar = new Array();
         var min, q1, q2, q3, max;
-        if(currentRegion !== null || gennemsnit === true){
-            // for (var i = 0; i < Object.keys(newData).length; i++)
-            //     {if(newData[i].region === currentRegion) quar.push(newData[i].antal);}
-            console.log(newData);
+        if(currentRegion !== null || gennemsnit === true || kunKommune === true){
             for (var i = 0; i < Object.keys(newData).length; i++){
                 quar.push(newData[i].antal);
             }
-            console.log(quar);
+            // console.log(quar);
             // quar = sortArray(quar);
             quar.sort(function(a, b){return a-b});
 
-            console.log(quar);
+            // console.log(quar);
 
 
             min = quar[0];
             q1 = quar[Math.floor((quar.length / 4))];
-            q2 = Math.floor(quar.length/2);   //median(quar);
+            q2 = quar[Math.floor(quar.length/2)];   //median(quar);
             q3 = quar[Math.ceil((quar.length * (3 / 4)))];
             max = quar[quar.length-1];
 
-            console.log("Min: "+min+" q1: "+q1+" q2: "+q2+" q3: "+q3+" Max: "+max);
+            $("#gennemsnitsInfo").empty().append("<h3>Gennemsnit:</h3><b>Gennemsnitstal: </b>"+q2);
+            // console.log(min+q1+q2+q3+max);
+
+            // console.log("Min: "+min+" q1: "+q1+" q2: "+q2+" q3: "+q3+" Max: "+max);
         }
-        else if(regionEllerKommune  == "region"){
-            Hovedstaden=0, Midtjylland=0, Nordjylland=0, Sjælland=0, Syddanmark=0, UdenforDanmark=0;
+        else if(currentRegion === null && currentMunicipality === null) {
+            var Hovedstaden=0, Midtjylland=0, Nordjylland=0, Sjælland=0, Syddanmark=0, UdenforDanmark=0;
             for (var i = 0; i < Object.keys(newData).length; i++) {
                 switch (newData[i].region){
                     case "Hovedstaden": Hovedstaden = Hovedstaden + newData[i].antal; break;
@@ -184,7 +178,8 @@ function drawMap(newData){
         if (error) {console.log(error); return;}
     
         var svgNode = documentFragment.getElementsByTagName("svg")[0];
-    
+        console.log(svgNode);
+        
         svg.node().appendChild(svgNode);
 
         var a = document.getElementById("SVGmap");
@@ -279,11 +274,12 @@ function clicked(d) {
         height: bbox.height,
       };
     var transX, transY;
-    
+    console.log(d.className);
     var reg = d.className.baseVal;
     var muni = d.id;
 
-    if(currentRegion !== null && currentMunicipality === null || currentRegion !== null && currentMunicipality !== muni){
+    if(currentRegion !== null && currentMunicipality === null || 
+        currentRegion !== null && currentMunicipality !== muni || kunKommune === true && active !== d){
         d3.select("#masterGroup").transition().duration(1000).attr('transform', function(d) {
         var testScale = Math.max(rectAttr.width+10, rectAttr.height+10);
         var widthScale = 472 / testScale;
@@ -299,7 +295,7 @@ function clicked(d) {
         giveColors(newData);
         active = d;
     }
-    else if(currentRegion === null){
+    else if(currentRegion === null && kunKommune !== true){
         var string = ".".concat(reg);
         currentRegion = reg;
 

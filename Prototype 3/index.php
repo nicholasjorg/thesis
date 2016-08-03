@@ -8,6 +8,7 @@
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src = "js/drawMap.js"></script>
 <script src = "js/drawHistogram.js"></script>
+<script src = "js/leftMenu.js"></script>
 
 <div class = "container-fluid">
     <div class = "row">
@@ -156,6 +157,9 @@
                     <div class="checkbox" id="indbyggertalWrapper">
                         <label><input type="checkbox" id="indbyggertalCheck" value="indbyggertal">Indbyggertal</label>
                     </div>
+                    <div class="checkbox" id ="KulturWrapper">
+                        <label><input type="checkbox" id="kulturCheck" name="kulturBudget" value="kulturBudget">Kulturbudget pr. indbygger</label>
+                    </div>
                 </div>
             </div>
         </div><!-- End of menu -->
@@ -168,20 +172,35 @@
                 <li id="menuInfo"><a href="#menuInfo">Info</a></li>
             </ul>
             <div id="displayKort" class="tab-content">
-                <div class="col-sm-12 tab-pane fade in active row">Her skal vises Kort</div>
+                <div class="col-sm-12 tab-pane fade in active row"><div id="tooptipKort" style="display:none"></div></div>
             </div>
             <div id="displayHistogram" class="tab-content">
-                <div class="col-sm-12 tab-pane fade">Her vises histogram</div>
+                <div class="col-sm-12 tab-pane fade"></div>
             </div>
             <div id="displayInfo" class="tab-content">
-                <div class="col-sm-12 tab-pane fade">Her skal vises Info</div>
+                <div class="col-sm-12 tab-pane fade"></div>
             </div>
+        <div class="pull-right">
+            <form class="navbar-form" role="search">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search" name="srch-term" id="searchField">
+                 <!--
+                <div class="input-group-btn">
+                   <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button> 
+                </div>
+                -->
+            </div>
+            </form>
+        </div>
         <!--- <?php //echo file_get_contents("kort.svg"); ?> -->
         <!-- Graph will be appended here -->
             </div>
         <div class="col-sm-2" id="tilbageKnap" style="display: none;"><button type="button" class="btn btn-primary">Regionsoversigt</button></div>
         </div><!-- End of graph -->
+        
+        <!-- Venstre menun -->
         <div class = "col-sm-2 pull-right" id = "activeParameters">
+            <div id="naviMap"> Herunder skal der være et lille kort. Som skal hjælpe med navigation</div>
             <h3>Farvekode</h3>
             <div id="farvekode"></div>
             <h3> Region: </h3>
@@ -201,9 +220,10 @@
             <div id = "aktiveTyper">
                 Alle
             </div>
+            <!-- Details on demand -->
+            <div id="dod" style="display:none"></div>
+            <div id="gennemsnitsInfo"></div>
         </div>
-        <!-- Details on demand -->
-        <div id="dod" style="display:none"></div>
     </div><!-- End of Row -->
 </div><!-- End of container -->
 <!-- Details on demand Div -->
@@ -213,12 +233,13 @@
 <!--Script til at manipulere data via HTML inputs -->
 <script type="text/javascript">
 var newData = new Array();
-    var Hovedstaden=0, Midtjylland=0, Nordjylland=0, Sjælland=0, Syddanmark=0, UdenforDanmark=0;
+    // var Hovedstaden=0, Midtjylland=0, Nordjylland=0, Sjælland=0, Syddanmark=0, UdenforDanmark=0;
     var dataset = <?php echo $dataset ?>;
     var indbyggerTabel = <?php echo $indbyggertal ?>;
-    var indbyggertal;
+    var kulturbudgetTabel = <?php echo $kulturbudget ?>;
     var gennemsnit = false;
     var active;
+    var kunKommune = false;
     var currentRegion = null, currentMunicipality=null;
     var colors = {"min":"#b3d9ff", "q1":"#66b3ff", "q2":"#1a8cff", "q3":"#0066cc", "max":"#004080"};
     var currentMenu = "kort";
@@ -235,9 +256,9 @@ var newData = new Array();
 	?>
     var regionMunicipality = <?php echo $regionMunicipality; ?>;
     
-    //Hvis nogle af nedstående variable er sat til null vil de ikke være gældende eller gælde for alle.
+    
 	var year, startYear, endYear, classification, municipalities;
-    var regionEllerKommune = "region";
+    // var regionEllerKommune = "region";
     year = null;
     startYear = null;
     endYear = null;
@@ -254,17 +275,20 @@ var newData = new Array();
     "Religion", "Sundhed - hospitaler", "Sundhed - pleje", "Transport", "Turisme", "Uddannelse - førskole", "Uddannelse - grundskole",
     "Uddannelse - ungdomsuddannelse", "Uddannelse - videregående uddannelse"];
     
-
     updateData();
+    updateNaviMap();
 
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-kommune input:radio').click(function() {
 		var name = $(this).val().trim();
         console.log(name);
 		if(name==="displayRegioner"){
-            //updateData();
+            kunKommune = false;
+            drawDiagram(newData);
 		}
 		else{
+            kunKommune = true;
+            drawDiagram(newData);
             // regionEllerKommune = "kommune";
 		}
         // chooseRegion();
@@ -334,25 +358,24 @@ var newData = new Array();
     $("#indbyggertalCheck").click(function(){
         if($("#indbyggertalCheck").prop('checked')){
             document.getElementById("gennemsnitCheck").checked = false;
+            document.getElementById("kulturCheck").checked = false;
+            var indbyggertal = new Array();
             if(year != null && year>=1993){
-                indbyggertal = new Array();
                 for(var i=0; i<Object.keys(indbyggerTabel).length; i++){
                     indbyggertal.push({kommune:indbyggerTabel[i].kommune, antal:parseFloat(indbyggerTabel[i][year])});
                 }
                 updateIndbyggerDiagram(newData, indbyggertal);
             }
             else if(startYear>=1993 && endYear<=2016){
-                indbyggertal = new Array();
                 for(var i=0; i<Object.keys(indbyggerTabel).length; i++){
                     indbyggertal.push({kommune:indbyggerTabel[i].kommune, antal:parseFloat(indbyggerTabel[i][endYear])});
                 }
                 updateIndbyggerDiagram(newData, indbyggertal);
             }
             else{
-                alert("Du har valgt et år hvor der ikke findes data. \n Derfor vælges årene 1993 - 2016");
+                alert("Du har valgt et år hvor der ikke findes data. \nDerfor vælges årene 1993 - 2016");
                 startYear = 1993;
                 endYear = 2016;
-                indbyggertal = new Array();
                 for(var i=0; i<Object.keys(indbyggerTabel).length; i++){
                     indbyggertal.push({kommune:indbyggerTabel[i].kommune, antal:parseFloat(indbyggerTabel[i][endYear])});
                 }
@@ -360,21 +383,59 @@ var newData = new Array();
             }
         }
         else{
-            indbyggertal = null; 
-            updateData();
+            indbyggertal = null;
+            updateData(); 
+            //drawDiagram(newData);
         }
     });
 
     $("#gennemsnitCheck").click(function(){
         if($("#gennemsnitCheck").prop('checked')) {
-            document.getElementById("indbyggertalCheck").checked = false;
             gennemsnit = true;
             drawDiagram(newData);
         }
         else{
             gennemsnit = false;
-            updateData();
+            $("#gennemsnitsInfo").empty();
+            document.getElementById("gennemsnitCheck").checked = false;
+            drawDiagram(newData);
             }
+    });
+
+    //Ændre i dataene ud fra kulturbudgettet
+    $("#kulturCheck").click(function(){
+        if($("#kulturCheck").prop('checked')) {
+            document.getElementById("gennemsnitCheck").checked = false;
+            document.getElementById("indbyggertalCheck").checked = false;
+            var kulturbudget = new Array();
+            if(year != null && year>=1993){
+                for(var i=0; i<Object.keys(kulturbudgetTabel).length; i++){
+                    kulturbudget.push({kommune:kulturbudgetTabel[i].kommune, antal:parseFloat(kulturbudgetTabel[i][year])});
+                }
+                updateIndbyggerDiagram(newData, kulturbudget);
+            }
+            else if(startYear>=1993 && endYear<=2016){
+                for(var i=0; i<Object.keys(kulturbudgetTabel).length; i++){
+                    kulturbudget.push({kommune:kulturbudgetTabel[i].kommune, antal:parseFloat(kulturbudgetTabel[i][endYear])});
+                }
+                updateIndbyggerDiagram(newData, kulturbudget);
+            }
+            else{
+                alert("Du har valgt et år hvor der ikke findes data. \nDerfor vælges årene 1993 - 2016");
+                startYear = 1993;
+                endYear = 2016;
+                for(var i=0; i<Object.keys(kulturbudgetTabel).length; i++){
+                    kulturbudget.push({kommune:kulturbudgetTabel[i].kommune, antal:parseFloat(kulturbudgetTabel[i][endYear])});
+                }
+                updateIndbyggerDiagram(newData, kulturbudget);
+            }
+        }
+        else{
+            kulturbudget = null;
+            updateData();
+            document.getElementById("kulturCheck").checked = false;
+            //drawDiagram(newData);
+        }
     });
 
     //Tilbageknap i histogram. Kom fra kommuneniveau til regionsniveau
@@ -401,6 +462,53 @@ var newData = new Array();
     $("#menuInfo").click(function(){
     });
 
+/*
+    $(function(){
+        $('#searchField').autocomplete({
+            minLength: 2,
+            source: function (request, response) {
+                response($.map(data, function (value, key) {
+                return {
+                    label: value.municipality
+                }
+            }));
+        })
+    })
+*/
+
+
+    // //Hover på kommuner i kortet.
+    $(document).on('mouseenter','.Hovedstaden, .Sjælland, .Syddanmark, .Nordjylland, .Midtjylland, .rectangle',function(e){
+        var counrRegion = {"Hovedstaden":0, "Midtjylland":0, "Nordjylland":0, "Sjælland":0, "Syddanmark":0};
+        for (var j = 0; j < Object.keys(newData).length; j++) {
+            if(kunKommune === true || currentRegion !== null){
+                if (newData[j].kommune == this.id){
+                            $("#dod").empty().append("<h3>Info:</h3><b>Kommune: </b>"+this.id+"<br /> <b>Antal værker: </b>"+newData[j].antal);
+                            break;
+                        }
+            }
+            else{
+                switch(newData[j].region){
+                    case "Hovedstaden": counrRegion.Hovedstaden = counrRegion.Hovedstaden+newData[j].antal; break;
+                    case "Sjælland": counrRegion.Sjælland = counrRegion.Sjælland+newData[j].antal; break;
+                    case "Midtjylland": counrRegion.Midtjylland = counrRegion.Midtjylland+newData[j].antal; break;
+                    case "Syddanmark": counrRegion.Syddanmark = counrRegion.Syddanmark+newData[j].antal; break;
+                    case "Nordjylland": counrRegion.Nordjylland = counrRegion.Nordjylland+newData[j].antal; break;
+                    default: console.log("i default"); continue;
+                }
+                if(currentMenu === "kort") $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+this.className.baseVal+"<br /> <b>Antal værker: </b>"+counrRegion[this.className.baseVal]);
+                else $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+this.id+"<br /> <b>Antal værker: </b>"+counrRegion[this.id]);
+            }
+        }
+        $("#dod").css({top: event.clientY, left: event.clientX}).show();
+    });
+    //Bliver ikke brugt på nuværende tidspunkt.
+    $(document).on('mouseleave','.Hovedstaden, .Sjælland, .Syddanmark, .Nordjylland, .Midtjylland',function(e){
+        $("#dod").hide();
+    });
+
+
+
     function sortArray(array){
         array.sort(function(a,b){
             return parseFloat(a[1]) - parseFloat(b[1]);
@@ -422,9 +530,14 @@ var newData = new Array();
             for (var h = 0; h < institutions.length; h++){
                 institioner.push({institution:institutions[h], antal:0})
             }
-        	var tmpArr = {region:keyReg, kommune:keyKom, antal:0, typer, institioner};
+            var displayDate = new Array();
+            for (var j = 1918; j <= 2016; j++){
+                displayDate.push({displayDate:j, antal:0})
+            }
+        	var tmpArr = {region:keyReg, kommune:keyKom, antal:0, typer, institioner, displayDate};
             newData.push(tmpArr); 
         };
+        console.log(newData);
 
         newData = countData(newData);
 
@@ -455,12 +568,18 @@ var newData = new Array();
                                 break;
                             }
                         };
+                        for (var h = 0; h < Object.keys(newData[j].displayDate).length; h++) {
+                            if(newData[j].displayDate[h].displayDate == dataset[i].displayDate){
+                                newData[j].displayDate[h].antal = parseFloat(newData[j].displayDate[h].antal) + parseFloat(dataset[i].antal); 
+                                break;
+                            }
+                        };
                         break;
                     }
                 };
             }
         }
-        // console.log(newData);
+        console.log(newData);
     
         return newData;
     }
