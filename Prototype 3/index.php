@@ -194,7 +194,7 @@
             </div>
         <div class="col-sm-2" id="tilbageKnap" style="display: none;"><button type="button" class="btn btn-primary">Regionsoversigt</button></div>
         </div><!-- End of graph -->
-        
+
         <!-- Venstre menun -->
         <div class = "col-sm-2 pull-right" id = "activeParameters">
             <div id="naviMap"> Herunder skal der være et lille kort. Som skal hjælpe med navigation</div>
@@ -243,7 +243,7 @@ var newData = new Array();
     var colors = {"min":"#b3d9ff", "q1":"#66b3ff", "q2":"#1a8cff", "q3":"#0066cc", "max":"#004080"};
 
 
-    <?php 
+    <?php
 	    $jsonarray = array();
 	    $sql = 'SELECT kommune, region FROM indbyggertal group by region, kommune';
 	    $result = queryDB($sql);
@@ -254,26 +254,26 @@ var newData = new Array();
 	    $regionMunicipality = json_encode($jsonarray);
 	?>
     var regionMunicipality = <?php echo $regionMunicipality; ?>;
-    
-    
+
+
 	var year, startYear, endYear, classification, municipalities;
     // var regionEllerKommune = "region";
     year = null;
     startYear = null;
     endYear = null;
-    
+
     //Filter arrays
-    classification = 
+    classification =
     {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true,
     Design: true, Relief: true, Akvarel: true, Tekstil: true, Keramik: true, Collage: true, Glas: true, Møbel: true,
-    Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true, 
+    Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true,
     "Grafisk design":true, Performance:true, Installation:true, Lys:true};
 
     var institutions = ["Andre", "Bolig", "Byrum", "Erhverv", "Fritid", "Kultur - øvrig", "Kultur - biblioteker", "Kultur - museer",
     "Kutlur - øvrig", "Landskab", "Offentlig administration - kommune", "Offentlig administration - region", "Offentlig administration - stat",
     "Religion", "Sundhed - hospitaler", "Sundhed - pleje", "Transport", "Turisme", "Uddannelse - førskole", "Uddannelse - grundskole",
     "Uddannelse - ungdomsuddannelse", "Uddannelse - videregående uddannelse"];
-    
+
     updateData();
     // updateNaviMap();
 
@@ -387,7 +387,7 @@ var newData = new Array();
         }
         else{
             indbyggertal = null;
-            updateData(); 
+            updateData();
             //drawDiagram(newData);
         }
     });
@@ -468,9 +468,9 @@ var newData = new Array();
     });
 
     var lastHovered;
-    // //Hover på kommuner i kortet.
+    // Hover på kommuner i kortet.
     $(document).on('mouseenter','.Hovedstaden, .Sjælland, .Syddanmark, .Nordjylland, .Midtjylland, .rectangle',function(e){
-        var counrRegion = {"Hovedstaden":0, "Midtjylland":0, "Nordjylland":0, "Sjælland":0, "Syddanmark":0};
+        var countRegion = {"Hovedstaden":0, "Midtjylland":0, "Nordjylland":0, "Sjælland":0, "Syddanmark":0};
         if("#".concat(currentMunicipality) != lastHovered) $(lastHovered).css("stroke-width", 0.2);
         for (var j = 0; j < Object.keys(newData).length; j++) {
             if(kunKommune === true || currentRegion !== null){
@@ -487,27 +487,35 @@ var newData = new Array();
             }
             else{
                 switch(newData[j].region){
-                    case "Hovedstaden": counrRegion.Hovedstaden = counrRegion.Hovedstaden+newData[j].antal; break;
-                    case "Sjælland": counrRegion.Sjælland = counrRegion.Sjælland+newData[j].antal; break;
-                    case "Midtjylland": counrRegion.Midtjylland = counrRegion.Midtjylland+newData[j].antal; break;
-                    case "Syddanmark": counrRegion.Syddanmark = counrRegion.Syddanmark+newData[j].antal; break;
-                    case "Nordjylland": counrRegion.Nordjylland = counrRegion.Nordjylland+newData[j].antal; break;
+                    case "Hovedstaden": countRegion.Hovedstaden = countRegion.Hovedstaden+newData[j].antal; break;
+                    case "Sjælland": countRegion.Sjælland = countRegion.Sjælland+newData[j].antal; break;
+                    case "Midtjylland": countRegion.Midtjylland = countRegion.Midtjylland+newData[j].antal; break;
+                    case "Syddanmark": countRegion.Syddanmark = countRegion.Syddanmark+newData[j].antal; break;
+                    case "Nordjylland": countRegion.Nordjylland = countRegion.Nordjylland+newData[j].antal; break;
                     default: console.log("i default"); continue;
                 }
                 if(currentMenu === "kort") {
-                    $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+this.className.baseVal+"<br /> <b>Antal værker: </b>"+counrRegion[this.className.baseVal]);
+                    //Generer infoboks
+                    $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+this.className.baseVal+"<br /> <b>Antal værker: </b>"+countRegion[this.className.baseVal]);
+                    //Hover på regioner i kortet
+                    lastHovered = ".".concat(this.className.baseVal);
+                    console.log(lastHovered);
+                    $(lastHovered).css("stroke-width", 0.7);
+
                 }
-                else $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+this.id+"<br /> <b>Antal værker: </b>"+counrRegion[this.id]);
+                else $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+this.id+"<br /> <b>Antal værker: </b>"+countRegion[this.id]);
             }
         }
         $("#dod").css({top: event.clientY, left: event.clientX}).show();
     });
-    //Bliver ikke brugt på nuværende tidspunkt.
-    // $(document).on('mouseleave','.Hovedstaden, .Sjælland, .Syddanmark, .Nordjylland, .Midtjylland',function(e){
-    //     console.log("jeg flytter mig fra: "+string);
-    //     $(lastHoveredMuni).css("stroke-width", 0.2);
-    //     $("#dod").hide();
-    // });
+
+
+    //Mouse leave
+     $(document).on('mouseleave','.Hovedstaden, .Sjælland, .Syddanmark, .Nordjylland, .Midtjylland',function(e){
+         console.log("jeg flytter mig fra: "+string);
+         $(lastHoveredMuni).css("stroke-width", 0.2);
+         $("#dod").hide();
+    });
 
 
 //Kode som sytrer search field
@@ -553,16 +561,16 @@ $("#dataSelector").on('input',function() {
                 displayDate.push({displayDate:j, antal:0})
             }
         	var tmpArr = {region:keyReg, kommune:keyKom, antal:0, typer, institioner, displayDate};
-            newData.push(tmpArr); 
+            newData.push(tmpArr);
         };
 
         newData = countData(newData);
 
         drawDiagram(newData);
-        
+
         document.getElementById("indbyggertalCheck").checked = false;
         document.getElementById("gennemsnitCheck").checked = false;
-        
+
     }
     function countData(newData){
         for (var i = 0; i < Object.keys(dataset).length; i++) {
@@ -574,20 +582,20 @@ $("#dataSelector").on('input',function() {
                     if(newData[j].kommune == dataset[i].municipality){
                         for (var h = 0; h < Object.keys(newData[j].typer).length; h++) {
                             if(newData[j].typer[h].classification == dataset[i].classifications){
-                                newData[j].typer[h].antal = parseFloat(newData[j].typer[h].antal) + parseFloat(dataset[i].antal); 
+                                newData[j].typer[h].antal = parseFloat(newData[j].typer[h].antal) + parseFloat(dataset[i].antal);
                                 newData[j].antal = parseFloat(newData[j].antal) + parseFloat(dataset[i].antal);
                                 break;
                             }
                         };
                         for (var h = 0; h < Object.keys(newData[j].institioner).length; h++) {
                             if(newData[j].institioner[h].institution == dataset[i].institutionCode){
-                                newData[j].institioner[h].antal = parseFloat(newData[j].institioner[h].antal) + parseFloat(dataset[i].antal); 
+                                newData[j].institioner[h].antal = parseFloat(newData[j].institioner[h].antal) + parseFloat(dataset[i].antal);
                                 break;
                             }
                         };
                         for (var h = 0; h < Object.keys(newData[j].displayDate).length; h++) {
                             if(newData[j].displayDate[h].displayDate == dataset[i].displayDate){
-                                newData[j].displayDate[h].antal = parseFloat(newData[j].displayDate[h].antal) + parseFloat(dataset[i].antal); 
+                                newData[j].displayDate[h].antal = parseFloat(newData[j].displayDate[h].antal) + parseFloat(dataset[i].antal);
                                 break;
                             }
                         };
@@ -596,7 +604,7 @@ $("#dataSelector").on('input',function() {
                 };
             }
         }
-    
+
         return newData;
     }
 
