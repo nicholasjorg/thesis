@@ -200,9 +200,35 @@ function drawMap(newData){
               return 'translate(' + 0 + ',' + 0 + ')scale(' + 1 + ')';
               });
         }
+        if(currentMunicipality !== null){
+           var string = "#".concat(currentMunicipality);
+            var allChildNodes = d3.select("#masterGroup").selectAll(string)[0];
+
+            //Udregner størrelsen af Border Box
+            var x = d3.min(allChildNodes, function(d) {return d.getBBox().x;}),
+                y = d3.min(allChildNodes, function(d) {return d.getBBox().y;}),
+                width = d3.max(allChildNodes, function(d) {
+                    var bb = d.getBBox();
+                    return (bb.x + bb.width) - x;
+                }),
+                height = d3.max(allChildNodes, function(d) {
+                    var bb = d.getBBox();
+                    return (bb.y + bb.height) - y;
+                });
         
+            d3.select("#masterGroup").transition().duration(1000).attr('transform', function (d){
+                var testScale = Math.max(width, height);
+                var widthScale = 472 / testScale;
+                var heightScale = 584 / testScale;
+                var scale = Math.max(widthScale, heightScale);
+                transX = -(x) * scale;
+                transY = -(y) * scale;
+                return 'translate(' + transX + ',' + transY + ')scale(' + scale + ')';
+            }).attr('stroke-width','0.2');
+        }
+        }
         //Hvis der er en aktiv valgt region. Vil dette sørge for at denne vil være zommet ind på, hvis man forlader kortet
-        if(currentRegion !== null){
+        else if(currentRegion !== null){
             var string = ".".concat(currentRegion);
             var allChildNodes = d3.select("#masterGroup").selectAll(string)[0];
 
@@ -253,6 +279,7 @@ function clicked(d) {
     if(currentRegion !== null && currentMunicipality === null ||
         currentRegion !== null && currentMunicipality !== muni || kunKommune === true && active !== d){
         d3.select("#masterGroup").transition().duration(1000).attr('transform', function(d) {
+
         var testScale = Math.max(rectAttr.width+10, rectAttr.height+10);
         var widthScale = 472 / testScale;
         var heightScale = 584 / testScale;
