@@ -91,12 +91,16 @@ div.bar {
 }
 
 .rectangleIns{
-  fill:teal;
+  fill: teal;
 }
 /* STYLING FOR TOOLTIP */
 
 .rectangle:hover {
   fill: orangered;
+}
+
+.Hovedstaden, .Sjælland, .Nordjylland, .Syddanmark, .Midtjylland {
+  cursor: pointer;
 }
 
 .d3-tip {

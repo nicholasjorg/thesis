@@ -1,19 +1,11 @@
 function drawHistogram(data){
-    console.log("CurrentRegion: "+currentRegion+ "  currentMunicipality: "+currentMunicipality);
+    // console.log("CurrentRegion: "+currentRegion+ "  currentMunicipality: "+currentMunicipality+ " kunKommune: "+kunKommune);
         if(currentRegion !== null && currentMunicipality === null || kunKommune === true)
-            drawHistogramKommune(data);
+            {drawHistogramKommune(data); console.log("drawHistogramKommune(data);"); }
         else if(currentMunicipality !== null)
             drawHistogramInstitutions(data);
         else
             drawHistogramRegion(data);
-
-    //     if(currentRegion != null)
-    //         {$("#tilbageKnap").show();
-    //     console.log("tilbage knap skal fjernes! current region er null");}
-    //     else
-    //         {$("#tilbageKnap").hide(); 
-    //     console.log("tilbageknap skal tilføjes. Vi er i en region");
-    // }
 }
 
 function drawHistogramRegion(data){
@@ -54,6 +46,14 @@ function drawHistogramRegion(data){
         //Laver svg element til at komme figuren
         var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
 
+        //Tooltip
+        var tip = d3.tip()
+          .attr('class', 'd3-tip')
+          .offset([-10, 0])
+          .html(function(d) {
+            return "Klik for mere info om " +  d.region;
+        });
+
         //Laver scale
         var min = newData[0].antal;
         var max = newData[Object.keys(newData).length-1].antal;
@@ -65,7 +65,7 @@ function drawHistogramRegion(data){
         xScale.domain(newData.map(function (d){return d.region;}));
         xScale2.domain(newData.map(function (d){return d.region;}));
         //From tooltip.js
-        // svg.call(tip);
+        svg.call(tip);
 
         //Tegner rectangels
         svg.selectAll("rect").data(newData).enter()
@@ -77,9 +77,9 @@ function drawHistogramRegion(data){
         .attr("y", function (d){ return yScale(d.antal);})
         .attr("width", xScale.rangeBand() )
         .attr("height", function (d){ return yScale(0) - yScale(d.antal);})
-        .on("click", function(){ clickedRegion(data, this);});
-        // .on('mouseover', tip.show)
-        // .on('mouseout', tip.hide);
+        .on("click", function(d){tip.hide(d); clickedRegion(data, this);})
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide);
 
         //Bygger akser
         var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
@@ -123,7 +123,7 @@ function drawHistogramKommune(data){
     var newData = Array();
 
     //Kopiere de relevante regioner og typer ind i newData, hvis dette er ingen for en enkelt region
-    if(kunKommune === false){
+    if(kunKommune === false || currentRegion !== null){
         for(var i=0; i<Object.keys(data).length; i++){
                 if(data[i].region == currentRegion){
                     var result = $.grep(newData, function(e){ return e.region == currentRegion;});
@@ -154,6 +154,14 @@ function drawHistogramKommune(data){
         //Laver svg element til at komme figuren
         var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
 
+        //Tooptip
+        var tip = d3.tip()
+          .attr('class', 'd3-tip')
+          .offset([-10, 0])
+          .html(function(d) {
+            return "Klik for mere info om " +  d.kommune;
+        });
+
         //Laver scale
         var min = newData[0].antal;
         var max = newData[Object.keys(newData).length-1].antal;
@@ -165,7 +173,7 @@ function drawHistogramKommune(data){
         xScale.domain(newData.map(function (d){return d.kommune;}));
         xScale2.domain(newData.map(function (d){return d.kommune;}));
         //From tooltip.js
-        // svg.call(tip);
+        svg.call(tip);
 
         //Tegner rectangels
         svg.selectAll("rect").data(newData).enter()
@@ -177,9 +185,10 @@ function drawHistogramKommune(data){
         .attr("y", function (d){ return yScale(d.antal);})
         .attr("width", xScale.rangeBand() )
         .attr("height", function (d){ return yScale(0) - yScale(d.antal);})
-        .on("click", function(){ clickedKommune(data, this);});
-        // .on('mouseover', tip.show)
-        // .on('mouseout', tip.hide);
+        .on("click", function(d){tip.hide(d); clickedKommune(data, this);})
+        .on('mouseover', tip.show)
+        .on('mouseout', tip.hide);
+
 
         //Titel på diagram
         svg.append("text")
@@ -226,6 +235,12 @@ function drawHistogramKommune(data){
 
     function clickedKommune(data, d){
         currentMunicipality = d.id;
+        for (var i = 0; i < Object.keys(newData).length; i++) {
+            if(newData[i].kommune === currentMunicipality){
+                currentRegion = newData[i].region;
+                break;
+            }
+        };
         whereAmI();
         drawHistogramInstitutions(data);
         document.getElementById("indbyggertalCheck").checked = false;

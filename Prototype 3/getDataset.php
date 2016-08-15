@@ -11,12 +11,3 @@
     }
     $dataset = json_encode($jsonarray);
 	?>
-
-
-
-
-
-
-
-
-

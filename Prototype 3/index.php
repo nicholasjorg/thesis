@@ -10,6 +10,7 @@
 <script src = "js/drawHistogram.js"></script>
 <script src = "js/leftMenu.js"></script>
 <script src = "js/whereAreWe.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 
 <div class = "container-fluid">
     <div class = "row">
@@ -171,6 +172,7 @@
                 <li id="menuKort" class="active"><a href="#menuKort">Kort</a></li>
                 <li id="menuHistogram"><a href="#menuHistogram">Histogram</a></li>
                 <li id="menuInfo"><a href="#menuInfo">Info</a></li>
+                <li> </li>
             </ul>
             <div id="displayKort" class="tab-content">
                 <div class="col-sm-12 tab-pane fade in active row"><div id="tooptipKort" style="display:none"></div></div>
@@ -186,7 +188,7 @@
             <!-- Data komme fra jQuery kode -->
             <datalist id="datalist"> </datalist>
         </div>
-        <div class="pull-left" id="whereAmI">Her skal være filsystem</div>
+        <div id="whereAmI">Her skal være filsystem</div>
         <!--- <?php //echo file_get_contents("kort.svg"); ?> -->
         <!-- Graph will be appended here -->
             </div>
@@ -342,8 +344,10 @@ var newData = new Array();
 
 	//Ændre i intervallet. Denne funktion kalder når knappen vælg trykkes
 	$("#btnSubmit").click(function(){
-        if($('#selectStartYear').val() === null || $('#selectEndYear').val() === null)
+        if($('#selectStartYear').val() === "start" || $('#selectEndYear').val() === "slut")
             {alert("Du skal vælge et start år og et slut år"); return;}
+        if($('#selectStartYear').val() > $('#selectEndYear').val())
+            {alert("Startåret skal være før slutåret."); return;}
 		$('#selectSingleYear').val("Vaelg");
 		year = null;
 		startYear = $('#selectStartYear').val();
@@ -467,7 +471,7 @@ var newData = new Array();
     // //Hover på kommuner i kortet.
     $(document).on('mouseenter','.Hovedstaden, .Sjælland, .Syddanmark, .Nordjylland, .Midtjylland, .rectangle',function(e){
         var counrRegion = {"Hovedstaden":0, "Midtjylland":0, "Nordjylland":0, "Sjælland":0, "Syddanmark":0};
-        $(lastHovered).css("stroke-width", 0.2);
+        if("#".concat(currentMunicipality) != lastHovered) $(lastHovered).css("stroke-width", 0.2);
         for (var j = 0; j < Object.keys(newData).length; j++) {
             if(kunKommune === true || currentRegion !== null){
                 if (newData[j].kommune == this.id){

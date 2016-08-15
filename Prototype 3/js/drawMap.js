@@ -200,6 +200,8 @@ function drawMap(newData){
               return 'translate(' + 0 + ',' + 0 + ')scale(' + 1 + ')';
               });
         }
+
+        //Hvis en kommmune er valgt vil der blive zoomet ind på denne når kortet tegnes.
         if(currentMunicipality !== null){
            var string = "#".concat(currentMunicipality);
             var allChildNodes = d3.select("#masterGroup").selectAll(string)[0];
@@ -225,7 +227,6 @@ function drawMap(newData){
                 transY = -(y) * scale;
                 return 'translate(' + transX + ',' + transY + ')scale(' + scale + ')';
             }).attr('stroke-width','0.2');
-        }
         }
         //Hvis der er en aktiv valgt region. Vil dette sørge for at denne vil være zommet ind på, hvis man forlader kortet
         else if(currentRegion !== null){
