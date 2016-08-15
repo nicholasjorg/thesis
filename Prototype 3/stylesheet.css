@@ -13,9 +13,6 @@ body {
 #overskrift{
   padding-left: 12%;
 }
-#graph{
-  margin-top: 100px;
-}
 
 div.bar {
 	display: inline-block;
@@ -42,6 +39,18 @@ div.bar {
 .tab [type=radio] {
   display: none;
 }
+
+.tilbageTilDanmark, .tilbageTilRegion, .tilbageTilKommune {
+  cursor: pointer;
+  font-style: italic;
+  display: inline;
+  text-decoration: underline;
+}
+.linkspacer {
+  font-style: italic;
+  display: inline;
+}
+
 .content {
   position: absolute;
   top: 28px;
@@ -60,7 +69,7 @@ div.bar {
 [type=radio]:checked ~ label ~ .content {
   z-index: 1;
 }
-.axis path,
+.axis path, 
 .axis line {
     fill: none;
     stroke: black;
@@ -81,6 +90,9 @@ div.bar {
   cursor: pointer;
 }
 
+.rectangleIns{
+  fill:teal;
+}
 /* STYLING FOR TOOLTIP */
 
 .rectangle:hover {

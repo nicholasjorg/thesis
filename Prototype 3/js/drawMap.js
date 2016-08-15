@@ -1,8 +1,7 @@
-    var colors = {"min":"#b3d9ff", "q1":"#66b3ff", "q2":"#1a8cff", "q3":"#0066cc", "max":"#004080"};
-
     function giveColors(newData){
         // console.log("Så skal der farve på drengen!");
         var q = calculateQuatil(newData);
+        whereAmI();
         // console.log(q);
         // updateFarvekode(q);
         // console.log(q);
@@ -15,9 +14,9 @@
                 if(newData[i].region == "UdenforDanmark") continue;
                 var string = "#".concat(newData[i].kommune);
                 //Giver forskellige farver baseret på værdi ifht. kvartil
-                if(newData[i].antal < q.q2) {$(string).css("fill", "red"); $(string).css("opacity", 1);}
-                else if(newData[i].antal == q.q2) {$(string).css("fill", "yellow"); $(string).css("opacity", 1);}
-                else if(newData[i].antal > q.q2) {$(string).css("fill", "green"); $(string).css("opacity", 1);}
+                if(newData[i].antal < q.q2) {$(string).css("fill", "red").css("stroke-width", 0.2);}
+                else if(newData[i].antal == q.q2) {$(string).css("fill", "yellow").css("stroke-width", 0.2);}
+                else if(newData[i].antal > q.q2) {$(string).css("fill", "green").css("stroke-width", 0.2);}
             }
         }
 
@@ -25,66 +24,69 @@
         else if(currentRegion === null && kunKommune === false){
              for(var key in q){
                 var string = ".".concat(q[key][0]);
-                if(key == "min"){$(string).css("fill", colors.min); $(string).css("opacity", 1);}
-                else if(key == "q1"){$(string).css("fill", colors.q1); $(string).css("opacity", 1);}
-                else if(key == "q2"){$(string).css("fill", colors.q2); $(string).css("opacity", 1);}
-                else if(key == "q3"){$(string).css("fill", colors.q3); $(string).css("opacity", 1);}
-                else if(key == "max"){$(string).css("fill", colors.max); $(string).css("opacity", 1);}
+                if(key == "min"){$(string).css("fill", colors.min).css("stroke-width", 0.2);}
+                else if(key == "q1"){$(string).css("fill", colors.q1).css("stroke-width", 0.2);}
+                else if(key == "q2"){$(string).css("fill", colors.q2).css("stroke-width", 0.2);}
+                else if(key == "q3"){$(string).css("fill", colors.q3).css("stroke-width", 0.2);}
+                else if(key == "max"){$(string).css("fill", colors.max).css("stroke-width", "black");}
             }
         }
         //Zoomet ind på enkelt kommune
         else if(currentMunicipality !== null){
-            // console.log("Skal farver en enkelt kommune");
+            console.log("Skal farver en enkelt kommune som er: "+currentMunicipality);
             for (var i = 0; i < Object.keys(newData).length; i++) {
             var string = "#".concat(newData[i].kommune);
                 //Giver fuld farve til valgt kommune
                 if(newData[i].kommune === currentMunicipality){
-                    console.log("Rigtig kommune valgt. Fuld farve: "+currentMunicipality+" newdata kommune : "+newData[i].kommune);
-                    if(newData[i].antal === 0) {$(string).css("fill", "grey"); $(string).css("opacity", 1);}
-                    else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min); $(string).css("opacity", 1);}
-                    else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1); $(string).css("opacity", 1);}
-                    else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2); $(string).css("opacity", 1);}
-                    else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3); $(string).css("opacity", 1);}
-                    else if(newData[i].antal==q.max) {$(string).css("fill", colors.max); $(string).css("opacity", 1);}
+                    console.log("rigtig kommune fundet. Skulle kun ske EN gang!");
+                    // console.log("Rigtig kommune valgt. Fuld farve: "+currentMunicipality+" newdata kommune : "+newData[i].kommune);
+                    if(newData[i].antal === 0) {$(string).css("fill", "grey").css("stroke-width", 0.7);}
+                    else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min).css("stroke-width", 0.7);}
+                    else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1).css("stroke-width", 0.7);}
+                    else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2).css("stroke-width", 0.7);}
+                    else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3).css("stroke-width", 0.7);}
+                    //else if(newData[i].antal==q.max) {$(string).css("fill", colors.max); $(string).css("stroke-width", 0.2);}
                 }
                 //Giver mindre farve til ikke valgte kommuner
                 else{
-                    if(newData[i].antal === 0) {$(string).css("fill", "grey"); $(string).css("opacity", 0.5);}
-                    else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min); $(string).css("opacity", 0.5);}
-                    else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1); $(string).css("opacity", 0.5);}
-                    else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2); $(string).css("opacity", 0.5);}
-                    else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3); $(string).css("opacity", 0.5);}
-                    else if(newData[i].antal==q.max) {$(string).css("fill", colors.max); $(string).css("opacity", 0.5);}
+                    if(newData[i].antal === 0) {$(string).css("fill", "grey").css("stroke-width", 0.2);}
+                    else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min).css("stroke-width", 0.2);}
+                    else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1).css("stroke-width", 0.2);}
+                    else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2).css("stroke-width", 0.2);}
+                    else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3).css("stroke-width", 0.2);}
+                    else if(newData[i].antal==q.max) {$(string).css("fill", colors.max).css("stroke-width", 0.2);}
                 }
             }
         }
         //Zoomet ind på en region
         else if (currentRegion !== null && currentMunicipality === null){
+            // console.log("Kun region bør være farver");
             for (var i = 0; i < Object.keys(newData).length; i++) {
                 if(newData[i].region == "UdenforDanmark") continue;
                 var string = "#".concat(newData[i].kommune);
                 //Giver forskellige farver baseret på værdi ifht. kvartil
-                if(newData[i].region != currentRegion) {$(string).css("fill", "#F5F5DC"); $(string).css("opacity", 1);}
-                else if(newData[i].antal === 0) {$(string).css("fill", "grey"); $(string).css("opacity", 1);}
-                else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min); $(string).css("opacity", 1);}
-                else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1); $(string).css("opacity", 1);}
-                else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2); $(string).css("opacity", 1);}
-                else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3); $(string).css("opacity", 1);}
-                else if(newData[i].antal==q.max) {$(string).css("fill", colors.max); $(string).css("opacity", 1);}
+                if(newData[i].region !== currentRegion) {$(string).css("fill", "#F5F5DC").css("stroke-width", 0.2);}
+                else if(newData[i].antal === 0) {$(string).css("fill", "grey").css("stroke-width", 0.2);}
+                else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min).css("stroke-width", 0.2);}
+                else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1).css("stroke-width", 0.2);}
+                else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2).css("stroke-width", 0.2);}
+                else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3).css("stroke-width", 0.2);}
+                else if(newData[i].antal==q.max) {$(string).css("fill", colors.max).css("stroke-width", 0.2);}
             }
         }
         //Her  farves alle kommuner
         else{
+            // console.log("Sidste give color. Alt farves!");
             for (var i = 0; i < Object.keys(newData).length; i++) {
                 if(newData[i].region == "UdenforDanmark") continue;
                 var string = "#".concat(newData[i].kommune);
                 //Giver forskellige farver baseret på værdi ifht. kvartil
-                if(newData[i].antal === 0) {$(string).css("fill", "grey"); $(string).css("opacity", 1);}
-                else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min); $(string).css("opacity", 1);}
-                else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1); $(string).css("opacity", 1);}
-                else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2); $(string).css("opacity", 1);}
-                else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3); $(string).css("opacity", 1);}
-                else if(newData[i].antal==q.max) {$(string).css("fill", colors.max); $(string).css("opacity", 1);}
+                if(newData[i].antal === 0) {$(string).css("fill", "grey").css("stroke-width", 0.2);}
+                else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min).css("stroke-width", 0.2);}
+                else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1).css("stroke-width", 0.2);}
+                else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2).css("stroke-width", 0.2);}
+                else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3).css("stroke-width", 0.2);}
+                else if(newData[i].antal==q.max) {$(string).css("fill", colors.max).css("stroke-width", 0.2);}
             }
         }
     }
@@ -178,8 +180,6 @@ function drawMap(newData){
         if (error) {console.log(error); return;}
     
         var svgNode = documentFragment.getElementsByTagName("svg")[0];
-        console.log(svgNode);
-        
         svg.node().appendChild(svgNode);
 
         var a = document.getElementById("SVGmap");
@@ -190,7 +190,9 @@ function drawMap(newData){
         // console.log(c);
 
         var masterGroup = d3.select("#masterGroup");
-        d3.selectAll(b).style("stroke","brown").attr("stroke-width","0.2").on("click", function(){ clicked(this);});
+        d3.selectAll(b)
+        .style("stroke","brown").attr("stroke-width","0.2")
+        .on("click", function(){ clicked(this);});
 
         //Hvis ingen regioner er valgt
         if(currentRegion === null){
@@ -216,7 +218,7 @@ function drawMap(newData){
                     return (bb.y + bb.height) - y;
                 });
         
-            d3.select("#masterGroup").attr('transform', function (d){
+            d3.select("#masterGroup").transition().duration(1000).attr('transform', function (d){
                 var testScale = Math.max(width, height);
                 var widthScale = 472 / testScale;
                 var heightScale = 584 / testScale;
@@ -232,38 +234,6 @@ function drawMap(newData){
     });
 }
 
-function updateFarvekode(q){
-    var widthBox = 200;
-    var heightBox = 120;
-    d3.select("#svgFarve").remove();
-    var svg = d3.select("#farvekode").append("svg").attr("id","svgFarve").attr("width", widthBox).attr("height", heightBox);
-    // svg.append("rect").attr("x", 0).attr("y", 0).attr("width", widthBox/10).attr("height", 2016).style('fill', colors.min);
-    // svg.append("p").text("Det her er min: "+q.min);
-    // svg.append("rect").attr("x", 0).attr("y", 25).attr("width", widthBox/10).attr("height", 20).style('fill', colors.q1);
-    // svg.append("rect").attr("x", 0).attr("y", 50).attr("width", widthBox/10).attr("height", 20).style('fill', colors.q2);
-    // svg.append("rect").attr("x", 0).attr("y", 75).attr("width", widthBox/10).attr("height", 20).style('fill', colors.q3);
-    // svg.append("rect").attr("x", 0).attr("y", 100).attr("width", widthBox/10).attr("height", 20).style('fill', colors.max);
-
-    var bar = svg.selectAll("g")
-    .data(q)
-    .enter().append("g")
-    //.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; })
-    .append("rect")
-    .attr("width", 20)
-    .attr("height", 20);
-
-    // bar.append("text")
-    //   .attr("x", function(d, i) { return i*20; })
-    //   .attr("y", 0)
-    //   .text(function(d) { return d; });
-
-    // console.log("min: "+q.min);
-    // console.log("q1: "+q.q1);
-    // console.log("q2: "+q.q2);
-    // console.log("q3: "+q.q3);
-    // console.log("max: "+q.max);
-}
-
 function clicked(d) {
     var bbox = d3.select(d).node().getBBox();
 
@@ -274,11 +244,13 @@ function clicked(d) {
         height: bbox.height,
       };
     var transX, transY;
-    console.log(d.className);
+    
+    //Class(Region) på d
     var reg = d.className.baseVal;
+    //Id (Municipality) på d
     var muni = d.id;
 
-    if(currentRegion !== null && currentMunicipality === null || 
+    if(currentRegion !== null && currentMunicipality === null ||
         currentRegion !== null && currentMunicipality !== muni || kunKommune === true && active !== d){
         d3.select("#masterGroup").transition().duration(1000).attr('transform', function(d) {
         var testScale = Math.max(rectAttr.width+10, rectAttr.height+10);
@@ -293,6 +265,7 @@ function clicked(d) {
         }).attr('stroke-width', '0.2');
         currentMunicipality = muni;
         giveColors(newData);
+        currentRegion = reg;
         active = d;
     }
     else if(currentRegion === null && kunKommune !== true){

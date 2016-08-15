@@ -1,5 +1,5 @@
 function drawHistogram(data){
-    // console.log("CurrentRegion: "+currentRegion+ "  currentMunicipality: "+currentMunicipality);
+    console.log("CurrentRegion: "+currentRegion+ "  currentMunicipality: "+currentMunicipality);
         if(currentRegion !== null && currentMunicipality === null || kunKommune === true)
             drawHistogramKommune(data);
         else if(currentMunicipality !== null)
@@ -49,7 +49,7 @@ function drawHistogramRegion(data){
         
         //Sætter variable
         var margin = {top: 10, right: 0, bottom: 10, left: 40};
-        var w = 500, h = 500;
+        var w = 500, h = 600;
 
         //Laver svg element til at komme figuren
         var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
@@ -110,6 +110,7 @@ function drawHistogramRegion(data){
         // console.log(data);
         // console.log(d);
         currentRegion = d.id;
+        whereAmI();
         // console.log("currentregion: "+currentRegion);
         drawHistogramKommune(data);
 
@@ -120,8 +121,6 @@ function drawHistogramKommune(data){
     d3.select("svg").remove();
 
     var newData = Array();
-    console.log(data);
-
 
     //Kopiere de relevante regioner og typer ind i newData, hvis dette er ingen for en enkelt region
     if(kunKommune === false){
@@ -142,8 +141,7 @@ function drawHistogramKommune(data){
             }
     }
     else newData = data;
-    console.log(newData);
-
+    
         //Sorterer data fra parametreret ascending order
         newData.sort(function(a,b){
             return parseFloat(a.antal) - parseFloat(b.antal);
@@ -228,6 +226,7 @@ function drawHistogramKommune(data){
 
     function clickedKommune(data, d){
         currentMunicipality = d.id;
+        whereAmI();
         drawHistogramInstitutions(data);
         document.getElementById("indbyggertalCheck").checked = false;
     }
@@ -276,7 +275,7 @@ function drawHistogramKommune(data){
         svg.selectAll("rect").data(newData).enter()
         .append("svg:a")
         .append("rect")
-        .attr("class",function(d,i){return "rectangle";})
+        .attr("class",function(d,i){return "rectangleIns";})
         .attr("id",function(d,i){return d.institution;})
         .attr("x",function(d,i){ return xScale(d.institution);})
         .attr("y", function (d){ return yScale(d.antal);})
