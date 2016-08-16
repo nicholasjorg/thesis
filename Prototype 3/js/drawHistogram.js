@@ -241,7 +241,7 @@ function drawHistogramKommune(data){
                 currentRegion = newData[i].region;
                 break;
             }
-        };
+        }
         whereAmI();
         drawHistogramInstitutions(data);
         document.getElementById("indbyggertalCheck").checked = false;
@@ -255,6 +255,7 @@ function drawHistogramKommune(data){
     //Kopiere de relevante regioner og typer ind i newData
     for(var i=0; i<Object.keys(data).length; i++){
         if(data[i].kommune == currentMunicipality){
+        correntLeftInfo(data[i].antal);
            for(var j=0; j<Object.keys(data[i].institioner).length; j++){
             if(data[i].institioner[j].antal !== 0)
                 newData.push(data[i].institioner[j]);

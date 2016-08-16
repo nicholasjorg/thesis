@@ -10,6 +10,7 @@
 <script src = "js/drawHistogram.js"></script>
 <script src = "js/leftMenu.js"></script>
 <script src = "js/whereAreWe.js"></script>
+<script src = "js/info.js"></script>
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 
 <div class = "container-fluid">
@@ -156,6 +157,9 @@
                     <div class="checkbox" id ="gennemsnitWrapper">
                         <label><input type="checkbox" id="gennemsnitCheck" name="gennemsnit" value="gennemsnit">Gennemsnit</label>
                     </div>
+                    <div class="checkbox" id ="medianWrapper">
+                        <label><input type="checkbox" id="medianCheck" name="median" value="median">Median</label>
+                    </div>
                     <div class="checkbox" id="indbyggertalWrapper">
                         <label><input type="checkbox" id="indbyggertalCheck" value="indbyggertal">Indbyggertal</label>
                     </div>
@@ -171,9 +175,20 @@
             <ul class="nav nav-tabs row">
                 <li id="menuKort" class="active"><a href="#menuKort">Kort</a></li>
                 <li id="menuHistogram"><a href="#menuHistogram">Histogram</a></li>
+<<<<<<< Updated upstream
                 <li id="menuVærktyper"><a href="#menuVærktyper">Værktyper</a></li>
+=======
+                <li id="menuInfo"><a href="#menuInfo">Type antal</a></li>
+>>>>>>> Stashed changes
                 <li> </li>
             </ul>
+            <div class="pull-right">
+            <input id="dataSelector" list="datalist" placeholder="Search">
+            <!-- Data komme fra jQuery kode -->
+            <datalist id="datalist"> </datalist>
+            </div>
+            <div id="whereAmI">Her skal være filsystem</div>
+
             <div id="displayKort" class="tab-content">
                 <div class="col-sm-12 tab-pane fade in active row"><div id="tooptipKort" style="display:none"></div></div>
             </div>
@@ -188,17 +203,10 @@
                     </div>
                 </div>
             </div>
-        <div class="pull-right">
-            <input id="dataSelector" list="datalist" placeholder="Search">
-            <!-- Data komme fra jQuery kode -->
-            <datalist id="datalist"> </datalist>
-        </div>
-        <div id="whereAmI">Her skal være filsystem</div>
         <!--- <?php //echo file_get_contents("kort.svg"); ?> -->
         <!-- Graph will be appended here -->
             </div>
-        <div class="col-sm-2" id="tilbageKnap" style="display: none;"><button type="button" class="btn btn-primary">Regionsoversigt</button></div>
-        </div><!-- End of graph -->
+       </div><!-- End of graph -->
 
         <!-- Venstre menun -->
         <div class = "col-sm-2 pull-right" id = "activeParameters">
@@ -235,7 +243,7 @@ var newData = new Array();
     var dataset = <?php echo $dataset ?>;
     var indbyggerTabel = <?php echo $indbyggertal ?>;
     var kulturbudgetTabel = <?php echo $kulturbudget ?>;
-    var gennemsnit = false;
+    var gennemsnit = false, median = false;
     var active;
     var kunKommune = false;
     var currentRegion = null, currentMunicipality=null;
@@ -358,6 +366,7 @@ var newData = new Array();
     $("#indbyggertalCheck").click(function(){
         if($("#indbyggertalCheck").prop('checked')){
             document.getElementById("gennemsnitCheck").checked = false;
+            document.getElementById("medianCheck").checked = false;
             document.getElementById("kulturCheck").checked = false;
             var indbyggertal = new Array();
             if(year != null && year>=1993){
@@ -404,6 +413,19 @@ var newData = new Array();
             }
     });
 
+    $("#medianCheck").click(function(){
+        if($("#medianCheck").prop('checked')) {
+            median = true;
+            drawDiagram(newData);
+        }
+        else{
+            median = false;
+            $("#gennemsnitsInfo").empty();
+            document.getElementById("medianCheck").checked = false;
+            drawDiagram(newData);
+            }
+    });
+
     //Ændre i dataene ud fra kulturbudgettet
     $("#kulturCheck").click(function(){
         if($("#kulturCheck").prop('checked')) {
@@ -442,28 +464,17 @@ var newData = new Array();
         }
     });
 
-    //Tilbageknap i histogram. Kom fra kommuneniveau til regionsniveau
-    $("#tilbageKnap").click(function(){
-        $('#tilbageKnap').hide();
-        currentRegion = null;
-        drawDiagram(newData);
-        console.log("CurrentRegion: "+currentRegion);
-    });
-
     $("#menuKort").click(function(){
         currentMenu = "kort";
         drawDiagram(newData);
-        $("#displayHistogram").hide();
-        $("#displayKort").show();
-        console.log("CurrentRegion: "+currentRegion);
     });
     $("#menuHistogram").click(function(){
         currentMenu = "histogram";
         drawDiagram(newData);
-        $("#displayKort").hide();
-        $("#displayHistogram").show();
     });
     $("#menuInfo").click(function(){
+        currentMenu = "info";
+        drawDiagram(newData);
     });
 
     
@@ -473,7 +484,7 @@ var newData = new Array();
         var countRegion = {"Hovedstaden":0, "Midtjylland":0, "Nordjylland":0, "Sjælland":0, "Syddanmark":0};
         if("#".concat(currentMunicipality) != lastHovered) $(lastHovered).css("stroke-width", 0.2);
         for (var j = 0; j < Object.keys(newData).length; j++) {
-            if(kunKommune === true || currentRegion !== null){
+            if(kunKommune === true || currentRegion !== null || median === true){
                 if (newData[j].kommune == this.id){
                             if(currentMenu === "kort") {
                                 $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+this.className.baseVal+"<br /><b>Kommune: </b>"+this.id+"<br /> <b>Antal værker: </b>"+newData[j].antal);
@@ -499,7 +510,6 @@ var newData = new Array();
                     $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+this.className.baseVal+"<br /> <b>Antal værker: </b>"+countRegion[this.className.baseVal]);
                     //Hover på regioner i kortet
                     lastHovered = ".".concat(this.className.baseVal);
-                    console.log(lastHovered);
                     $(lastHovered).css("stroke-width", 0.7);
 
                 }
@@ -510,12 +520,11 @@ var newData = new Array();
     });
 
 
-    //Mouse leave
-     $(document).on('mouseleave','.Hovedstaden, .Sjælland, .Syddanmark, .Nordjylland, .Midtjylland',function(e){
-         console.log("jeg flytter mig fra: "+string);
-         $(lastHoveredMuni).css("stroke-width", 0.2);
-         $("#dod").hide();
-    });
+    // //Mouse leave
+    //  $(document).on('mouseleave','.Hovedstaden, .Sjælland, .Syddanmark, .Nordjylland, .Midtjylland',function(e){
+    //      $(lastHoveredMuni).css("stroke-width", 0.2);
+    //      $("#dod").hide();
+    // });
 
 
 //Kode som sytrer search field
@@ -609,11 +618,17 @@ $("#dataSelector").on('input',function() {
     }
 
     function drawDiagram(data){
+        console.log("currentment: "+currentMenu);
+        d3.select("svg").remove();
+        d3.select("table").remove();
         if(currentMenu == "kort"){
             drawMap(data);
         }
         else if(currentMenu == "histogram"){
             drawHistogram(data);
+        }
+        else if(currentMenu == "info"){
+            showInfo(data);
         }
         whereAmI();
         updateActiveYears();

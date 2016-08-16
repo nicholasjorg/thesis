@@ -8,28 +8,27 @@ function whereAmI(){
 		$("#whereAmI")
 		.empty()
 		.append("<div class='tilbageTilDanmark'>Danmark </div>")
-		//.append("<select class='form-control linkspacer' id='hvilkeRegioner'></select>")
 		.append(dropRegion)
 		.append("<div class='tilbageTilRegion'> "+currentRegion+" </div>")
-		// .append("<select class='form-control linkspacer' id='hvilkeKommuner'></select>")
 		.append(dropKommune)
-		.append("<div class='tilbageTilKommune'> "+currentMunicipality+" </div>");
+		.append("<div class='tilbageTilKommune'> "+currentMunicipality+"</div>");
 	}
 	//Der er valgt en region
 	else if(currentRegion !== null){
 		$("#whereAmI")
 		.empty()
 		.append("<div class='tilbageTilDanmark'>Danmark </div>")
-		//.append("<select class='form-control linkspacer' id='hvilkeRegioner'></select>")
 		.append(dropRegion)
-		.append("<div class='tilbageTilRegion'> "+currentRegion+" </div>");
+		.append("<div class='tilbageTilRegion'> "+currentRegion+" </div>")
+		.append(dropKommune);
 	}
 	// onClick='eLevelBack '"'region'"');
 	//Intet er valgt. Landsdækkede
 	else{
 		$("#whereAmI")
 		.empty()
-		.append("<div class='tilbageTilDanmark'>Danmark</div>");
+		.append("<div class='tilbageTilDanmark'>Danmark </div>")
+		.append(dropRegion);
 	}
 
 	//De enkelte tilbage links skrevet som tekst
@@ -55,7 +54,7 @@ for (var i = 0; i < Object.keys(newData).length; i++) {
 //Tilføjer regioner og kommuner til dropdown menu
 $.each(ikkeValgteKommuner, function(index, value) {
     if(currentMenu === "kort") $("#hvilkeKommuner").append("<li onClick='changeMunicipality("+value+")'>"+value+"</li>");
-    else if (currentMenu === "histogram") $("#hvilkeKommuner").append("<li onClick='changeMunicipality(this.id)' id='"+value+"'>"+value+"</li>");
+    else if (currentMenu === "histogram" || currentMenu === "info") $("#hvilkeKommuner").append("<li onClick='changeMunicipality(this.id)' id='"+value+"'>"+value+"</li>");
 });
 
 $.each(ikkeValgteRegioner, function(index, value) {
@@ -78,8 +77,10 @@ function changeRegion(newRegion){
 }
 
 function changeMunicipality(newMunicipality){
+	console.log("currentMunicipality "+currentMunicipality+" newMunicipality "+newMunicipality);
 	if(currentMenu === "kort") currentMunicipality = newMunicipality.id;
-    else if (currentMenu === "histogram") currentMunicipality = newMunicipality;
+    else if (currentMenu === "histogram" || currentMenu === "info") currentMunicipality = newMunicipality;
+    console.log("currentMunicipality "+currentMunicipality+" newMunicipality "+newMunicipality);
 	drawDiagram(newData);
 
 }

@@ -5,11 +5,9 @@
         whereAmI();
         // console.log(q);
         // updateFarvekode(q);
-        // console.log(q);
         //console.log("min: "+q.min+" q1: "+q.q1+" q2: "+q.q2+" q3: "+q.q1+" max: "+q.max);
-        // console.log("currentRegion: "+currentRegion);
         // console.log("CurrentRegion: "+currentRegion+ "  currentMunicipality: "+currentMunicipality);
-        if(gennemsnit === true){
+        if(median === true){
             // console.log("gennemsnit er true");
             for (var i = 0; i < Object.keys(newData).length; i++) {
                 if(newData[i].region == "UdenforDanmark") continue;
@@ -34,12 +32,12 @@
         }
         //Zoomet ind på enkelt kommune
         else if(currentMunicipality !== null){
-            console.log("Skal farver en enkelt kommune som er: "+currentMunicipality);
+            // console.log("Skal farver en enkelt kommune som er: "+currentMunicipality);
             for (var i = 0; i < Object.keys(newData).length; i++) {
             var string = "#".concat(newData[i].kommune);
                 //Giver fuld farve til valgt kommune
                 if(newData[i].kommune === currentMunicipality){
-                    console.log("rigtig kommune fundet. Skulle kun ske EN gang!");
+                    // console.log("rigtig kommune fundet. Skulle kun ske EN gang!");
                     // console.log("Rigtig kommune valgt. Fuld farve: "+currentMunicipality+" newdata kommune : "+newData[i].kommune);
                     if(newData[i].antal === 0) {$(string).css("fill", "grey").css("stroke-width", 0.7);}
                     else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min).css("stroke-width", 0.7);}
@@ -95,7 +93,7 @@
     function calculateQuatil(newData) {
         var quar = new Array();
         var min, q1, q2, q3, max;
-        if(currentRegion !== null || gennemsnit === true || kunKommune === true){
+        if(currentRegion !== null || median === true || kunKommune === true){
             for (var i = 0; i < Object.keys(newData).length; i++){
                 quar.push(newData[i].antal);
             }
@@ -112,7 +110,8 @@
             q3 = quar[Math.ceil((quar.length * (3 / 4)))];
             max = quar[quar.length-1];
 
-            $("#gennemsnitsInfo").empty().append("<h3>Gennemsnit:</h3><b>Gennemsnitstal: </b>"+q2);
+            if(gennemsnit === true) $("#gennemsnitsInfo").empty().append("<h3>Gennemsnit:</h3><b>Gennemsnitstal: Her skal gennemsnittet stå </b>");
+            else if(median === true) $("#gennemsnitsInfo").empty().append("<h3>Median: "+q2+"</h3>");
             // console.log(min+q1+q2+q3+max);
 
             // console.log("Min: "+min+" q1: "+q1+" q2: "+q2+" q3: "+q3+" Max: "+max);

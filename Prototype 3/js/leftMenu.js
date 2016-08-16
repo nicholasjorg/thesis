@@ -68,7 +68,11 @@ var ikkeValgteKommuner = [];
 
 for (var i = 0; i < Object.keys(newData).length; i++) {
     $("#dropdownSearch").append('<option data-tokens="'+newData[i].kommune+'">'+newData[i].kommune+'</option>');
+    }
 }
+
+function correntLeftInfo(antal){
+    $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+currentRegion+"<br /><b>Kommune: </b>"+currentMunicipality+"<br /> <b>Antal værker: </b>"+antal);
 }
 
 function updateFarvekode(q){
@@ -92,7 +96,7 @@ function updateFarvekode(q){
     colorData.push({"x":0, "y":75, "color":colors.q3, "antal":q.q3 });
     colorData.push({"x":0, "y":100, "color":colors.max, "antal":q.max });
 
-    console.log(colorData);
+    // console.log(colorData);
 
     var svg = d3.select("#farvekode").append("svg").attr("id","svgFarve").attr("width", widthBox).attr("height", heightBox);
     var rects = svg.selectAll("rect").data(colorData).enter().append("rect");
