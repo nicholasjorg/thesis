@@ -1,6 +1,7 @@
     function giveColors(newData){
         // console.log("Så skal der farve på drengen!");
         var q = calculateQuatil(newData);
+        updateFarvekode(q);
         whereAmI();
         // console.log(q);
         // updateFarvekode(q);

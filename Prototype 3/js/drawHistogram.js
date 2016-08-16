@@ -1,5 +1,6 @@
 function drawHistogram(data){
     // console.log("CurrentRegion: "+currentRegion+ "  currentMunicipality: "+currentMunicipality+ " kunKommune: "+kunKommune);
+    whereAmI();
         if(currentRegion !== null && currentMunicipality === null || kunKommune === true)
             {drawHistogramKommune(data); console.log("drawHistogramKommune(data);"); }
         else if(currentMunicipality !== null)
@@ -195,7 +196,7 @@ function drawHistogramKommune(data){
         .attr("x", w / 2 )
         .attr("y", 30)
         .style("text-anchor", "middle")
-        .text("Antal værker i region "+currentRegion);
+        .text(function(){ if(currentRegion !== null) return "Antal værker i region "+currentRegion; else return "Alle kommuner"; });
 
         //Bygger akser
         var xAxis = d3.svg.axis().scale(xScale).orient("bottom");

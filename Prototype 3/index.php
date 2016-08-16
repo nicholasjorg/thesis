@@ -240,8 +240,6 @@ var newData = new Array();
     var currentRegion = null, currentMunicipality=null;
     var colors = {"min":"#b3d9ff", "q1":"#66b3ff", "q2":"#1a8cff", "q3":"#0066cc", "max":"#004080"};
     var currentMenu = "kort";
-    var colors = {"min":"#b3d9ff", "q1":"#66b3ff", "q2":"#1a8cff", "q3":"#0066cc", "max":"#004080"};
-
 
     <?php
 	    $jsonarray = array();
@@ -467,6 +465,7 @@ var newData = new Array();
     $("#menuInfo").click(function(){
     });
 
+    
     var lastHovered;
     // Hover på kommuner i kortet.
     $(document).on('mouseenter','.Hovedstaden, .Sjælland, .Syddanmark, .Nordjylland, .Midtjylland, .rectangle',function(e){
