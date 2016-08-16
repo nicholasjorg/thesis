@@ -171,7 +171,7 @@
             <ul class="nav nav-tabs row">
                 <li id="menuKort" class="active"><a href="#menuKort">Kort</a></li>
                 <li id="menuHistogram"><a href="#menuHistogram">Histogram</a></li>
-                <li id="menuInfo"><a href="#menuInfo">Info</a></li>
+                <li id="menuVærktyper"><a href="#menuVærktyper">Værktyper</a></li>
                 <li> </li>
             </ul>
             <div id="displayKort" class="tab-content">
@@ -181,7 +181,12 @@
                 <div class="col-sm-12 tab-pane fade"></div>
             </div>
             <div id="displayInfo" class="tab-content">
-                <div class="col-sm-12 tab-pane fade"></div>
+                <div class="col-sm-12 tab-pane fade">
+                    <h3> Værktyper:</h3>
+                    <div id = "aktiveTyper">
+                        Alle
+                    </div>
+                </div>
             </div>
         <div class="pull-right">
             <input id="dataSelector" list="datalist" placeholder="Search">
@@ -212,10 +217,6 @@
             <h3>Årstal:</h3>
             <div id = "aktiveÅr">
                 1918 - 2016
-            </div>
-            <h3> Værktyper:</h3>
-            <div id = "aktiveTyper">
-                Alle
             </div>
             <!-- Details on demand -->
             <div id="dod" style="display:none"></div>
