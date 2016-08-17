@@ -175,11 +175,7 @@
             <ul class="nav nav-tabs row">
                 <li id="menuKort" class="active"><a href="#menuKort">Kort</a></li>
                 <li id="menuHistogram"><a href="#menuHistogram">Histogram</a></li>
-<<<<<<< Updated upstream
-                <li id="menuVærktyper"><a href="#menuVærktyper">Værktyper</a></li>
-=======
                 <li id="menuInfo"><a href="#menuInfo">Type antal</a></li>
->>>>>>> Stashed changes
                 <li> </li>
             </ul>
             <div class="pull-right">
