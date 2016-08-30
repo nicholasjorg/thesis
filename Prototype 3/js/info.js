@@ -13,7 +13,6 @@ console.log("i show data med currentMunicipality: "+currentMunicipality+" og cur
 var total = 0;
 for (var i = 0; i < Object.keys(data).length; i++) {
 	if(currentMunicipality !== null && currentMunicipality === data[i].kommune){
-		console.log("current municipality er vlagt i første loop");
 		for (var j = 0; j < Object.keys(data[i].typer).length; j++) {
 			for (var h = 0; h < Object.keys(typeData).length; h++) {
 				if(data[i].typer[j].classification == typeData[h].Type)
@@ -23,7 +22,16 @@ for (var i = 0; i < Object.keys(data).length; i++) {
 		break;
 	}
 	else if(currentRegion !== null && currentMunicipality === null && currentRegion === data[i].region){
-		console.log("current region er vlagt i første loop");
+		for (var g = 0; g < Object.keys(data[i].typer).length; g++) {
+			for (var h = 0; h < Object.keys(typeData).length; h++) {
+				if(data[i].typer[g].classification == typeData[h].Type)
+					{typeData[h].antal = parseFloat(typeData[h].antal) + parseFloat(data[i].typer[g].antal); 
+						total += parseFloat(data[i].typer[g].antal)}
+			}
+		}
+	}
+	else{
+		console.log("Overbliv du er i danmark");
 		for (var g = 0; g < Object.keys(data[i].typer).length; g++) {
 			for (var h = 0; h < Object.keys(typeData).length; h++) {
 				if(data[i].typer[g].classification == typeData[h].Type)

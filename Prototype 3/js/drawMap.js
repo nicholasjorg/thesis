@@ -1,14 +1,8 @@
     function giveColors(newData){
-        // console.log("Så skal der farve på drengen!");
         var q = calculateQuatil(newData);
-        updateFarvekode(q);
         whereAmI();
-        // console.log(q);
-        // updateFarvekode(q);
-        //console.log("min: "+q.min+" q1: "+q.q1+" q2: "+q.q2+" q3: "+q.q1+" max: "+q.max);
-        // console.log("CurrentRegion: "+currentRegion+ "  currentMunicipality: "+currentMunicipality);
         if(median === true){
-            // console.log("gennemsnit er true");
+            yellowIs = q.q2;
             for (var i = 0; i < Object.keys(newData).length; i++) {
                 if(newData[i].region == "UdenforDanmark") continue;
                 var string = "#".concat(newData[i].kommune);
@@ -17,6 +11,20 @@
                 else if(newData[i].antal == q.q2) {$(string).css("fill", "yellow").css("stroke-width", 0.2);}
                 else if(newData[i].antal > q.q2) {$(string).css("fill", "green").css("stroke-width", 0.2);}
             }
+            $("#gennemsnitsInfo").empty().append("<h3>Median: "+q.q2+"</h3>");
+        }
+        else if(gennemsnit === true){
+            var avg = calculateAverage(newData);
+            yellowIs = avg;
+             for (var i = 0; i < Object.keys(newData).length; i++) {
+                if(newData[i].region == "UdenforDanmark") continue;
+                var string = "#".concat(newData[i].kommune);
+                //Giver forskellige farver baseret på værdi ifht. kvartil
+                if(newData[i].antal < avg) {$(string).css("fill", "red").css("stroke-width", 0.2);}
+                else if(newData[i].antal == avg) {$(string).css("fill", "yellow").css("stroke-width", 0.2);}
+                else if(newData[i].antal > avg) {$(string).css("fill", "green").css("stroke-width", 0.2);}
+            }
+            $("#gennemsnitsInfo").empty().append("<h3>Gennemsnit: "+avg+"</h3>");
         }
 
         //Fuldt overblik. Ser hele kortet
@@ -43,16 +51,17 @@
                     else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min).css("stroke-width", 0.7);}
                     else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1).css("stroke-width", 0.7);}
                     else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2).css("stroke-width", 0.7);}
-                    else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3).css("stroke-width", 0.7);}
+                    else if(newData[i].antal>=q.q3 && newData[i].antal<=q.beforeMax) {$(string).css("fill", colors.q3).css("stroke-width", 0.7);}
+                    else if(newData[i].antal==q.max) {$(string).css("fill", colors.max).css("stroke-width", 0.7);}
                     //else if(newData[i].antal==q.max) {$(string).css("fill", colors.max); $(string).css("stroke-width", 0.2);}
                 }
                 //Giver mindre farve til ikke valgte kommuner
                 else{
                     if(newData[i].antal === 0) {$(string).css("fill", "grey").css("stroke-width", 0.2);}
                     else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min).css("stroke-width", 0.2);}
-                    else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1).css("stroke-width", 0.2);}
-                    else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2).css("stroke-width", 0.2);}
-                    else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3).css("stroke-width", 0.2);}
+                    else if(newData[i].antal>=q.q1 && newData[i].antal<q.q2) {$(string).css("fill", colors.q1).css("stroke-width", 0.2);}
+                    else if(newData[i].antal>=q.q2 && newData[i].antal<q.q3) {$(string).css("fill", colors.q2).css("stroke-width", 0.2);}
+                    else if(newData[i].antal>=q.q3 && newData[i].antal<=q.beforeMax) {$(string).css("fill", colors.q3).css("stroke-width", 0.2);}
                     else if(newData[i].antal==q.max) {$(string).css("fill", colors.max).css("stroke-width", 0.2);}
                 }
             }
@@ -69,7 +78,7 @@
                 else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min).css("stroke-width", 0.2);}
                 else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1).css("stroke-width", 0.2);}
                 else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2).css("stroke-width", 0.2);}
-                else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3).css("stroke-width", 0.2);}
+                else if(newData[i].antal>=q.q3 && newData[i].antal<=q.beforeMax) {$(string).css("fill", colors.q3).css("stroke-width", 0.2);}
                 else if(newData[i].antal==q.max) {$(string).css("fill", colors.max).css("stroke-width", 0.2);}
             }
         }
@@ -84,37 +93,31 @@
                 else if(newData[i].antal<=q.q1) {$(string).css("fill", colors.min).css("stroke-width", 0.2);}
                 else if(newData[i].antal>=q.q1 && newData[i].antal<=q.q2) {$(string).css("fill", colors.q1).css("stroke-width", 0.2);}
                 else if(newData[i].antal>=q.q2 && newData[i].antal<=q.q3) {$(string).css("fill", colors.q2).css("stroke-width", 0.2);}
-                else if(newData[i].antal>=q.q3) {$(string).css("fill", colors.q3).css("stroke-width", 0.2);}
+                else if(newData[i].antal>=q.q3 && newData[i].antal<=q.beforeMax) {$(string).css("fill", colors.q3).css("stroke-width", 0.2);}
                 else if(newData[i].antal==q.max) {$(string).css("fill", colors.max).css("stroke-width", 0.2);}
             }
         }
+        //Opdaterer farvekoderne fra leftmenu.js
+        updateFarvekode(q);
     }
 
     function calculateQuatil(newData) {
         var quar = new Array();
-        var min, q1, q2, q3, max;
+        var min, q1, q2, q3, beforeMax, max;
         if(currentRegion !== null || median === true || kunKommune === true){
             for (var i = 0; i < Object.keys(newData).length; i++){
                 quar.push(newData[i].antal);
             }
             // console.log(quar);
             // quar = sortArray(quar);
-            quar.sort(function(a, b){return a-b});
-
-            // console.log(quar);
-
+            quar.sort(function(a, b){return a-b;});
 
             min = quar[0];
             q1 = quar[Math.floor((quar.length / 4))];
             q2 = quar[Math.floor(quar.length/2)];   //median(quar);
             q3 = quar[Math.ceil((quar.length * (3 / 4)))];
+            beforeMax = quar[quar.length-2];
             max = quar[quar.length-1];
-
-            if(gennemsnit === true) $("#gennemsnitsInfo").empty().append("<h3>Gennemsnit:</h3><b>Gennemsnitstal: Her skal gennemsnittet stå </b>");
-            else if(median === true) $("#gennemsnitsInfo").empty().append("<h3>Median: "+q2+"</h3>");
-            // console.log(min+q1+q2+q3+max);
-
-            // console.log("Min: "+min+" q1: "+q1+" q2: "+q2+" q3: "+q3+" Max: "+max);
         }
         else if(currentRegion === null && currentMunicipality === null) {
             var Hovedstaden=0, Midtjylland=0, Nordjylland=0, Sjælland=0, Syddanmark=0, UdenforDanmark=0;
@@ -140,6 +143,7 @@
             q1 = quar[1];
             q2 = quar[2];
             q3 = quar[3];
+            beforeMax = quar[3];
             max = quar[4];
         }
         else{
@@ -152,10 +156,11 @@
             q1 = quar[Math.floor((quar.length / 4))];
             q2 = median(quar);
             q3 = quar[Math.ceil((quar.length * (3 / 4)))];
+            beforeMax = quar[quar.length-2];
             max = quar[quar.length-1];
         }
 
-        return {min, q1, q2, q3, max};
+        return {min, q1, q2, q3, beforeMax, max};
     };
 
     function sortArray(array){
@@ -174,7 +179,7 @@
 
 function drawMap(newData){
     d3.select("svg").remove();
-    var svg = d3.select("#graphContent").append("svg").attr({"width":472,"height":574});
+    var svg = d3.select("#graphContent").append("svg").attr({"width":472,"height":574}).attr("id", "graph");
     
     d3.xml("kort.svg", function(error, documentFragment) {
         if (error) {console.log(error); return;}
@@ -347,5 +352,13 @@ function clicked(d) {
         currentRegion = null;
         giveColors(newData);
     }
-    
+    whereAmI();
+}
+
+function calculateAverage(data){
+    var sum = 0;
+    for (var i = 0; i < Object.keys(data).length; i++) {
+        sum += newData[i].antal;
+    };
+    return sum / Object.keys(data).length;
 }

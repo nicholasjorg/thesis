@@ -11,198 +11,215 @@
 <script src = "js/leftMenu.js"></script>
 <script src = "js/whereAreWe.js"></script>
 <script src = "js/info.js"></script>
-<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script src = "js/drawLineChart.js"></script>
+<script src = "js/loadScreen.js"></script>
 
+<!-- Hjælper med gennemsnitsstreg på histogram -->
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<div class="loader"></div>
 <div class = "container-fluid">
     <div class = "row">
-        <div class = "col-sm-4">
+        <div class = "col-sm-3">
             <!-- Venstre menubar -->
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#home">Region</a></li>
                 <li><a href="#menu1">Årstal</a></li>
-                <li><a href="#menu2">Værktyper</a></li>
+                <li><a href="#menu2">Typer</a></li>
                 <li><a href="#menu3">Statistik</a></li>
             </ul>
             <div class="tab-content">
                 <div id="home" class="tab-pane fade in active row">
                     <div class="col-sm-12 region-kommune">
-                    <h3>Vælg detaljegrad</h3>
+                        <h3>Vælg detaljegrad</h3>
                         <div class="radio">
                           <label><input type="radio" checked="checked" id="displayRegion"  name="displayRegOrKommu" value="displayRegioner">Regioner</label>
-                        </div>
-                        <div class="radio">
+                      </div>
+                      <div class="radio">
                           <label><input type="radio" id="displayKommune" name="displayRegOrKommu" value="displayKommuner">Kommuner</label>
-                        </div>
-                    </div>
-                </div>
-                <div id="menu1" class="tab-pane fade col-sm-8">
-                    <h3>Single year</h3>
-                    <select id ="selectSingleYear">
+                      </div>
+                  </div>
+              </div>
+              <div id="menu1" class="tab-pane fade col-sm-8">
+                <h3>Single year</h3>
+                <select id ="selectSingleYear">
                     <option value="Vaelg">Vælg år</option>
                     <option value="Alle">Alle</option>
                     <?php
-                        $result = getDisplayDateYears();
-                        while ($row = mysqli_fetch_array($result)) {
-                            echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
-                        }
+                    $result = getDisplayDateYears();
+                    while ($row = mysqli_fetch_array($result)) {
+                        echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
+                    }
                     ?>
-				    </select>
+                </select>
 
-                    <h3>Interval</h3>
-                    <select id ="selectStartYear">
+                <h3>Interval</h3>
+                <select id ="selectStartYear">
                     <option value="start">Start</option>
                     <?php
-                    	$result = getDisplayDateYears();
-                        while ($row = mysqli_fetch_array($result)) {
-                            echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
-                        }
+                    $result = getDisplayDateYears();
+                    while ($row = mysqli_fetch_array($result)) {
+                        echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
+                    }
                     ?>
-				    </select>
-			        <select id ="selectEndYear">
+                </select>
+                <select id ="selectEndYear">
                     <option value="slut">Slut</option>
-                        <?php
-                        	$result = getDisplayDateYears();
-                            while ($row = mysqli_fetch_array($result)) {
-                                echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
-                            }
-                        ?>
-			        </select>
-			        <input id="btnSubmit" type="submit" value="Vælg"/>
-                </div>
-                <div id="menu2" class="tab-pane fade">
-                    <h3>Værktyper</h3>
-                    <div class = "row">
-                        <div class="col-sm-12 classification-filters">
-                            <div class ="row">
-                                <div class="col-sm-6">
-                                    <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Væg" name ="Væg" value ="Væg"><b>Væg</b></label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Foto" name ="Foto" value =""Foto>Foto</label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Maleri" name ="Maleri" value ="Maleri">Maleri</label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Tegning" name ="Tegning" value ="Tegning">Tegning</label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Grafik" name ="Grafik" value ="Grafik">Grafik</label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Collage" name ="Collage" value ="Collage">Collage</label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Akvarel" name ="Akvarel" value ="Akvarel">Akvarel</label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Print" name ="Print" value ="Print">Print</label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Grafisk design" name ="Grafisk design" value ="Grafisk design">Grafisk Design</label>
-                                    </div>
+                    <?php
+                    $result = getDisplayDateYears();
+                    while ($row = mysqli_fetch_array($result)) {
+                        echo '<option value='.$row["displayDate"].'>'.$row["displayDate"].'</option>';
+                    }
+                    ?>
+                </select>
+                <input id="btnSubmit" type="submit" value="Vælg"/>
+            </div>
+            <div id="menu2" class="tab-pane fade">
+                <h3>Værktyper</h3>
+                <div class = "row">
+                    <div class="col-sm-12 classification-filters">
+                        <div class ="row">
+                            <div class="col-sm-6">
+                                <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Væg" name ="Væg" value ="Væg"><b>Væg</b></label>
                                 </div>
-                                <div class="col-sm-6">
-                                    <!-- Rum -->
-                                    <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Rum" name ="Rum" value ="Rum"><b>Rum</b></label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Lys" name ="Lys" value ="Lys">Lys</label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Indretning" name ="Indretning" value ="Indretning">Indretning</label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Integreret kunst" name ="Integreret kunst" value ="Integreret kunst">Integreret kunst</label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Møbel" name ="Møbel" value ="Møbel">Møbel</label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Skulptur" name ="Skulptur" value ="Skulptur">Skulptur</label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Relief" name ="Relief" value ="Relief">Relief</label>
-                                    </div>
-                                    <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Installation" name ="Installation" value ="Installation">Installation</label>
-                                    </div>
+                                <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Foto" name ="Foto" value =""Foto>Foto</label>
                                 </div>
-                            </div><!-- END ROW-->
-                                <div class ="row">
-                                    <div class="col-sm-6">
-                                        <!-- Immateriel-->
-                                        <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Immateriel" name ="Immateriel" value ="Immateriel"><b>Immateriel</b></label>
-                                        </div>
-                                        <div class="checkbox subCheck"><label><input class ="subImmateriel" type ="checkbox"checked="checked" id ="Performance" name ="Performance" value ="Performance">Performance</label>
-                                        </div>
-                                        <div class="checkbox subCheck"><label><input class ="subImmateriel" type ="checkbox"checked="checked" id ="Mixed Media" name ="Mixed Media" value ="Mixed Media">Mixed Media</label>
-                                        </div>
-                                        <div class="checkbox subCheck"><label><input class ="subImmateriel" type ="checkbox"checked="checked" id ="Video" name ="Video" value ="Video">Video</label>
-                                        </div>
-                                        <div class="checkbox subCheck"><label><input class ="subImmateriel" type ="checkbox"checked="checked" id ="Digital" name ="Digital" value ="Digital">Digital</label>
-                                        </div>
-                                    </div>
-                                    <div class ="col-sm-6">
-                                        <!-- Genstand-->
-                                        <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Genstand" name ="Genstand" value ="Genstand"><b>Genstand</b></label>
-                                        </div>
-                                        <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Smykker" name ="Smykker" value ="Smykker">Smykker</label>
-                                        </div>
-                                        <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Design" name ="Design" value ="Design">Design</label>
-                                        </div>
-                                        <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Tekstil" name ="Tekstil" value ="Tekstil">Tekstil</label>
-                                        </div>
-                                        <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Keramik" name ="Keramik" value ="Keramik">Keramik</label>
-                                        </div>
-                                        <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Glas" name ="Glas" value ="Glas">Glas</label>
-                                        </div>
-                                    </div>
+                                <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Maleri" name ="Maleri" value ="Maleri">Maleri</label>
                                 </div>
-                                <div class ="row">
-                                    <div class ="col-sm-6">
-                                        <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Andet" name ="Andet" value ="Andet"><b>Andet</b></label>
-                                        </div>
-                                    </div>
+                                <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Tegning" name ="Tegning" value ="Tegning">Tegning</label>
                                 </div>
+                                <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Grafik" name ="Grafik" value ="Grafik">Grafik</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Collage" name ="Collage" value ="Collage">Collage</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Akvarel" name ="Akvarel" value ="Akvarel">Akvarel</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Print" name ="Print" value ="Print">Print</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class = "subVæg" type ="checkbox"checked="checked" id ="Grafisk design" name ="Grafisk design" value ="Grafisk design">Grafisk Design</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <!-- Rum -->
+                                <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Rum" name ="Rum" value ="Rum"><b>Rum</b></label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Lys" name ="Lys" value ="Lys">Lys</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Indretning" name ="Indretning" value ="Indretning">Indretning</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Integreret kunst" name ="Integreret kunst" value ="Integreret kunst">Integreret kunst</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Møbel" name ="Møbel" value ="Møbel">Møbel</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Skulptur" name ="Skulptur" value ="Skulptur">Skulptur</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Relief" name ="Relief" value ="Relief">Relief</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class="subRum" type ="checkbox"checked="checked" id ="Installation" name ="Installation" value ="Installation">Installation</label>
+                                </div>
+                            </div>
+                        </div><!-- END ROW-->
+                        <div class ="row">
+                            <div class="col-sm-6">
+                                <!-- Immateriel-->
+                                <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Immateriel" name ="Immateriel" value ="Immateriel"><b>Immateriel</b></label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class ="subImmateriel" type ="checkbox"checked="checked" id ="Performance" name ="Performance" value ="Performance">Performance</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class ="subImmateriel" type ="checkbox"checked="checked" id ="Mixed Media" name ="Mixed Media" value ="Mixed Media">Mixed Media</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class ="subImmateriel" type ="checkbox"checked="checked" id ="Video" name ="Video" value ="Video">Video</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class ="subImmateriel" type ="checkbox"checked="checked" id ="Digital" name ="Digital" value ="Digital">Digital</label>
+                                </div>
+                            </div>
+                            <div class ="col-sm-6">
+                                <!-- Genstand-->
+                                <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Genstand" name ="Genstand" value ="Genstand"><b>Genstand</b></label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Smykker" name ="Smykker" value ="Smykker">Smykker</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Design" name ="Design" value ="Design">Design</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Tekstil" name ="Tekstil" value ="Tekstil">Tekstil</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Keramik" name ="Keramik" value ="Keramik">Keramik</label>
+                                </div>
+                                <div class="checkbox subCheck"><label><input class="subGenstand" type ="checkbox"checked="checked" id ="Glas" name ="Glas" value ="Glas">Glas</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class ="row">
+                            <div class ="col-sm-6">
+                                <div class="checkbox"><label><input type ="checkbox"checked="checked" id ="Andet" name ="Andet" value ="Andet"><b>Andet</b></label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div id="menu3" class="tab-pane fade">
-                    <div class="checkbox" id ="gennemsnitWrapper">
-                        <label><input type="checkbox" id="gennemsnitCheck" name="gennemsnit" value="gennemsnit">Gennemsnit</label>
-                    </div>
-                    <div class="checkbox" id ="medianWrapper">
-                        <label><input type="checkbox" id="medianCheck" name="median" value="median">Median</label>
-                    </div>
-                    <div class="checkbox" id="indbyggertalWrapper">
-                        <label><input type="checkbox" id="indbyggertalCheck" value="indbyggertal">Indbyggertal</label>
-                    </div>
-                    <div class="checkbox" id ="KulturWrapper">
-                        <label><input type="checkbox" id="kulturCheck" name="kulturBudget" value="kulturBudget">Kulturbudget pr. indbygger</label>
-                    </div>
+            </div>
+            <div id="menu3" class="tab-pane fade">
+                <div class="checkbox" id ="gennemsnitWrapper">
+                    <label><input type="checkbox" id="gennemsnitCheck" name="gennemsnit" value="gennemsnit">Gennemsnit</label>
+                </div>
+                <div class="checkbox" id ="medianWrapper">
+                    <label><input type="checkbox" id="medianCheck" name="median" value="median">Median</label>
+                </div>
+                <div class="checkbox" id="indbyggertalWrapper">
+                    <label><input type="checkbox" id="indbyggertalCheck" value="indbyggertal">Indbyggertal</label>
+                </div>
+                <div class="checkbox" id ="KulturWrapper">
+                    <label><input type="checkbox" id="kulturCheck" name="kulturBudget" value="kulturBudget">Kulturbudget pr. indbygger</label>
                 </div>
             </div>
-        </div><!-- End of menu -->
-        <!-- Menu til at beslutte visualisering -->
-        <div class = "col-sm-6">
-            <div class="col-sm-10" id="graphContent">
+        </div>
+    </div><!-- End of menu -->
+    <!-- Menu til at beslutte visualisering -->
+    <div class = "col-sm-6">
+        <!-- <div class="col-sm-10" id="loadScreen"> <img src="gears.svg"> </div> -->
+        <div class="col-sm-10" id="graphContent">
             <ul class="nav nav-tabs row">
                 <li id="menuKort" class="active"><a href="#menuKort">Kort</a></li>
                 <li id="menuHistogram"><a href="#menuHistogram">Histogram</a></li>
                 <li id="menuInfo"><a href="#menuInfo">Type antal</a></li>
-                <li> </li>
+                <li id="menuLineChart"><a href="#menuLineChart">Line chart</a></li>
             </ul>
             <div class="pull-right">
-            <input id="dataSelector" list="datalist" placeholder="Search">
-            <!-- Data komme fra jQuery kode -->
-            <datalist id="datalist"> </datalist>
+                <input id="dataSelector" list="datalist" placeholder="Search">
+                <!-- Data komme fra jQuery kode -->
+                <datalist id="datalist"> </datalist>
             </div>
             <div id="whereAmI">Her skal være filsystem</div>
+            <div id="chartRadioButtons">
+                <div class="lineChartRadio">
+                    <form>
+                        <div class="radio"><label><input checked="checked" type="radio" name="skiftChart" value="akkumuleret">Akkumuleret</label></div>
+                        <div class="radio"><label><input type="radio" name="skiftChart" value="enkelt">Enkelt</label></div>
+                    </form></div>
 
-            <div id="displayKort" class="tab-content">
-                <div class="col-sm-12 tab-pane fade in active row"><div id="tooptipKort" style="display:none"></div></div>
-            </div>
-            <div id="displayHistogram" class="tab-content">
-                <div class="col-sm-12 tab-pane fade"></div>
-            </div>
-            <div id="displayInfo" class="tab-content">
-                <div class="col-sm-12 tab-pane fade">
-                    <h3> Værktyper:</h3>
-                    <div id = "aktiveTyper">
-                        Alle
+                </div>
+
+                <div id="displayKort" class="tab-content">
+                    <div class="col-sm-12 tab-pane fade in active row"><div id="tooptipKort" style="display:none"></div></div>
+                </div>
+                <div id="displayHistogram" class="tab-content">
+                    <div class="col-sm-12 tab-pane fade"></div>
+                </div>
+                <div id="displayLineChart" class="tab-content">
+                    <div class="col-sm-12 tab-pane fade">
                     </div>
                 </div>
-            </div>
-        <!--- <?php //echo file_get_contents("kort.svg"); ?> -->
-        <!-- Graph will be appended here -->
-            </div>
-       </div><!-- End of graph -->
+                <div id="displayInfo" class="tab-content">
+                    <div class="col-sm-12 tab-pane fade">
+                        <h3> Værktyper:</h3>
+                        <div id = "aktiveTyper">
+                            Alle
+                        </div>
+                    </div>
+                </div>
+                <div id="graphWrapper">
+                <!-- Graph will be appended here -->
+                </div>
+        </div><!-- End of graph -->
 
         <!-- Venstre menun -->
         <div class = "col-sm-2 pull-right" id = "activeParameters">
@@ -232,6 +249,12 @@
 <script src = "js/tabMenu.js"></script>
 <script src = "js/parametersHistogram.js"></script>
 
+
+<script type="text/javascript">
+$(window).load(function() {
+    $(".loader").fadeOut("slow");
+})
+</script>
 <!--Script til at manipulere data via HTML inputs -->
 <script type="text/javascript">
 var newData = new Array();
@@ -245,21 +268,28 @@ var newData = new Array();
     var currentRegion = null, currentMunicipality=null;
     var colors = {"min":"#b3d9ff", "q1":"#66b3ff", "q2":"#1a8cff", "q3":"#0066cc", "max":"#004080"};
     var currentMenu = "kort";
+    var yellowIs;
+    var hvilkenLineChart = "akkumuleret";
+    
+
+    document.onreadystatechange = function () {
+        console.log(document.readyState);
+    }
 
     <?php
-	    $jsonarray = array();
-	    $sql = 'SELECT kommune, region FROM indbyggertal group by region, kommune';
-	    $result = queryDB($sql);
-	    while ($row = mysqli_fetch_assoc($result)) {
-	        $tmp = array(municipality=>$row["kommune"], region=>$row["region"]);
-	        array_push($jsonarray, $tmp);
-	    }
-	    $regionMunicipality = json_encode($jsonarray);
-	?>
-    var regionMunicipality = <?php echo $regionMunicipality; ?>;
+    $jsonarray = array();
+    $sql = 'SELECT kommune, region FROM indbyggertal group by region, kommune';
+    $result = queryDB($sql);
+    while ($row = mysqli_fetch_assoc($result)) {
+       $tmp = array(municipality=>$row["kommune"], region=>$row["region"]);
+       array_push($jsonarray, $tmp);
+   }
+   $regionMunicipality = json_encode($jsonarray);
+   ?>
+   var regionMunicipality = <?php echo $regionMunicipality; ?>;
 
 
-	var year, startYear, endYear, classification, municipalities;
+   var year, startYear, endYear, classification, municipalities;
     // var regionEllerKommune = "region";
     year = null;
     startYear = null;
@@ -268,35 +298,35 @@ var newData = new Array();
     //Filter arrays
     classification =
     {Foto: true, Skulptur: true, Maleri: true, Tegning: true, Grafik: true, Smykker:true, Andet: true,
-    Design: true, Relief: true, Akvarel: true, Tekstil: true, Keramik: true, Collage: true, Glas: true, Møbel: true,
-    Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true,
-    "Grafisk design":true, Performance:true, Installation:true, Lys:true};
+        Design: true, Relief: true, Akvarel: true, Tekstil: true, Keramik: true, Collage: true, Glas: true, Møbel: true,
+        Digital:true, Video:true, "Integreret kunst":true, Indretning: true, Print:true, "Mixed Media":true,
+        "Grafisk design":true, Performance:true, Installation:true, Lys:true};
 
-    var institutions = ["Andre", "Bolig", "Byrum", "Erhverv", "Fritid", "Kultur - øvrig", "Kultur - biblioteker", "Kultur - museer",
-    "Kutlur - øvrig", "Landskab", "Offentlig administration - kommune", "Offentlig administration - region", "Offentlig administration - stat",
-    "Religion", "Sundhed - hospitaler", "Sundhed - pleje", "Transport", "Turisme", "Uddannelse - førskole", "Uddannelse - grundskole",
-    "Uddannelse - ungdomsuddannelse", "Uddannelse - videregående uddannelse"];
+        var institutions = ["Andre", "Bolig", "Byrum", "Erhverv", "Fritid", "Kultur - øvrig", "Kultur - biblioteker", "Kultur - museer",
+        "Kutlur - øvrig", "Landskab", "Offentlig administration - kommune", "Offentlig administration - region", "Offentlig administration - stat",
+        "Religion", "Sundhed - hospitaler", "Sundhed - pleje", "Transport", "Turisme", "Uddannelse - førskole", "Uddannelse - grundskole",
+        "Uddannelse - ungdomsuddannelse", "Uddannelse - videregående uddannelse"];
 
-    updateData();
+        updateData();
     // updateNaviMap();
 
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-kommune input:radio').click(function() {
 		var name = $(this).val().trim();
-        console.log(name);
 		if(name==="displayRegioner"){
             kunKommune = false;
             drawDiagram(newData);
-		}
-		else{
+        }
+        else{
             kunKommune = true;
             drawDiagram(newData);
-            // regionEllerKommune = "kommune";
-		}
-        // chooseRegion();
-        // updateData();
-        // updateMunicipalities();
-	});
+        }
+    });
+
+    $(".lineChartRadio input:radio").click(function() {
+        hvilkenLineChart = $(this).val();
+        drawLineChart(newData);
+    });
 
     $('.classification-filters input:checkbox').click(function() {
         var name = $(this).val().trim();
@@ -338,12 +368,12 @@ var newData = new Array();
 	$('#selectSingleYear').change(function() {
 		$('#selectStartYear').val("start");
 		$('#selectEndYear').val("slut");
-   		endYear = null;
-    	startYear = null;
-    	year = $(this).val();
-    	if(year=="Alle") year=null;
-    	updateData();
-	});
+       endYear = null;
+       startYear = null;
+       year = $(this).val();
+       if(year=="Alle") year=null;
+       updateData();
+   });
 
 	//Ændre i intervallet. Denne funktion kalder når knappen vælg trykkes
 	$("#btnSubmit").click(function(){
@@ -351,11 +381,11 @@ var newData = new Array();
             {alert("Du skal vælge et start år og et slut år"); return;}
         if($('#selectStartYear').val() > $('#selectEndYear').val())
             {alert("Startåret skal være før slutåret."); return;}
-		$('#selectSingleYear').val("Vaelg");
-		year = null;
-		startYear = $('#selectStartYear').val();
-		endYear = $('#selectEndYear').val();
-       	updateData();
+        $('#selectSingleYear').val("Vaelg");
+        year = null;
+        startYear = $('#selectStartYear').val();
+        endYear = $('#selectEndYear').val();
+        updateData();
     });
 
     //Ændre i tabellen udfra indbyggertallet i kommunen.
@@ -396,31 +426,35 @@ var newData = new Array();
         }
     });
 
-    $("#gennemsnitCheck").click(function(){
-        if($("#gennemsnitCheck").prop('checked')) {
-            gennemsnit = true;
-            drawDiagram(newData);
-        }
-        else{
-            gennemsnit = false;
-            $("#gennemsnitsInfo").empty();
-            document.getElementById("gennemsnitCheck").checked = false;
-            drawDiagram(newData);
-            }
-    });
+$("#gennemsnitCheck").click(function(){
+    if($("#gennemsnitCheck").prop('checked')) {
+        gennemsnit = true;
+        median = false;
+        document.getElementById("medianCheck").checked = false;
+        drawDiagram(newData);
+    }
+    else{
+        gennemsnit = false;
+        $("#gennemsnitsInfo").empty();
+        document.getElementById("gennemsnitCheck").checked = false;
+        drawDiagram(newData);
+    }
+});
 
-    $("#medianCheck").click(function(){
-        if($("#medianCheck").prop('checked')) {
-            median = true;
-            drawDiagram(newData);
-        }
-        else{
-            median = false;
-            $("#gennemsnitsInfo").empty();
-            document.getElementById("medianCheck").checked = false;
-            drawDiagram(newData);
-            }
-    });
+$("#medianCheck").click(function(){
+    if($("#medianCheck").prop('checked')) {
+        median = true;
+        gennemsnit = false;
+        document.getElementById("gennemsnitCheck").checked = false;
+        drawDiagram(newData);
+    }
+    else{
+        median = false;
+        $("#gennemsnitsInfo").empty();
+        document.getElementById("medianCheck").checked = false;
+        drawDiagram(newData);
+    }
+});
 
     //Ændre i dataene ud fra kulturbudgettet
     $("#kulturCheck").click(function(){
@@ -460,21 +494,25 @@ var newData = new Array();
         }
     });
 
-    $("#menuKort").click(function(){
-        currentMenu = "kort";
-        drawDiagram(newData);
-    });
-    $("#menuHistogram").click(function(){
-        currentMenu = "histogram";
-        drawDiagram(newData);
-    });
-    $("#menuInfo").click(function(){
-        currentMenu = "info";
-        drawDiagram(newData);
-    });
+$("#menuKort").click(function(){
+    currentMenu = "kort";
+    drawDiagram(newData);
+});
+$("#menuHistogram").click(function(){
+    currentMenu = "histogram";
+    drawDiagram(newData);
+});
+$("#menuInfo").click(function(){
+    currentMenu = "info";
+    drawDiagram(newData);
+});
+$("#menuLineChart").click(function(){
+    currentMenu = "lineChart";
+    drawDiagram(newData);
+});
 
-    
-    var lastHovered;
+
+var lastHovered;
     // Hover på kommuner i kortet.
     $(document).on('mouseenter','.Hovedstaden, .Sjælland, .Syddanmark, .Nordjylland, .Midtjylland, .rectangle',function(e){
         var countRegion = {"Hovedstaden":0, "Midtjylland":0, "Nordjylland":0, "Sjælland":0, "Syddanmark":0};
@@ -482,26 +520,26 @@ var newData = new Array();
         for (var j = 0; j < Object.keys(newData).length; j++) {
             if(kunKommune === true || currentRegion !== null || median === true){
                 if (newData[j].kommune == this.id){
-                            if(currentMenu === "kort") {
-                                $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+this.className.baseVal+"<br /><b>Kommune: </b>"+this.id+"<br /> <b>Antal værker: </b>"+newData[j].antal);
-                                lastHovered = "#".concat(newData[j].kommune);
-                                $(lastHovered).css("stroke-width", 0.7);
-                            }
-                            else if(currentMenu === "histogram") $("#dod").empty().append("<h3>Info:</h3><b>Kommune: </b>"+this.id+"<br /> <b>Antal værker: </b>"+newData[j].antal);
+                    if(currentMenu === "kort") {
+                        $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+this.className.baseVal+"<br /><b>Kommune: </b>"+this.id+"<br /> <b>Antal værker: </b>"+newData[j].antal);
+                        lastHovered = "#".concat(newData[j].kommune);
+                        $(lastHovered).css("stroke-width", 0.7);
+                    }
+                    else if(currentMenu === "histogram") $("#dod").empty().append("<h3>Info:</h3><b>Kommune: </b>"+this.id+"<br /> <b>Antal værker: </b>"+newData[j].antal);
                             //$(string).css("fill", "grey").css("stroke-width", 0.7);
                             break;
                         }
-            }
-            else{
-                switch(newData[j].region){
-                    case "Hovedstaden": countRegion.Hovedstaden = countRegion.Hovedstaden+newData[j].antal; break;
-                    case "Sjælland": countRegion.Sjælland = countRegion.Sjælland+newData[j].antal; break;
-                    case "Midtjylland": countRegion.Midtjylland = countRegion.Midtjylland+newData[j].antal; break;
-                    case "Syddanmark": countRegion.Syddanmark = countRegion.Syddanmark+newData[j].antal; break;
-                    case "Nordjylland": countRegion.Nordjylland = countRegion.Nordjylland+newData[j].antal; break;
-                    default: console.log("i default"); continue;
-                }
-                if(currentMenu === "kort") {
+                    }
+                    else{
+                        switch(newData[j].region){
+                            case "Hovedstaden": countRegion.Hovedstaden = countRegion.Hovedstaden+newData[j].antal; break;
+                            case "Sjælland": countRegion.Sjælland = countRegion.Sjælland+newData[j].antal; break;
+                            case "Midtjylland": countRegion.Midtjylland = countRegion.Midtjylland+newData[j].antal; break;
+                            case "Syddanmark": countRegion.Syddanmark = countRegion.Syddanmark+newData[j].antal; break;
+                            case "Nordjylland": countRegion.Nordjylland = countRegion.Nordjylland+newData[j].antal; break;
+                            default: console.log("i default"); continue;
+                        }
+                        if(currentMenu === "kort") {
                     //Generer infoboks
                     $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+this.className.baseVal+"<br /> <b>Antal værker: </b>"+countRegion[this.className.baseVal]);
                     //Hover på regioner i kortet
@@ -515,12 +553,11 @@ var newData = new Array();
         $("#dod").css({top: event.clientY, left: event.clientX}).show();
     });
 
-
-    // //Mouse leave
-    //  $(document).on('mouseleave','.Hovedstaden, .Sjælland, .Syddanmark, .Nordjylland, .Midtjylland',function(e){
-    //      $(lastHoveredMuni).css("stroke-width", 0.2);
-    //      $("#dod").hide();
-    // });
+    //Mouse leave
+     $(document).on('mouseleave','.Hovedstaden, .Sjælland, .Syddanmark, .Nordjylland, .Midtjylland',function(e){
+         $(lastHovered).css("stroke-width", 0.2);
+         $("#dod").empty();
+    });
 
 
 //Kode som sytrer search field
@@ -538,24 +575,24 @@ $("#dataSelector").on('input',function() {
             return;
         }
     };
-  });
+});
 
-    function sortArray(array){
-        array.sort(function(a,b){
-            return parseFloat(a[1]) - parseFloat(b[1]);
-        });
-        return array;
-    }
+function sortArray(array){
+    array.sort(function(a,b){
+        return parseFloat(a[1]) - parseFloat(b[1]);
+    });
+    return array;
+}
 
-    function updateData(){
-        newData = new Array();
+function updateData(){
+    newData = new Array();
         //Kopiere de relevante regioner og typer ind i newData
         for (var i = 0; i < Object.keys(regionMunicipality).length; i++) {
         	var keyKom = regionMunicipality[i].municipality;
         	var keyReg = regionMunicipality[i].region;
         	var typer = new Array();
         	for(var type in classification){
-        		if(classification[type]==true) typer.push({classification:type, antal:0});
+        		if(classification[type] === true) typer.push({classification:type, antal:0});
         	}
             var institioner = new Array();
             for (var h = 0; h < institutions.length; h++){
@@ -565,7 +602,7 @@ $("#dataSelector").on('input',function() {
             for (var j = 1918; j <= 2016; j++){
                 displayDate.push({displayDate:j, antal:0})
             }
-        	var tmpArr = {region:keyReg, kommune:keyKom, antal:0, typer, institioner, displayDate};
+            var tmpArr = {region:keyReg, kommune:keyKom, antal:0, typer, institioner, displayDate};
             newData.push(tmpArr);
         };
 
@@ -579,7 +616,9 @@ $("#dataSelector").on('input',function() {
     }
     function countData(newData){
         for (var i = 0; i < Object.keys(dataset).length; i++) {
-            if(dataset[i].municipality == null){continue;}
+            console.log(dataset[i]);
+            if(classification[dataset[i].classifications] == false) { continue; }
+            if(dataset[i].municipality == null) { continue; }
             if((dataset[i].displayDate == year && dataset[i].displayDate != null)
                 || (dataset[i].displayDate >= startYear && dataset[i].displayDate <=endYear)
                 || (year == null && startYear == null && endYear == null)){
@@ -614,9 +653,9 @@ $("#dataSelector").on('input',function() {
     }
 
     function drawDiagram(data){
-        console.log("currentment: "+currentMenu);
-        d3.select("svg").remove();
         d3.select("table").remove();
+        $("#chartRadioButtons").hide();
+
         if(currentMenu == "kort"){
             drawMap(data);
         }
@@ -626,6 +665,11 @@ $("#dataSelector").on('input',function() {
         else if(currentMenu == "info"){
             showInfo(data);
         }
+        else if(currentMenu == "lineChart"){
+            $("#chartRadioButtons").show();
+            drawLineChart(data);
+        }
+        
         whereAmI();
         updateActiveYears();
     }
@@ -643,8 +687,7 @@ $("#dataSelector").on('input',function() {
     }
 
 
-
-</script>
+    </script>
 
 </body>
 </head>

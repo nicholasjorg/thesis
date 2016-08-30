@@ -22,7 +22,6 @@ function whereAmI(){
 		.append("<div class='tilbageTilRegion'> "+currentRegion+" </div>")
 		.append(dropKommune);
 	}
-	// onClick='eLevelBack '"'region'"');
 	//Intet er valgt. Landsdækkede
 	else{
 		$("#whereAmI")
@@ -53,12 +52,14 @@ for (var i = 0; i < Object.keys(newData).length; i++) {
 
 //Tilføjer regioner og kommuner til dropdown menu
 $.each(ikkeValgteKommuner, function(index, value) {
-    if(currentMenu === "kort") $("#hvilkeKommuner").append("<li onClick='changeMunicipality("+value+")'>"+value+"</li>");
-    else if (currentMenu === "histogram" || currentMenu === "info") $("#hvilkeKommuner").append("<li onClick='changeMunicipality(this.id)' id='"+value+"'>"+value+"</li>");
+    if(currentMenu === "kort") $("#hvilkeKommuner").append("<li class='dropdownElement' onClick='changeMunicipality("+value+")'>"+value+"</li>");
+    else if (currentMenu === "histogram") $("#hvilkeKommuner").append("<li class='dropdownElement' onClick='changeMunicipality(this.id)' id='"+value+"'>"+value+"</li>");
+    else if(currentMenu === "info") $("#hvilkeKommuner").append("<li class='dropdownElement' onClick='changeMunicipality(this.id)' id='"+value+"'>"+value+"</li>");
+    else if(currentMenu === "lineChart") $("#hvilkeKommuner").append("<li class='dropdownElement' onClick='changeMunicipality(this.id)' id='"+value+"'>"+value+"</li>");
 });
 
 $.each(ikkeValgteRegioner, function(index, value) {
-    $("#hvilkeRegioner").append("<li onClick='changeRegion(this.id)' id='"+value+"'>"+value+"</li>");
+    $("#hvilkeRegioner").append("<li class='dropdownElement' onClick='changeRegion(this.id)' id='"+value+"'>"+value+"</li>");
 });
 
 }
@@ -77,10 +78,12 @@ function changeRegion(newRegion){
 }
 
 function changeMunicipality(newMunicipality){
-	console.log("currentMunicipality "+currentMunicipality+" newMunicipality "+newMunicipality);
+	// console.log("CurrentMenu : "+currentMenu+"  currentMunicipality "+currentMunicipality+" newMunicipality "+newMunicipality);
 	if(currentMenu === "kort") currentMunicipality = newMunicipality.id;
-    else if (currentMenu === "histogram" || currentMenu === "info") currentMunicipality = newMunicipality;
-    console.log("currentMunicipality "+currentMunicipality+" newMunicipality "+newMunicipality);
+    else if (currentMenu === "histogram") currentMunicipality = newMunicipality;
+    else if (currentMenu === "info") currentMunicipality = newMunicipality;
+    else if (currentMenu === "lineChart") currentMunicipality = newMunicipality;
+    // console.log("currentMunicipality "+currentMunicipality+" newMunicipality "+newMunicipality);
 	drawDiagram(newData);
 
 }

@@ -348,7 +348,7 @@
                 drawPie(newData[j].typer);
                 $("#dod-text").empty();
                 for (var i = 0; i < Object.keys(newData[j].typer).length; i++) {
-                    $("#dod-text").append(newData[j].typer[i].classifications+" - "+newData[j].typer[i].antal+"<br />");
+                    $("#dod").append(newData[j].typer[i].classifications+" - "+newData[j].typer[i].antal+"<br />");
                 };
                 break;
             }

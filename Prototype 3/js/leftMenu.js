@@ -72,31 +72,40 @@ for (var i = 0; i < Object.keys(newData).length; i++) {
 }
 
 function correntLeftInfo(antal){
-    $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+currentRegion+"<br /><b>Kommune: </b>"+currentMunicipality+"<br /> <b>Antal værker: </b>"+antal);
+    if(currentRegion === null)
+        $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>Alle<br /><b>Kommune: </b>Alle<br /> <b>Antal værker: </b>"+antal);
+    else if(currentMunicipality === null)
+        $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+currentRegion+"<br /><b>Kommune: </b>Alle<br /> <b>Antal værker: </b>"+antal);
+    else 
+        $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+currentRegion+"<br /><b>Kommune: </b>"+currentMunicipality+"<br /> <b>Antal værker: </b>"+antal);
+}
+
+function updateLeftInfoForLineChart(){
+    if(currentRegion === null)
+        $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>Alle<br /><b>Kommune: </b>Alle");
+    else if(currentMunicipality === null)
+        $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+currentRegion+"<br /><b>Kommune: </b>Alle");
+    else
+        $("#dod").empty().append("<h3>Info:</h3><b>Region: </b>"+currentRegion+"<br /><b>Kommune: </b>"+currentMunicipality);
 }
 
 function updateFarvekode(q){
     var widthBox = 200;
     var heightBox = 120;
     d3.select("#svgFarve").remove();
-    // var svg = d3.select("#farvekode").append("svg").attr("id","svgFarve").attr("width", widthBox).attr("height", heightBox);
-    // svg.append("rect").attr("x", 0).attr("y", 0).attr("width", widthBox/10).attr("height", 20).style('fill', colors.min);
-    // svg.append("text").attr("x", 20).attr("y", 0).text(function(){return q.min;});
-    // svg.append("rect").attr("x", 0).attr("y", 25).attr("width", widthBox/10).attr("height", 20).style('fill', colors.q1);
-    // svg.append("text").attr("x", 20).attr("y", 0).text(function(){return q.q1;});
-    // svg.append("rect").attr("x", 0).attr("y", 50).attr("width", widthBox/10).attr("height", 20).style('fill', colors.q2);
-    // svg.append("rect").attr("x", 0).attr("y", 75).attr("width", widthBox/10).attr("height", 20).style('fill', colors.q3).append("text").text("her er tekst til en boks");
-    // svg.append("rect").attr("x", 0).attr("y", 100).attr("width", widthBox/10).attr("height", 20).style('fill', colors.max);
-
+ 
     var colorData = [];
-
-    colorData.push({"x":0, "y":0, "color":colors.min, "antal":q.min});
-    colorData.push({"x":0, "y":25, "color":colors.q1, "antal":q.q1});
-    colorData.push({"x":0, "y":50, "color":colors.q2, "antal":q.q2 });
-    colorData.push({"x":0, "y":75, "color":colors.q3, "antal":q.q3 });
-    colorData.push({"x":0, "y":100, "color":colors.max, "antal":q.max });
-
-    // console.log(colorData);
+    if(gennemsnit === true || median === true){
+        colorData.push({"x":0, "y":0, "color":"red", "antal":"under"});
+        colorData.push({"x":0, "y":25, "color":"yellow", "antal":yellowIs});
+        colorData.push({"x":0, "y":50, "color":"green", "antal":"over"});
+    } else {
+        colorData.push({"x":0, "y":0, "color":colors.min, "antalFrom":q.min, "antalTo":q.q1 });
+        colorData.push({"x":0, "y":25, "color":colors.q1, "antalFrom":q.q1, "antalTo":q.q2 });
+        colorData.push({"x":0, "y":50, "color":colors.q2, "antalFrom":q.q2, "antalTo":q.q3 });
+        colorData.push({"x":0, "y":75, "color":colors.q3, "antalFrom":q.q3, "antalTo":q.beforeMax });
+        colorData.push({"x":0, "y":100, "color":colors.max, "antalFrom":q.max, "antalTo":q.max });
+    }
 
     var svg = d3.select("#farvekode").append("svg").attr("id","svgFarve").attr("width", widthBox).attr("height", heightBox);
     var rects = svg.selectAll("rect").data(colorData).enter().append("rect");
@@ -105,14 +114,23 @@ function updateFarvekode(q){
                     .attr("width", widthBox/10)
                     .attr("height", 20)
                     .style('fill', function(d){return d.color; });
-var prev = 0;
+
     var text = svg.selectAll("text").data(colorData).enter().append("text");
-    var textLavel = text.attr("x", function(d){return d.x + 20; })
-                    .attr("y", function(d, i){return d.y + 15; })
-                    .text(function(d){return prev + " - " + d.antal; prev=d.antal;});
-
-
-
-
-
+    // Hvis kou kommuner ses eller der er trykket ind på en region
+    if(kunKommune === true || currentRegion !== null){
+       text.attr("x", function(d){return d.x + 25; })
+       .attr("y", function(d, i){return d.y + 15; })
+       .text(function(d){return d.antalFrom + " - " + d.antalTo;});
+    }
+    else if(gennemsnit === true || median === true){
+        text.attr("x", function(d){return d.x + 25; })
+       .attr("y", function(d, i){return d.y + 15; })
+       .text(function(d){return d.antal;});
+    }
+    //Regionsoversigt
+    else {
+        text.attr("x", function(d){return d.x + 25; })
+        .attr("y", function(d, i){return d.y + 15; })
+        .text(function(d){return d.antalFrom[1];});
+    }
 }

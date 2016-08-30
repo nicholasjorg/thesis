@@ -1,17 +1,17 @@
 function drawHistogram(data){
     // console.log("CurrentRegion: "+currentRegion+ "  currentMunicipality: "+currentMunicipality+ " kunKommune: "+kunKommune);
     whereAmI();
-        if(currentRegion !== null && currentMunicipality === null || kunKommune === true)
-            {drawHistogramKommune(data); console.log("drawHistogramKommune(data);"); }
-        else if(currentMunicipality !== null)
-            drawHistogramInstitutions(data);
-        else
-            drawHistogramRegion(data);
+    if(currentRegion !== null && currentMunicipality === null || kunKommune === true && currentMunicipality === null)
+        {drawHistogramKommune(data); }
+    else if(currentMunicipality !== null)
+        drawHistogramInstitutions(data);
+    else
+        drawHistogramRegion(data);
 }
 
 function drawHistogramRegion(data){
     //Fjerner gammel graf
-    d3.select("svg").remove();
+    d3.select("#graph").remove();
 
     var regions = {Hovedstaden:true, Midtjylland:true, Nordjylland:true, Sjælland:true, Syddanmark:true, UdenforDanmark:true};
 
@@ -35,23 +35,25 @@ function drawHistogramRegion(data){
               }
           }
       }
-        //Sorterer data fra parametreret ascending order
-        newData.sort(function(a,b){
-            return parseFloat(a.antal) - parseFloat(b.antal);
-        });
+
+            //Sorterer data fra parametreret ascending order
+            newData.sort(function(a,b){
+                return parseFloat(a.antal) - parseFloat(b.antal);
+            });
+        
         
         //Sætter variable
         var margin = {top: 10, right: 0, bottom: 10, left: 40};
         var w = 500, h = 600;
 
         //Laver svg element til at komme figuren
-        var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
+        var svg = d3.select("#graphWrapper").append("svg").attr("id","graph").attr("width", w).attr("height", h).attr("id", "graph");
 
         //Tooltip
         var tip = d3.tip()
-          .attr('class', 'd3-tip')
-          .offset([-10, 0])
-          .html(function(d) {
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function(d) {
             return "Klik for mere info om " +  d.region;
         });
 
@@ -67,12 +69,21 @@ function drawHistogramRegion(data){
         xScale2.domain(newData.map(function (d){return d.region;}));
         //From tooltip.js
         svg.call(tip);
+        //Udregner median
+        var med = d3.median(newData, function(d){return d.antal;});
+        // console.log("Meidan i histogram: "+med);
 
         //Tegner rectangels
         svg.selectAll("rect").data(newData).enter()
         .append("svg:a")
         .append("rect")
-        .attr("class",function(d,i){return "rectangle";})
+        .attr("class",function(d,i){
+            if(median === true){
+                if(d.antal == med) return "rectangle rectangleMedian";
+                else if(d.antal < med) return "rectangle rectangleBelow";
+                else if(d.antal > med) return "rectangle rectangleAbove";
+            }
+            else return "rectangle";})
         .attr("id",function(d,i){return d.region;})
         .attr("x",function(d,i){ return xScale(d.region);})
         .attr("y", function (d){ return yScale(d.antal);})
@@ -103,34 +114,31 @@ function drawHistogramRegion(data){
             .attr("id", "averageLine")
             .attr("class", "line");
 
-            $("#gennemsnitsInfo").empty().append("<h3>Gennemsnit:</h3><b>Gennemsnitstal: </b>"+avg);
+            $("#gennemsnitsInfo").empty().append("<h3>Gennemsnit:"+avg+"</h3>");
         }
+        else if(median === true) $("#gennemsnitsInfo").empty().append("<h3>Median: "+med+"</h3>");
     }
 
     function clickedRegion(data, d){
-        // console.log(data);
-        // console.log(d);
         currentRegion = d.id;
         whereAmI();
-        // console.log("currentregion: "+currentRegion);
         drawHistogramKommune(data);
-
     }
 
-function drawHistogramKommune(data){
+    function drawHistogramKommune(data){
     //Fjerner gammel graf
-    d3.select("svg").remove();
+    d3.select("#graph").remove();
 
     var newData = Array();
 
     //Kopiere de relevante regioner og typer ind i newData, hvis dette er ingen for en enkelt region
     if(kunKommune === false || currentRegion !== null){
         for(var i=0; i<Object.keys(data).length; i++){
-                if(data[i].region == currentRegion){
-                    var result = $.grep(newData, function(e){ return e.region == currentRegion;});
-                    var antalVærker = data[i].antal;
-                    var tmpKommune = data[i].kommune;
-                    if (result.length === 0) {
+            if(data[i].region == currentRegion){
+                var result = $.grep(newData, function(e){ return e.region == currentRegion;});
+                var antalVærker = data[i].antal;
+                var tmpKommune = data[i].kommune;
+                if (result.length === 0) {
                         // not found
                         var tmpArr = {kommune:tmpKommune, antal:antalVærker};
                         newData.push(tmpArr);
@@ -140,26 +148,29 @@ function drawHistogramKommune(data){
                     }
                 }
             }
-    }
-    else newData = data;
-    
-        //Sorterer data fra parametreret ascending order
-        newData.sort(function(a,b){
-            return parseFloat(a.antal) - parseFloat(b.antal);
-        });
+        }
+        else newData = data;
+
+ 
+            //Sorterer data fra parametreret ascending order
+            newData.sort(function(a,b){
+                return parseFloat(a.antal) - parseFloat(b.antal);
+            });
+        
 
         //Sætter variable
-        var margin = {top: 10, right: 0, bottom: 100, left: 40};
+        var margin = {top: 10, right: 0, bottom: 150, left: 40};
         var w = 500, h = 600;
+        if(kunKommune === true && currentRegion === null) w = 800;
 
         //Laver svg element til at komme figuren
-        var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
+        var svg = d3.select("#graphWrapper").append("svg").attr("id","graph").attr("width", w).attr("height", h).attr("id", "graph");
 
         //Tooptip
         var tip = d3.tip()
-          .attr('class', 'd3-tip')
-          .offset([-10, 0])
-          .html(function(d) {
+        .attr('class', 'd3-tip')
+        .offset([-10, 0])
+        .html(function(d) {
             return "Klik for mere info om " +  d.kommune;
         });
 
@@ -176,11 +187,19 @@ function drawHistogramKommune(data){
         //From tooltip.js
         svg.call(tip);
 
+        var med = d3.median(newData, function(d){return d.antal;});
+
         //Tegner rectangels
         svg.selectAll("rect").data(newData).enter()
         .append("svg:a")
         .append("rect")
-        .attr("class",function(d,i){return "rectangle";})
+        .attr("class",function(d,i){
+            if(median === true){
+                if(d.antal == med) return "rectangle rectangleMedian";
+                else if(d.antal < med) return "rectangle rectangleBelow";
+                else if(d.antal > med) return "rectangle rectangleAbove";
+            }
+            else return "rectangle";})
         .attr("id",function(d,i){return d.kommune;})
         .attr("x",function(d,i){ return xScale(d.kommune);})
         .attr("y", function (d){ return yScale(d.antal);})
@@ -199,14 +218,46 @@ function drawHistogramKommune(data){
         .text(function(){ if(currentRegion !== null) return "Antal værker i region "+currentRegion; else return "Alle kommuner"; });
 
         //Bygger akser
-        var xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-        svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis)
-        .selectAll("text")
-        .attr("y", 0)
-        .attr("x", 9)
-        .attr("dy", ".35em")
-        .attr("transform", "rotate(90)")
-        .style("text-anchor", "start");
+        var hverAnden = false;
+        var hverAndenLine = false;
+        var xAxis;
+        if(kunKommune === true && currentRegion === null){
+            xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+            svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis)
+            .selectAll("text")
+            .attr("class","hoverText")
+            .attr("y", 0)
+            .attr("x", function(){
+                if(kunKommune === true){ if(hverAnden === false) {hverAnden=true; return 9;}
+                else {hverAnden = false; return 80;} }
+                else return 9;})
+            .attr("dy", ".35em")
+            .attr("transform", "rotate(90)")
+            .style("text-anchor", "start");
+            
+            svg.selectAll("line")
+            .each(function(d,i){
+                d3.select(this)
+                .attr("y2", function(){
+                    if(hverAndenLine === true) { hverAndenLine = false; return 80; }
+                    else { hverAndenLine = true; return 6; }
+                });
+            });
+           
+        }
+        else{
+            xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+            svg.append("g").attr("class", "axis").attr("transform","translate(0,"+(h-margin.top-margin.bottom)+")").call(xAxis)
+            .selectAll("text")
+            .attr("class","hoverText")
+            .attr("y", 0)
+            .attr("x", 9)
+            .attr("dy", ".35em")
+            .attr("transform", "rotate(90)")
+            .style("text-anchor", "start");
+        }
+
+
         var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
         svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
 
@@ -225,13 +276,9 @@ function drawHistogramKommune(data){
             .attr("id", "averageLine")
             .attr("class", "line");
 
-            var landMed = d3.median(data, function(d) { return d.antal; });
-            console.log("meidan: "+landMed);
-            var landMean = d3.mean(data, function(d) { return d.antal; });
-            console.log("Mean: "+landMean);
-
-            $("#gennemsnitsInfo").empty().append("<h3>Gennemsnit:</h3><b>Gennemsnitstal: </b>"+avg);
+            $("#gennemsnitsInfo").empty().append("<h3>Gennemsnit:"+avg+"</h3>");
         }
+        else if(median === true) $("#gennemsnitsInfo").empty().append("<h3>Median: "+med+"</h3>");
     }
 
     function clickedKommune(data, d){
@@ -244,36 +291,36 @@ function drawHistogramKommune(data){
         }
         whereAmI();
         drawHistogramInstitutions(data);
+        $("#gennemsnitsInfo").empty();
         document.getElementById("indbyggertalCheck").checked = false;
     }
 
     function drawHistogramInstitutions(data){
     //Fjerner gammel graf
-    d3.select("svg").remove();
+    d3.select("#graph").remove();
 
     var newData = Array();
     //Kopiere de relevante regioner og typer ind i newData
     for(var i=0; i<Object.keys(data).length; i++){
         if(data[i].kommune == currentMunicipality){
-        correntLeftInfo(data[i].antal);
-           for(var j=0; j<Object.keys(data[i].institioner).length; j++){
-            if(data[i].institioner[j].antal !== 0)
-                newData.push(data[i].institioner[j]);
-           }
-        break;
+            correntLeftInfo(data[i].antal);
+            for(var j=0; j<Object.keys(data[i].institioner).length; j++){
+                if(data[i].institioner[j].antal !== 0)
+                    newData.push(data[i].institioner[j]);
+            }
+            break;
         }
     }
-        //Sorterer data fra parametreret ascending order
-        newData.sort(function(a,b){
-            return parseFloat(a.antal) - parseFloat(b.antal);
-        });
-
+            //Sorterer data fra parametreret ascending order
+            newData.sort(function(a,b){
+                return parseFloat(a.antal) - parseFloat(b.antal);
+            });
         //Sætter variable
-        var margin = {top: 10, right: 0, bottom: 100, left: 40};
+        var margin = {top: 10, right: 0, bottom: 150, left: 40};
         var w = 500, h = 600;
 
         //Laver svg element til at komme figuren
-        var svg = d3.select("#graphContent").append("svg").attr("id","graph").attr("width", w).attr("height", h);
+        var svg = d3.select("#graphWrapper").append("svg").attr("id","graph").attr("width", w).attr("height", h).attr("id", "graph");
 
         //Laver scale
         var min = newData[0].antal;
@@ -319,4 +366,9 @@ function drawHistogramKommune(data){
         .style("text-anchor", "start");
         var yAxis = d3.svg.axis().scale(yScale).orient("left").ticks(15);
         svg.append("g").attr("class", "axis").attr("transform", "translate("+margin.left+",0)").call(yAxis);
+
+        //Gør rent i left menu og i checkbokses
+        $("#gennemsnitsInfo").empty();
+
+
     }
