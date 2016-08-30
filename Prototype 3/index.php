@@ -681,7 +681,6 @@ function updateData(){
 
         d3.select("table").remove();
         $("#chartRadioButtons").hide();
-        $("#graphWrapper").empty();
 
         if(currentMunicipality !== null){
             for (var i = 0; i < Object.keys(data).length; i++) {
