@@ -177,7 +177,7 @@
     <div class = "col-sm-6">
         <!-- <div class="col-sm-10" id="loadScreen"> <img src="gears.svg"> </div> -->
         <div class="col-sm-10" id="graphContent">
-            <ul class="nav nav-tabs row">
+            <ul id="menuUL" class="nav nav-tabs row">
                 <li id="menuKort" class="active"><a id="menuKortButton" class="menuButton" href="#menuKort">Kort</a></li>
                 <li id="menuHistogram"><a id="menuHistogramButton" class="menuButton" href="#menuHistogram">Histogram</a></li>
                 <li id="menuInfo"><a id="menuInfoButton" class="menuButton" href="#menuInfo">Type antal</a></li>
@@ -684,8 +684,13 @@ function updateData(){
 
         if(currentMunicipality !== null){
             for (var i = 0; i < Object.keys(data).length; i++) {
-                if(currentMunicipality === data[i].kommune && data[i].antal === 0)
-                    {alert("Intet data fundet"); currentMenu = "kort"; }
+                if(currentMunicipality === data[i].kommune && data[i].antal === 0){
+                    alert("Intet data fundet"); currentMenu = "kort";
+                    $("#menuUL").children().removeClass("active");
+                    $("#menuKort").addClass("active");
+                    $("#farvekodeWrapper").fadeIn();
+                    $("#liStatistik").fadeIn();
+                    }
             };
         }
 
@@ -701,7 +706,7 @@ function updateData(){
         else if(currentMenu == "lineChart"){
             drawLineChart(data);
         }
-        // $('#graphWrapper').show();
+        
         whereAmI();
         updateActiveYears();
     }
@@ -722,6 +727,7 @@ function updateData(){
         switch(this.id){
             case "menuHistogramButton":
                 $("#farvekodeWrapper").fadeOut();
+                $("#liStatistik").fadeIn();
                 break;
             case "menuKortButton":
                 $("#farvekodeWrapper").fadeIn();
