@@ -21,8 +21,6 @@ for (var i = 0; i < Object.keys(data).length; i++) {
 		break;
 	}
 	else if(currentRegion !== null && currentMunicipality === null && currentRegion === data[i].region){
-		console.log("currentRegion !== null && currentMunicipality === null && currentRegion === data[i].region");
-		console.log(data[i].region);
 		for (var g = 0; g < Object.keys(data[i].typer).length; g++) {
 			for (var h = 0; h < Object.keys(typeData).length; h++) {
 				if(data[i].typer[g].classification == typeData[h].Type){
@@ -32,7 +30,7 @@ for (var i = 0; i < Object.keys(data).length; i++) {
 			}
 		}
 	}
-	else{
+	else if(currentRegion === null && currentMunicipality === null){
 		for (var g = 0; g < Object.keys(data[i].typer).length; g++) {
 			for (var h = 0; h < Object.keys(typeData).length; h++) {
 				if(data[i].typer[g].classification == typeData[h].Type){

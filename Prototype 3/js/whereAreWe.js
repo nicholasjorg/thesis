@@ -84,7 +84,6 @@ function changeMunicipality(newMunicipality){
     else if (currentMenu === "histogram") currentMunicipality = newMunicipality;
     else if (currentMenu === "info") currentMunicipality = newMunicipality;
     else if (currentMenu === "lineChart") currentMunicipality = newMunicipality;
-    // console.log("currentMunicipality "+currentMunicipality+" newMunicipality "+newMunicipality);
 	drawDiagram(newData);
 
 }

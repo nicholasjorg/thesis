@@ -681,6 +681,14 @@ function updateData(){
 
         d3.select("table").remove();
         $("#chartRadioButtons").hide();
+        $("#graphWrapper").empty();
+
+        if(currentMunicipality !== null){
+            for (var i = 0; i < Object.keys(data).length; i++) {
+                if(currentMunicipality === data[i].kommune && data[i].antal === 0)
+                    {alert("Intet data fundet"); currentMenu = "kort"; }
+            };
+        }
 
         if(currentMenu == "kort"){
             drawMap(data);

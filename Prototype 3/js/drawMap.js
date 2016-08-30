@@ -197,7 +197,7 @@ function drawMap(newData){
         var masterGroup = d3.select("#masterGroup");
         d3.selectAll(b)
         .style("stroke","brown").attr("stroke-width","0.2")
-        .on("click", function(){ clicked(this);});
+        .on("click", function(){ clicked(this); });
 
         //Hvis ingen regioner er valgt
         if(currentRegion === null){
@@ -206,59 +206,101 @@ function drawMap(newData){
               });
         }
 
+        var string, allChildNodes;
         //Hvis en kommmune er valgt vil der blive zoomet ind på denne når kortet tegnes.
         if(currentMunicipality !== null){
-           var string = "#".concat(currentMunicipality);
-            var allChildNodes = d3.select("#masterGroup").selectAll(string)[0];
+            string = "#".concat(currentMunicipality);
+            console.log("Trykket på "+string+ " noden er: ");
+            console.log(d3.select(string).node());
+            clicked(d3.select(string).node());
+            // string = "#".concat(currentMunicipality);
+            // allChildNodes = d3.select("#masterGroup").select(string);
+            
+            // // allChildNodes = allChildNodes[0];
 
-            //Udregner størrelsen af Border Box
-            var x = d3.min(allChildNodes, function(d) {return d.getBBox().x;}),
-                y = d3.min(allChildNodes, function(d) {return d.getBBox().y;}),
-                width = d3.max(allChildNodes, function(d) {
-                    var bb = d.getBBox();
-                    return (bb.x + bb.width) - x;
-                }),
-                height = d3.max(allChildNodes, function(d) {
-                    var bb = d.getBBox();
-                    return (bb.y + bb.height) - y;
-                });
+            // // var currentNode = d3.select(string);
+            // // console.log(currentNode);
+    
+            // console.log(d3.select(string).node());
+
+            // var bbox = d3.select(string).node().getBBox();
+            // console.log(bbox);
+
+            // var rectAttr = {
+            //     x: bbox.x,
+            //     y: bbox.y,
+            //     width: bbox.width,
+            //     height: bbox.height,
+            //   };
+
+            // d3.select("#masterGroup").transition().duration(1000).attr('transform', function(d) {
+
+            // var testScale = Math.max(rectAttr.width+10, rectAttr.height+10);
+            // var widthScale = 472 / testScale;
+            // var heightScale = 584 / testScale;
+            // var scale = Math.max(widthScale, heightScale);
+            // var transX = -(rectAttr.x) * scale;
+            // var transY = -(rectAttr.y) * scale;
+
+            // console.log("scale: "+scale+" transX: "+transX+" transY: "+transY+" widthScale: "+widthScale+" heightScale "+heightScale+" testScale: "+testScale);
+
+            // return 'translate(' + transX + ',' + transY + ')scale(' + scale + ')';
+            // }).attr('stroke-width', '0.2');
+
+            // //Udregner størrelsen af Border Box
+            // var x = d3.min(allChildNodes, function(d) {return d.getBBox().x;}),
+            //     y = d3.min(allChildNodes, function(d) {return d.getBBox().y;}),
+            //     width = d3.max(allChildNodes, function(d) {
+            //         var bb = d.getBBox();
+            //         return (bb.x + bb.width) - x;
+            //     }),
+            //     height = d3.max(allChildNodes, function(d) {
+            //         var bb = d.getBBox();
+            //         return (bb.y + bb.height) - y;
+            //     });
         
-            d3.select("#masterGroup").transition().duration(1000).attr('transform', function (d){
-                var testScale = Math.max(width, height);
-                var widthScale = 472 / testScale;
-                var heightScale = 584 / testScale;
-                var scale = Math.max(widthScale, heightScale);
-                transX = -(x) * scale;
-                transY = -(y) * scale;
-                return 'translate(' + transX + ',' + transY + ')scale(' + scale + ')';
-            }).attr('stroke-width','0.2');
+            // d3.select("#masterGroup").transition().duration(1000).attr('transform', function (d){
+            //     var testScale = Math.max(width, height);
+            //     var widthScale = 472 / testScale;
+            //     var heightScale = 584 / testScale;
+            //     var scale = Math.max(widthScale, heightScale);
+            //     console.log("scale: "+scale+" x: "+x+" y: "+y+" width: "+width+" height "+height+" testScale: "+testScale);
+            //     transX = -(x) * scale;
+            //     transY = -(y) * scale;
+            //     return 'translate(' + transX + ',' + transY + ')scale(' + scale + ')';
+            // }).attr('stroke-width','0.2');
         }
         //Hvis der er en aktiv valgt region. Vil dette sørge for at denne vil være zommet ind på, hvis man forlader kortet
         else if(currentRegion !== null){
-            var string = ".".concat(currentRegion);
-            var allChildNodes = d3.select("#masterGroup").selectAll(string)[0];
+            string = ".".concat(currentRegion);
+            console.log("Trykket på "+string+ " noden er: ");
+            console.log(d3.select(string).node());
+            clicked(d3.select(string).node());
 
-            //Udregner størrelsen af Border Box
-            var x = d3.min(allChildNodes, function(d) {return d.getBBox().x;}),
-                y = d3.min(allChildNodes, function(d) {return d.getBBox().y;}),
-                width = d3.max(allChildNodes, function(d) {
-                    var bb = d.getBBox();
-                    return (bb.x + bb.width) - x;
-                }),
-                height = d3.max(allChildNodes, function(d) {
-                    var bb = d.getBBox();
-                    return (bb.y + bb.height) - y;
-                });
+            // string = ".".concat(currentRegion);
+            // allChildNodes = d3.select("#masterGroup").selectAll(string)[0];
+
+            // //Udregner størrelsen af Border Box
+            // var x = d3.min(allChildNodes, function(d) {return d.getBBox().x;}),
+            //     y = d3.min(allChildNodes, function(d) {return d.getBBox().y;}),
+            //     width = d3.max(allChildNodes, function(d) {
+            //         var bb = d.getBBox();
+            //         return (bb.x + bb.width) - x;
+            //     }),
+            //     height = d3.max(allChildNodes, function(d) {
+            //         var bb = d.getBBox();
+            //         return (bb.y + bb.height) - y;
+            //     });
         
-            d3.select("#masterGroup").transition().duration(1000).attr('transform', function (d){
-                var testScale = Math.max(width, height);
-                var widthScale = 472 / testScale;
-                var heightScale = 584 / testScale;
-                var scale = Math.max(widthScale, heightScale);
-                transX = -(x) * scale;
-                transY = -(y) * scale;
-                return 'translate(' + transX + ',' + transY + ')scale(' + scale + ')';
-            }).attr('stroke-width','0.2');
+            // d3.select("#masterGroup").transition().duration(1000).attr('transform', function (d){
+            //     var testScale = Math.max(width, height);
+            //     var widthScale = 472 / testScale;
+            //     var heightScale = 584 / testScale;
+            //     var scale = Math.max(widthScale, heightScale);
+            //     transX = -(x) * scale;
+            //     transY = -(y) * scale;
+            //     return 'translate(' + transX + ',' + transY + ')scale(' + scale + ')';
+            // }).attr('stroke-width','0.2');
         }
 
         giveColors(newData);
@@ -266,7 +308,11 @@ function drawMap(newData){
     });
 }
 
+
+//Når der klikkes på kortet!
 function clicked(d) {
+    console.log("currentRegion "+currentRegion+ " currentMunicipality "+currentMunicipality);
+    console.log(d);
     var bbox = d3.select(d).node().getBBox();
 
     var rectAttr = {
@@ -282,8 +328,10 @@ function clicked(d) {
     //Id (Municipality) på d
     var muni = d.id;
 
-    if(currentRegion !== null && currentMunicipality === null ||
-        currentRegion !== null && currentMunicipality !== muni || kunKommune === true && active !== d){
+    if(currentRegion !== null && currentMunicipality === null
+        || currentRegion !== null && currentMunicipality !== muni
+        || kunKommune === true && active !== d
+        || currentRegion !== null && currentMunicipality !== null){
         d3.select("#masterGroup").transition().duration(1000).attr('transform', function(d) {
 
         var testScale = Math.max(rectAttr.width+10, rectAttr.height+10);
@@ -319,14 +367,6 @@ function clicked(d) {
                 return (bb.y + bb.height) - y;
             });
 
-            //Viser border box
-            // d3.select("#masterGroup").append('rect')
-            // .attr('x', x )
-            // .attr('y', y)
-            // .attr('width', width)
-            // .attr('height', height)
-            // .style('fill', '#000');
-    
         d3.select("#masterGroup").transition().duration(1000).attr('transform', function (d){
             var testScale = Math.max(width, height);
             var widthScale = 472 / testScale;
@@ -359,6 +399,6 @@ function calculateAverage(data){
     var sum = 0;
     for (var i = 0; i < Object.keys(data).length; i++) {
         sum += newData[i].antal;
-    };
+    }
     return sum / Object.keys(data).length;
 }
