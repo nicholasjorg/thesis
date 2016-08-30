@@ -40,7 +40,7 @@
                   </div>
               </div>
               <div id="menu1" class="tab-pane fade col-sm-8">
-                <h3>Single year</h3>
+                <h3>Enkelt årstal</h3>
                 <select id ="selectSingleYear">
                     <option value="Vaelg">Vælg år</option>
                     <option value="Alle">Alle</option>
@@ -676,8 +676,9 @@ function updateData(){
         return newData;
     }
 
-
     function drawDiagram(data){
+        console.log(data);
+
         d3.select("table").remove();
         $("#chartRadioButtons").hide();
 
