@@ -25,7 +25,7 @@
                 <li class="active"><a href="#home">Region</a></li>
                 <li><a href="#menu1">Årstal</a></li>
                 <li><a href="#menu2">Typer</a></li>
-                <li><a href="#menu3">Statistik</a></li>
+                <li id ="liStatistik"><a href="#menu3">Statistik</a></li>
             </ul>
             <div class="tab-content">
                 <div id="home" class="tab-pane fade in active row">
@@ -178,10 +178,10 @@
         <!-- <div class="col-sm-10" id="loadScreen"> <img src="gears.svg"> </div> -->
         <div class="col-sm-10" id="graphContent">
             <ul class="nav nav-tabs row">
-                <li id="menuKort" class="active"><a href="#menuKort">Kort</a></li>
-                <li id="menuHistogram"><a href="#menuHistogram">Histogram</a></li>
-                <li id="menuInfo"><a href="#menuInfo">Type antal</a></li>
-                <li id="menuLineChart"><a href="#menuLineChart">Line chart</a></li>
+                <li id="menuKort" class="active"><a id="menuKortButton" class="menuButton" href="#menuKort">Kort</a></li>
+                <li id="menuHistogram"><a id="menuHistogramButton" class="menuButton" href="#menuHistogram">Histogram</a></li>
+                <li id="menuInfo"><a id="menuInfoButton" class="menuButton" href="#menuInfo">Type antal</a></li>
+                <li id="menuLineChart"><a id="menuLineChartButton" class="menuButton" href="#menuLineChart">Line chart</a></li>
             </ul>
             <div class="pull-right">
                 <input id="dataSelector" list="datalist" placeholder="Search">
@@ -226,8 +226,11 @@
 
         <!-- Venstre menun -->
         <div class = "col-sm-2 pull-right" id = "activeParameters">
-            <h3>Farvekode</h3>
-            <div id="farvekode"></div>
+            <div id="farvekodeWrapper">
+                <h3>Farvekode</h3>
+                    <div id="farvekode">
+                    </div>
+                </div>
             <h3>Årstal:</h3>
             <div id = "aktiveÅr">
                 1918 - 2016
@@ -259,7 +262,7 @@ var newData = new Array();
     var currentRegion = null, currentMunicipality=null;
     var colors = {"min":"#b3d9ff", "q1":"#66b3ff", "q2":"#1a8cff", "q3":"#0066cc", "max":"#004080"};
     var currentMenu = "kort", hvilkenLineChart = "akkumuleret";
-    
+
     <?php
         $jsonarray = array();
         $sql = 'SELECT kommune, region FROM indbyggertal group by region, kommune';
@@ -630,7 +633,7 @@ function updateData(){
                 })
             })
         })
-    
+
 
         document.getElementById("indbyggertalCheck").checked = false;
         document.getElementById("gennemsnitCheck").checked = false;
@@ -706,6 +709,27 @@ function updateData(){
         }
         drawDiagram(data);
     }
+
+    $(".menuButton").click(function(){
+        switch(this.id){
+            case "menuHistogramButton":
+                $("#farvekodeWrapper").fadeOut();
+                break;
+            case "menuKortButton":
+                $("#farvekodeWrapper").fadeIn();
+                $("#liStatistik").fadeIn();
+                break;
+            case "menuInfoButton":
+                $("#farvekodeWrapper").fadeOut();
+                $("#liStatistik").fadeOut();
+                break;
+            case "menuLineChartButton":
+                $("#farvekodeWrapper").fadeIn();
+                $("#liStatistik").fadeOut();
+                break;
+        }
+    });
+
     </script>
 
 </body>
