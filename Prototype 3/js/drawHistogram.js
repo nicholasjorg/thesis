@@ -47,7 +47,7 @@ function drawHistogramRegion(data){
         var w = 500, h = 600;
 
         //Laver svg element til at komme figuren
-        var svg = d3.select("#graphWrapper").append("svg").attr("id","graph").attr("width", w).attr("height", h).attr("id", "graph");
+        var svg = d3.select("#graphWrapper").append("svg").attr("id","graph").attr("width", w).attr("height", h);
 
         //Tooltip
         var tip = d3.tip()

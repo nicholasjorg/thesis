@@ -189,15 +189,6 @@
                 <datalist id="datalist"> </datalist>
             </div>
             <div id="whereAmI">Her skal være filsystem</div>
-            <div id="chartRadioButtons">
-                <div class="lineChartRadio">
-                    <form>
-                        <div class="radio"><label><input checked="checked" type="radio" name="skiftChart" value="akkumuleret">Akkumuleret</label></div>
-                        <div class="radio"><label><input type="radio" name="skiftChart" value="enkelt">Enkelt</label></div>
-                    </form></div>
-
-                </div>
-
                 <div id="displayKort" class="tab-content">
                     <div class="col-sm-12 tab-pane fade in active row"><div id="tooptipKort" style="display:none"></div></div>
                 </div>
@@ -217,24 +208,26 @@
                     </div>
                 </div>
                 <div id="graphWrapper">
-                <!-- Graph will be appended here -->
+                    <!-- Graph will be appended here -->
+                    <div id="chartRadioButtons">
+                        <div class="lineChartRadio">
+                            <form>
+                                <div class="radio"><label><input checked="checked" type="radio" name="skiftChart" value="akkumuleret">Akkumuleret</label></div>
+                                <div class="radio"><label><input type="radio" name="skiftChart" value="enkelt">Enkelt</label></div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-        </div><!-- End of graph -->
+                <div id="loadScreen">
+                    <h2>Loading data... </h2>
+                </div>
+            </div><!-- End of graph -->
+        </div>
 
         <!-- Venstre menun -->
         <div class = "col-sm-2 pull-right" id = "activeParameters">
-            <div id="naviMap"> Herunder skal der være et lille kort. Som skal hjælpe med navigation</div>
             <h3>Farvekode</h3>
             <div id="farvekode"></div>
-<!--            <h3> Region: </h3>
-             <div id = "aktiveRegion">
-                <?php
-                if (isset($_GET['region'])){
-                    echo $_GET['region'];
-                }
-                else echo "Hovedstaden";
-                ?>
-            </div> -->
             <h3>Årstal:</h3>
             <div id = "aktiveÅr">
                 1918 - 2016
@@ -242,9 +235,8 @@
             <!-- Details on demand -->
             <div id="dod" style="display:none"></div>
             <div id="gennemsnitsInfo"></div>
-        </div>
-    </div><!-- End of Row -->
-</div><!-- End of container -->
+        </div><!-- End of Row -->
+    </div><!-- End of container -->
 <!-- Details on demand Div -->
 <script src = "js/tabMenu.js"></script>
 <script src = "js/parametersHistogram.js"></script>
@@ -262,38 +254,27 @@ var newData = new Array();
     var dataset = <?php echo $dataset ?>;
     var indbyggerTabel = <?php echo $indbyggertal ?>;
     var kulturbudgetTabel = <?php echo $kulturbudget ?>;
-    var gennemsnit = false, median = false;
-    var active;
-    var kunKommune = false;
+    var gennemsnit = false, median = false, kunKommune = false;
+    var active, yellowIs;
     var currentRegion = null, currentMunicipality=null;
     var colors = {"min":"#b3d9ff", "q1":"#66b3ff", "q2":"#1a8cff", "q3":"#0066cc", "max":"#004080"};
-    var currentMenu = "kort";
-    var yellowIs;
-    var hvilkenLineChart = "akkumuleret";
+    var currentMenu = "kort", hvilkenLineChart = "akkumuleret";
     
-
-    document.onreadystatechange = function () {
-        console.log(document.readyState);
-    }
-
     <?php
-    $jsonarray = array();
-    $sql = 'SELECT kommune, region FROM indbyggertal group by region, kommune';
-    $result = queryDB($sql);
-    while ($row = mysqli_fetch_assoc($result)) {
-       $tmp = array(municipality=>$row["kommune"], region=>$row["region"]);
-       array_push($jsonarray, $tmp);
-   }
-   $regionMunicipality = json_encode($jsonarray);
+        $jsonarray = array();
+        $sql = 'SELECT kommune, region FROM indbyggertal group by region, kommune';
+        $result = queryDB($sql);
+        while ($row = mysqli_fetch_assoc($result)) {
+           $tmp = array(municipality=>$row["kommune"], region=>$row["region"]);
+           array_push($jsonarray, $tmp);
+       }
+       $regionMunicipality = json_encode($jsonarray);
    ?>
    var regionMunicipality = <?php echo $regionMunicipality; ?>;
 
 
    var year, startYear, endYear, classification, municipalities;
-    // var regionEllerKommune = "region";
-    year = null;
-    startYear = null;
-    endYear = null;
+    year = null, startYear = null, endYear = null;
 
     //Filter arrays
     classification =
@@ -308,7 +289,6 @@ var newData = new Array();
         "Uddannelse - ungdomsuddannelse", "Uddannelse - videregående uddannelse"];
 
         updateData();
-    // updateNaviMap();
 
 	//Kører hver gang der ændres på en checkboks under filter
 	$('.region-kommune input:radio').click(function() {
@@ -496,19 +476,52 @@ $("#medianCheck").click(function(){
 
 $("#menuKort").click(function(){
     currentMenu = "kort";
-    drawDiagram(newData);
+     $("#graphWrapper").fadeOut(function(){
+        $("#loadScreen").fadeIn(function(){
+                drawDiagram(newData);
+            $("#loadScreen").fadeOut(function(){
+                $("#graphWrapper").fadeIn(function(){
+                })
+            })
+        })
+    })
 });
 $("#menuHistogram").click(function(){
     currentMenu = "histogram";
-    drawDiagram(newData);
+     $("#graphWrapper").fadeOut(function(){
+        $("#loadScreen").fadeIn(function(){
+                drawDiagram(newData);
+            $("#loadScreen").fadeOut(function(){
+                $("#graphWrapper").fadeIn(function(){
+                })
+            })
+        })
+    })
 });
 $("#menuInfo").click(function(){
     currentMenu = "info";
-    drawDiagram(newData);
+     $("#graphWrapper").fadeOut(function(){
+        $("#loadScreen").fadeIn(function(){
+                drawDiagram(newData);
+            $("#loadScreen").fadeOut(function(){
+                $("#graphWrapper").fadeIn(function(){
+                })
+            })
+        })
+    })
 });
+
 $("#menuLineChart").click(function(){
     currentMenu = "lineChart";
-    drawDiagram(newData);
+    $("#graphWrapper").fadeOut(function(){
+        $("#loadScreen").fadeIn(function(){
+                drawDiagram(newData);
+            $("#loadScreen").fadeOut(function(){
+                $("#graphWrapper").fadeIn(function(){
+                })
+            })
+        })
+    })
 });
 
 
@@ -608,7 +621,16 @@ function updateData(){
 
         newData = countData(newData);
 
-        drawDiagram(newData);
+        $("#graphWrapper").fadeOut(function(){
+            $("#loadScreen").fadeIn(function(){
+                    drawDiagram(newData);
+                $("#loadScreen").fadeOut(function(){
+                    $("#graphWrapper").fadeIn(function(){
+                    })
+                })
+            })
+        })
+    
 
         document.getElementById("indbyggertalCheck").checked = false;
         document.getElementById("gennemsnitCheck").checked = false;
@@ -616,7 +638,6 @@ function updateData(){
     }
     function countData(newData){
         for (var i = 0; i < Object.keys(dataset).length; i++) {
-            console.log(dataset[i]);
             if(classification[dataset[i].classifications] == false) { continue; }
             if(dataset[i].municipality == null) { continue; }
             if((dataset[i].displayDate == year && dataset[i].displayDate != null)
@@ -652,6 +673,7 @@ function updateData(){
         return newData;
     }
 
+
     function drawDiagram(data){
         d3.select("table").remove();
         $("#chartRadioButtons").hide();
@@ -666,10 +688,9 @@ function updateData(){
             showInfo(data);
         }
         else if(currentMenu == "lineChart"){
-            $("#chartRadioButtons").show();
             drawLineChart(data);
         }
-        
+        // $('#graphWrapper').show();
         whereAmI();
         updateActiveYears();
     }
@@ -685,8 +706,6 @@ function updateData(){
         }
         drawDiagram(data);
     }
-
-
     </script>
 
 </body>

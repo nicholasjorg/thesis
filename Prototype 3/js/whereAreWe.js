@@ -72,13 +72,14 @@ function changeDanmark(){
 }
 
 function changeRegion(newRegion){
+	console.log("cangeRegion til : "+newRegion);
 	currentRegion = newRegion;
 	currentMunicipality = null;
 	drawDiagram(newData);
 }
 
 function changeMunicipality(newMunicipality){
-	// console.log("CurrentMenu : "+currentMenu+"  currentMunicipality "+currentMunicipality+" newMunicipality "+newMunicipality);
+	console.log("changemu til : "+newMunicipality);
 	if(currentMenu === "kort") currentMunicipality = newMunicipality.id;
     else if (currentMenu === "histogram") currentMunicipality = newMunicipality;
     else if (currentMenu === "info") currentMunicipality = newMunicipality;

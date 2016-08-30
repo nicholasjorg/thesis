@@ -141,7 +141,8 @@ function drawLineChartOrdinal(chartData){
     .orient("bottom")
     .innerTickSize(-height)
     .outerTickSize(0)
-    .tickPadding(10);
+    .tickPadding(10)
+    .tickFormat(d3.format("d"));
 
     var yAxis = d3.svg.axis()
     .scale(yScale)
@@ -159,7 +160,8 @@ function drawLineChartOrdinal(chartData){
     .x(function(d) { return xScale(d.displayDate); })
     .y(function(d) { return yScale(d.antal); });
 
-    var svg = d3.select("#graphContent").append("svg")
+    var svg = d3.select("#graphWrapper")
+    .append("svg")
     .attr("id", "graph")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -187,9 +189,6 @@ function drawLineChartOrdinal(chartData){
 		.attr('fill', 'none')
 		.attr('id', "line_"+d.key)
 		.attr('class', 'lineChartline');
-		// .on('click', function(d){ clickedLine(this); });
-		// .on('mouseover', function(d){ moveInLine(this); })
-		// .on('mouseout', function(d){ moveOutLine(this); });
     });
 
     var focus = svg.append("g")

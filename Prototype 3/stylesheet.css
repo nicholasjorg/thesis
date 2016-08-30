@@ -215,6 +215,11 @@ div.bar {
     left: 0;
   }
 
+  #loadScreen{
+    display:none;
+    position:fixed;
+  }
+
 /*STYLING FOR DOD
 #dod{
     background-color: grey;
@@ -232,3 +237,4 @@ div.bar {
 	display-none;
    
 } */
+

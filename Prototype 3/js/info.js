@@ -1,6 +1,6 @@
 function showInfo(data){
 //Fjerner gammel graf
-d3.select("svg").remove();
+d3.select("#graph").remove();
 
 var typeData = [{Type:"Foto", antal:0},{Type:"Skulptur", antal:0},{Type:"Maleri", antal:0}, {Type:"Tegning", antal:0},
 {Type:"Grafik", antal:0}, {Type:"Smykker", antal:0}, {Type:"Andet", antal:0}, {Type:"Design", antal:0}, {Type:"Relief", antal:0},
@@ -9,7 +9,6 @@ var typeData = [{Type:"Foto", antal:0},{Type:"Skulptur", antal:0},{Type:"Maleri"
 {Type:"Indretning", antal:0}, {Type:"Print", antal:0}, {Type:"Mixed Media", antal:0}, {Type:"Grafisk design", antal:0},
 {Type:"Performance", antal:0}, {Type:"Installation", antal:0}, {Type:"Lys", antal:0}];
 
-console.log("i show data med currentMunicipality: "+currentMunicipality+" og currentRegion: "+currentRegion);
 var total = 0;
 for (var i = 0; i < Object.keys(data).length; i++) {
 	if(currentMunicipality !== null && currentMunicipality === data[i].kommune){
@@ -22,50 +21,53 @@ for (var i = 0; i < Object.keys(data).length; i++) {
 		break;
 	}
 	else if(currentRegion !== null && currentMunicipality === null && currentRegion === data[i].region){
+		console.log("currentRegion !== null && currentMunicipality === null && currentRegion === data[i].region");
+		console.log(data[i].region);
 		for (var g = 0; g < Object.keys(data[i].typer).length; g++) {
 			for (var h = 0; h < Object.keys(typeData).length; h++) {
-				if(data[i].typer[g].classification == typeData[h].Type)
-					{typeData[h].antal = parseFloat(typeData[h].antal) + parseFloat(data[i].typer[g].antal); 
-						total += parseFloat(data[i].typer[g].antal)}
+				if(data[i].typer[g].classification == typeData[h].Type){
+					typeData[h].antal = parseFloat(typeData[h].antal) + parseFloat(data[i].typer[g].antal); 
+					total += parseFloat(data[i].typer[g].antal);
+				}
 			}
 		}
 	}
 	else{
-		console.log("Overbliv du er i danmark");
 		for (var g = 0; g < Object.keys(data[i].typer).length; g++) {
 			for (var h = 0; h < Object.keys(typeData).length; h++) {
-				if(data[i].typer[g].classification == typeData[h].Type)
-					{typeData[h].antal = parseFloat(typeData[h].antal) + parseFloat(data[i].typer[g].antal); 
-						total += parseFloat(data[i].typer[g].antal)}
+				if(data[i].typer[g].classification == typeData[h].Type){
+					typeData[h].antal = parseFloat(typeData[h].antal) + parseFloat(data[i].typer[g].antal); 
+					total += parseFloat(data[i].typer[g].antal);
+				}						
 			}
 		}
 	}
 }
+
 typeData.sort(function(a, b) {
-    return parseFloat(b.antal) - parseFloat(a.antal);
+	return parseFloat(b.antal) - parseFloat(a.antal);
 });
 
 correntLeftInfo(total);
 
-console.log(typeData);
 // create table
-    var table = d3.select("#graphContent").append("table").attr('class','table table-hover table-striped table-condensed'), thead = table.append("thead"), tbody = table.append("tbody");
+var table = d3.select("#graphWrapper").append("table").attr('id','graph').attr('class','table table-hover table-striped table-condensed'), thead = table.append("thead"), tbody = table.append("tbody");
 
 
-      
-      // create the table header
-      thead = d3.select("thead").selectAll("th")
-		.data(d3.keys(typeData[0]))
-	.enter().append("th").text(function(d){return d;});
+
+// create the table header
+thead = d3.select("thead").selectAll("th")
+.data(d3.keys(typeData[0]))
+.enter().append("th").text(function(d){return d;});
 // fill the table
 // create rows
 var tr = d3.select("tbody").selectAll("tr")
 .data(typeData).enter().append("tr");
 // cells
 var td = tr.selectAll("td")
-  .data(function(d){return d3.values(d);})
-  .enter().append("td")
-  .text(function(d) {return d;});
+.data(function(d){return d3.values(d);})
+.enter().append("td")
+.text(function(d) {return d;});
 
 
 

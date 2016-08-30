@@ -178,8 +178,8 @@
 
 
 function drawMap(newData){
-    d3.select("svg").remove();
-    var svg = d3.select("#graphContent").append("svg").attr({"width":472,"height":574}).attr("id", "graph");
+    d3.select("#graph").remove();
+    var svg = d3.select("#graphWrapper").append("svg").attr({"width":472,"height":574}).attr("id", "graph");
     
     d3.xml("kort.svg", function(error, documentFragment) {
         if (error) {console.log(error); return;}
@@ -187,7 +187,7 @@ function drawMap(newData){
         var svgNode = documentFragment.getElementsByTagName("svg")[0];
         svg.node().appendChild(svgNode);
 
-        var a = document.getElementById("SVGmap");
+        var a = document.getElementById("graph");
         // console.log(a);
         var b = a.querySelectorAll("g:not(#masterGroup)");
         // console.log(b);
