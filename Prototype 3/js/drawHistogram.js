@@ -43,7 +43,7 @@ function drawHistogramRegion(data){
         
         
         //Sætter variable
-        var margin = {top: 10, right: 0, bottom: 10, left: 40};
+        var margin = {top: 10, right: 0, bottom: 10, left: 50};
         var w = 500, h = 600;
 
         //Laver svg element til at komme figuren
@@ -159,7 +159,7 @@ function drawHistogramRegion(data){
         
 
         //Sætter variable
-        var margin = {top: 10, right: 0, bottom: 150, left: 40};
+        var margin = {top: 10, right: 0, bottom: 150, left: 50};
         var w = 500, h = 600;
         if(kunKommune === true && currentRegion === null) w = 800;
 
@@ -316,7 +316,7 @@ function drawHistogramRegion(data){
                 return parseFloat(a.antal) - parseFloat(b.antal);
             });
         //Sætter variable
-        var margin = {top: 10, right: 0, bottom: 150, left: 40};
+        var margin = {top: 10, right: 0, bottom: 150, left: 50};
         var w = 500, h = 600;
 
         //Laver svg element til at komme figuren
