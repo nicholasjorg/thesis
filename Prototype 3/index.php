@@ -12,7 +12,6 @@
 <script src = "js/whereAreWe.js"></script>
 <script src = "js/info.js"></script>
 <script src = "js/drawLineChart.js"></script>
-<script src = "js/loadScreen.js"></script>
 
 <!-- Hjælper med gennemsnitsstreg på histogram -->
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
@@ -207,16 +206,16 @@
                         </div>
                     </div>
                 </div>
+                <div id="chartRadioButtons">
+                    <div class="lineChartRadio">
+                        <form>
+                            <div class="radio"><label><input checked="checked" type="radio" name="skiftChart" value="akkumuleret">Akkumuleret</label></div>
+                            <div class="radio"><label><input type="radio" name="skiftChart" value="enkelt">Enkelt</label></div>
+                        </form>
+                    </div>
+                </div>
                 <div id="graphWrapper">
                     <!-- Graph will be appended here -->
-                    <div id="chartRadioButtons">
-                        <div class="lineChartRadio">
-                            <form>
-                                <div class="radio"><label><input checked="checked" type="radio" name="skiftChart" value="akkumuleret">Akkumuleret</label></div>
-                                <div class="radio"><label><input type="radio" name="skiftChart" value="enkelt">Enkelt</label></div>
-                            </form>
-                        </div>
-                    </div>
                 </div>
                 <div id="loadScreen">
                     <h2>Loading data... </h2>
@@ -311,41 +310,51 @@ var newData = new Array();
         drawLineChart(newData);
     });
 
-    $('.classification-filters input:checkbox').click(function() {
-        var name = $(this).val().trim();
-        //Hvis det er flere
-        if(name === "Væg" || name === "Rum" || name === "Immateriel" || name === "Genstand"){
-            var className = "sub"+name;
-            var relevantCheckboxes = $(".sub"+name);
-            if($("#"+name).is(':checked')){
-                //Put alle på
-                relevantCheckboxes.prop("checked",true);
-                var ids = $("."+className).map(function() { return this.id; });
+    $('.classification-filters input:checkbox').click(function(event) {
+        $("#graphWrapper").fadeOut(function(){
+            $("#loadScreen").fadeIn(function(){
+                var name = event.target.id;
+                //Hvis det er flere
+                if(name === "Væg" || name === "Rum" || name === "Immateriel" || name === "Genstand"){
+                    var className = "sub"+name;
+                    var relevantCheckboxes = $(".sub"+name);
+                    if($("#"+name).is(':checked')){
+                        //Put alle på
+                        relevantCheckboxes.prop("checked",true);
+                        var ids = $("."+className).map(function() { return name; });
 
-                for(var i = 0; i<ids.length;i++){
-                    classification[ids[i]]=true;
+                        for(var i = 0; i<ids.length;i++){
+                            classification[ids[i]]=true;
+                        }
+                        updateVærktyper(classification);
+                        updateData();
+                    }
+                    else{
+                        //Tag alle fra
+                        relevantCheckboxes.prop("checked",false);
+                        var ids = $("."+className).map(function() { return name; });
+                        for(var i = 0; i<ids.length;i++){
+                            classification[ids[i]]=false;
+                        }
+                        updateVærktyper(classification);
+                        updateData();
+                    }
+                    return;
                 }
+                //Hvis det er en single
+                if(classification[name] == true) classification[name] = false;
+                else classification[name] = true;
                 updateVærktyper(classification);
                 updateData();
-            }
-            else{
-                //Tag alle fra
-                relevantCheckboxes.prop("checked",false);
-                var ids = $("."+className).map(function() { return this.id; });
-                for(var i = 0; i<ids.length;i++){
-                    classification[ids[i]]=false;
-                }
-                updateVærktyper(classification);
-                updateData();
-            }
-            return;
-        }
-        //Hvis det er en single
-        if(classification[name] == true) classification[name] = false;
-        else classification[name] = true;
-        updateVærktyper(classification);
-        updateData();
-    });
+
+                $("#loadScreen").fadeOut(function(){
+                    $("#graphWrapper").fadeIn(function(){
+                    })
+                })
+            })
+})
+
+});
 
 	//Ændre i year til single view ved klik på dropdown menu
 	$('#selectSingleYear').change(function() {
@@ -677,11 +686,10 @@ function updateData(){
     }
 
     function drawDiagram(data){
-        console.log(data);
-
         d3.select("table").remove();
         $("#chartRadioButtons").hide();
         $("#graphWrapper").empty();
+        $("#farvekode").empty();
 
         if(currentMunicipality !== null){
             for (var i = 0; i < Object.keys(data).length; i++) {
@@ -705,6 +713,7 @@ function updateData(){
             showInfo(data);
         }
         else if(currentMenu == "lineChart"){
+            $("#chartRadioButtons").show();
             drawLineChart(data);
         }
         

@@ -82,6 +82,10 @@ div.bar {
   display: none;
 }
 
+#buttonsForSelection{
+  padding: 2px; 
+}
+
 .tilbageTilDanmark, .tilbageTilRegion, .tilbageTilKommune {
   cursor: pointer;
   font-style: italic;

@@ -1,7 +1,7 @@
 var doNotShow = new Array();
 var chartData;
 var oldData;
-var lineColors;
+var lineColors, lineColorRegion;
 var colorData;
 
 function drawLineChart(data){
@@ -12,9 +12,17 @@ function drawLineChart(data){
 	var sumThis;
 	var lastMuni;
 	lineColors = [];
+	lineColorRegion = [];
 	colorData = [];
-	
 
+	var color20 = d3.scale.category20();
+
+	lineColorRegion["Hovedstaden"] = color20(0);
+	lineColorRegion["Nordjylland"] = color20(6);
+	lineColorRegion["Midtjylland"] = color20(2);
+	lineColorRegion["Syddanmark"] = color20(3);
+	lineColorRegion["Sjælland"] = color20(4);
+	
 	//Giver random farver som key-value til alle kommuner.
 	for (var i = 0; i < Object.keys(data).length; i++) {
 		var randomColor = "hsl(" + Math.random() * 360 + ",100%,50%)";
@@ -23,33 +31,33 @@ function drawLineChart(data){
 	//Tilføjer data til chartData
 	var counter = 0;
 	for (var i = 0; i < Object.keys(data).length; i++) {
-		// if(kunKommune === false && currentRegion === null){
+		//Her skal alle kommuner vises med samme farveindeling i regioner
+		if(kunKommune === true && currentRegion === null){
+			colorData.push({"x":0, "y":counter*15, "color":lineColorRegion[data[i].region], "text":data[i].kommune});
+			counter++;
+			if(hvilkenLineChart === "akkumuleret"){
+				for (var j = 0; j < Object.keys(data[i].displayDate).length; j++) {
+				if(Object.keys(chartData).length === 0 || lastMuni !== data[i].kommune) {
+					chartData.push({"kommune":data[i].kommune, "region":data[i].region, "displayDate":data[i].displayDate[j].displayDate, "antal":data[i].displayDate[j].antal, "color":lineColorRegion[data[i].region]});
+					lastMuni = data[i].kommune;
+					sumThis = data[i].displayDate[j].antal;
+				}
+				else
+					sumThis = chartData[Object.keys(chartData).length-1].antal + data[i].displayDate[j].antal;
 
-		// 	colorData.push({"x":0, "y":counter*15, "color":"hsl(" + Math.random() * 360 + ",100%,50%)", "text":data[i].region});
-		// 	counter++;
-		// 	for (var j = 0; j < Object.keys(data[i].displayDate).length; j++) {
-		// 		var obj = {"region":data[i].region, "displayDate":data[i].displayDate[j].displayDate, "antal":data[i].displayDate[j].antal};
-		// 		var result = $.grep(chartData, function(obj) { return obj.region == data[i].region; });
-		// 		if (result.length === 0) {
-  //                         // not found
-                          
-  //                     } else if (result.length == 1) {
-  //                         // access the foo property using result[0].foo
-                          
-  //                     }
+				chartData.push({"kommune":data[i].kommune, "region":data[i].region, "displayDate":data[i].displayDate[j].displayDate, "antal":sumThis, "color":lineColorRegion[data[i].region]});
+				}
+			}
+			else if(hvilkenLineChart == "enkelt"){
+				for (var j = 0; j < Object.keys(data[i].displayDate).length; j++) {
+					chartData.push({"kommune":data[i].kommune, "region":data[i].region, "displayDate":data[i].displayDate[j].displayDate, "antal":data[i].displayDate[j].antal, "color":lineColorRegion[data[i].region]});
+				}
+			}
+			
+		}
 
-		// 		if(Object.keys(chartData).length === 0 || lastMuni !== data[i].kommune) {
-		// 			chartData.push({"kommune":data[i].region, "region":data[i].region, "displayDate":data[i].displayDate[j].displayDate, "antal":data[i].displayDate[j].antal, "color":lineColors[data[i].kommune]});
-		// 			lastMuni = data[i].region;
-		// 			sumThis = data[i].displayDate[j].antal;
-		// 		}
-		// 		else
-		// 			sumThis = chartData[Object.keys(chartData).length-1].antal + data[i].displayDate[j].antal;
 
-		// 		chartData.push({"kommune":data[i].region, "region":data[i].region, "displayDate":data[i].displayDate[j].displayDate, "antal":sumThis, "color":lineColors[data[i].kommune]});
-		// 		}
-		// }
-		if(currentMunicipality !== null && currentMunicipality === data[i].kommune && hvilkenLineChart == "akkumuleret" 
+		else if(currentMunicipality !== null && currentMunicipality === data[i].kommune && hvilkenLineChart == "akkumuleret" 
 			|| currentRegion !== null && data[i].region === currentRegion && currentMunicipality === null && hvilkenLineChart == "akkumuleret"
 			|| currentRegion === null && hvilkenLineChart == "akkumuleret"){
 			colorData.push({"x":0, "y":counter*15, "color":lineColors[data[i].kommune], "text":data[i].kommune});
@@ -80,7 +88,6 @@ else{
 		}
 	}
 
-	console.log(chartData);
 	drawLineChartOrdinal(chartData);
 }
 
@@ -125,8 +132,6 @@ function drawLineChartOrdinal(chartData){
 
     var min = findMin();
     var max = findMax();
-
-    console.log("min: "+min+" max: "+max);
 
     var xScale = d3.scale.linear()
     .domain([min, max])
@@ -184,7 +189,13 @@ function drawLineChartOrdinal(chartData){
     dataGroup.forEach(function(d, i) {
 		svg.append('svg:path')
 		.attr('d', lineGen(d.values))
-		.attr('stroke', function() { return d.values[0].color; })
+		.attr('stroke', function() {
+			return d.values[0].color;
+			// if (kunKommune === true)
+			// 	return d3.scale.category20(i);
+			// else
+			// 	return d.values[0].color;
+		})
 		.attr('stroke-width', 2)
 		.attr('fill', 'none')
 		.attr('id', "line_"+d.key)
@@ -254,37 +265,52 @@ function drawLineChartOrdinal(chartData){
 }
 
 function clickedLine(d){
-	console.log(d);
 	currentRegion = d.region;
 	currentMunicipality = d.kommune;
-	drawLineChart(newData);
+	$("#graphWrapper").fadeOut(function(){
+        $("#loadScreen").fadeIn(function(){
+                drawLineChart(newData);
+            $("#loadScreen").fadeOut(function(){
+                $("#graphWrapper").fadeIn(function(){
+                });
+            });
+        });
+    });
 	whereAmI();
-	// $("#"+d.id).css("display","none");
 }
 
 function clickedText(d){
 	var fjernKommune = d.text;
 	var string = "#".concat("text_").concat(fjernKommune);
 
-	if(jQuery.inArray(fjernKommune, doNotShow) !== -1){
-		//Er i array
-		$(string).css("text-decoration", "none");
-		doNotShow.splice(jQuery.inArray(fjernKommune, doNotShow),1);
-		drawLineChartOrdinal(chartData);
-	}
-	else{
-		//Er ikke i array
-		$(string).css("text-decoration", "line-through");
-		doNotShow.push(fjernKommune);
-		drawLineChartOrdinal(chartData);
-	}
-
+	$("#graphWrapper").fadeOut(function(){
+		$("#loadScreen").fadeIn(function(){
+			if(jQuery.inArray(fjernKommune, doNotShow) !== -1){
+				//Er i array
+				$(string).css("text-decoration", "none");
+				doNotShow.splice(jQuery.inArray(fjernKommune, doNotShow),1);
+				drawLineChartOrdinal(chartData);
+			}
+			else{
+				//Er ikke i array
+				$(string).css("text-decoration", "line-through");
+				doNotShow.push(fjernKommune);
+				drawLineChartOrdinal(chartData);
+			}
+			$("#loadScreen").fadeOut(function(){
+				$("#graphWrapper").fadeIn(function(){
+				});
+			});
+		});
+	});
 }
 
 function updateFarveLinechart(chartData){
 	var widthBox = 200;
     var heightBox = colorData.length * 15; // Skal laves dynamisk!!!
     d3.select("#svgFarve").remove();
+
+    $("#farvekode").empty().append('<div id="buttonsForSelection" class="row"><a type="button" class="btn btn-default btn-xs" onclick="selectAll()">Vælg alle</a><a type="button" class="btn btn-default btn-xs" onclick="deselectAll()">Fravælg alle</a></div>');
 
     var svg = d3.select("#farvekode").append("svg").attr("id","svgFarve").attr("width", widthBox).attr("height", heightBox);
     var rects = svg.selectAll("rect").data(colorData).enter().append("rect");
@@ -310,6 +336,43 @@ function updateFarveLinechart(chartData){
     .on('click', function(d){ clickedText(d);})
     .on('mouseover', function(d){ moveInText(d); })
     .on('mouseout', function(d){ moveOutText(d); });
+}
+
+function selectAll(){
+	console.log("select all function");
+	$("#graphWrapper").fadeOut(function(){
+		$("#loadScreen").fadeIn(function(){
+			doNotShow = [];
+			drawLineChartOrdinal(chartData);
+			
+			$("#loadScreen").fadeOut(function(){
+				$("#graphWrapper").fadeIn(function(){
+				});
+			});
+		});
+	});
+}
+
+function deselectAll(){
+	console.log("deselect all function");
+	$("#graphWrapper").fadeOut(function(){
+		$("#loadScreen").fadeIn(function(){
+			for (var i = 0; i < Object.keys(chartData).length; i++) {
+				var fjernKommune = chartData[i].kommune;
+				var string = "#".concat("text_").concat(fjernKommune);
+				if(jQuery.inArray(fjernKommune, doNotShow) === -1){
+					//Er ikke array
+					$(string).css("text-decoration", "line-through");
+					doNotShow.push(fjernKommune);
+				}
+			}
+			drawLineChartOrdinal(chartData);
+			$("#loadScreen").fadeOut(function(){
+					$("#graphWrapper").fadeIn(function(){
+					});
+				});
+			});
+	});
 }
 
 function moveInText(d){

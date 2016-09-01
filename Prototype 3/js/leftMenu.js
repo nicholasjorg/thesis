@@ -6,7 +6,7 @@ function updateNaviMap(){
 
     d3.xml("kort.svg", function(error, documentFragment) {
         if (error) {console.log(error); return;}
-    
+
         var svgNode = documentFragment.getElementsByTagName("naviMap")[0];
         console.log(svgNode);
         
@@ -25,7 +25,7 @@ function updateNaviMap(){
         masterGroup.style('width', '200').style('height', '243');
         console.log(masterGroup);
         d3.selectAll(b).style("stroke","brown").attr("stroke-width","0.2").on("click", function(){ clicked(this);});
-});
+    });
 
 }
 
@@ -46,7 +46,6 @@ function searchForMunicipality(){
                 // String B contains String A
             }
         }
-        console.log(posibleResults);
     });
 }
 function addSearchData(){
@@ -68,7 +67,7 @@ var ikkeValgteKommuner = [];
 
 for (var i = 0; i < Object.keys(newData).length; i++) {
     $("#dropdownSearch").append('<option data-tokens="'+newData[i].kommune+'">'+newData[i].kommune+'</option>');
-    }
+}
 }
 
 function correntLeftInfo(antal){
@@ -93,7 +92,7 @@ function updateFarvekode(q){
     var widthBox = 200;
     var heightBox = 120;
     d3.select("#svgFarve").remove();
- 
+
     var colorData = [];
     if(gennemsnit === true || median === true){
         colorData.push({"x":0, "y":0, "color":"red", "antal":"under"});
@@ -110,23 +109,23 @@ function updateFarvekode(q){
     var svg = d3.select("#farvekode").append("svg").attr("id","svgFarve").attr("width", widthBox).attr("height", heightBox);
     var rects = svg.selectAll("rect").data(colorData).enter().append("rect");
     var rectAttr = rects.attr("x", function(d){return d.x; })
-                    .attr("y", function(d, i){return d.y; })
-                    .attr("width", widthBox/10)
-                    .attr("height", 20)
-                    .style('fill', function(d){return d.color; });
+    .attr("y", function(d, i){return d.y; })
+    .attr("width", widthBox/10)
+    .attr("height", 20)
+    .style('fill', function(d){return d.color; });
 
     var text = svg.selectAll("text").data(colorData).enter().append("text");
     // Hvis kou kommuner ses eller der er trykket ind på en region
     if(kunKommune === true || currentRegion !== null){
-       text.attr("x", function(d){return d.x + 25; })
-       .attr("y", function(d, i){return d.y + 15; })
-       .text(function(d){return d.antalFrom + " - " + d.antalTo;});
-    }
-    else if(gennemsnit === true || median === true){
-        text.attr("x", function(d){return d.x + 25; })
-       .attr("y", function(d, i){return d.y + 15; })
-       .text(function(d){return d.antal;});
-    }
+     text.attr("x", function(d){return d.x + 25; })
+     .attr("y", function(d, i){return d.y + 15; })
+     .text(function(d){return d.antalFrom + " - " + d.antalTo;});
+ }
+ else if(gennemsnit === true || median === true){
+    text.attr("x", function(d){return d.x + 25; })
+    .attr("y", function(d, i){return d.y + 15; })
+    .text(function(d){return d.antal;});
+}
     //Regionsoversigt
     else {
         text.attr("x", function(d){return d.x + 25; })
