@@ -20,8 +20,8 @@
     <div class = "row">
         <div class = "col-sm-3">
             <!-- Venstre menubar -->
-            <ul class="nav nav-tabs">
-                <li class="active"><a href="#home">Region</a></li>
+            <ul id = "leftMenu" class="nav nav-tabs">
+                <li id="leftMenuNiveau" class="active"><a href="#home">Niveau</a></li>
                 <li><a href="#menu1">Årstal</a></li>
                 <li><a href="#menu2">Typer</a></li>
                 <li id ="liStatistik"><a href="#menu3">Statistik</a></li>
@@ -158,13 +158,13 @@
             </div>
             <div id="menu3" class="tab-pane fade">
                 <div class="checkbox" id ="gennemsnitWrapper">
-                    <label><input type="checkbox" id="gennemsnitCheck" name="gennemsnit" value="gennemsnit">Gennemsnit</label>
+                    <label><input type="checkbox" id="gennemsnitCheck" name="gennemsnit" value="gennemsnit">Vis gennemsnit</label>
                 </div>
                 <div class="checkbox" id ="medianWrapper">
-                    <label><input type="checkbox" id="medianCheck" name="median" value="median">Median</label>
+                    <label><input type="checkbox" id="medianCheck" name="median" value="median">Vis median</label>
                 </div>
                 <div class="checkbox" id="indbyggertalWrapper">
-                    <label><input type="checkbox" id="indbyggertalCheck" value="indbyggertal">Indbyggertal</label>
+                    <label><input type="checkbox" id="indbyggertalCheck" value="indbyggertal">Antal værker udregnet pr. indbygger</label>
                 </div>
                 <div class="checkbox" id ="KulturWrapper">
                     <label><input type="checkbox" id="kulturCheck" name="kulturBudget" value="kulturBudget">Kulturbudget pr. indbygger</label>
@@ -716,7 +716,7 @@ function updateData(){
             $("#chartRadioButtons").show();
             drawLineChart(data);
         }
-        
+
         whereAmI();
         updateActiveYears();
     }
@@ -733,6 +733,11 @@ function updateData(){
         drawDiagram(data);
     }
 
+    function goToNiveau(){
+        $("#leftMenu").children().removeClass("active");
+        $("#leftMenuNiveau").addClass("active");
+    }
+
     $(".menuButton").click(function(){
         switch(this.id){
             case "menuHistogramButton":
@@ -746,10 +751,16 @@ function updateData(){
             case "menuInfoButton":
                 $("#farvekodeWrapper").fadeOut();
                 $("#liStatistik").fadeOut();
+                if($("#liStatistik").hasClass("active")){
+                    goToNiveau();
+                }
                 break;
             case "menuLineChartButton":
                 $("#farvekodeWrapper").fadeIn();
                 $("#liStatistik").fadeOut();
+                if($("#liStatistik").hasClass("active")){
+                    goToNiveau();
+                }
                 break;
         }
     });

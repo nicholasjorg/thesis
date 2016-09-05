@@ -30,9 +30,19 @@ function drawLineChart(data){
 	}
 	//Tilføjer data til chartData
 	var counter = 0;
+
+	if(kunKommune === true && currentRegion === null || kunKommune === false && currentRegion === null && currentMunicipality === null){
+		colorData.push({"x":0, "y":counter*15, "color":lineColorRegion["Hovedstaden"], "text":"Hovedstaden"}); counter++;
+		colorData.push({"x":0, "y":counter*15, "color":lineColorRegion["Midtjylland"], "text":"Midtjylland"}); counter++;
+		colorData.push({"x":0, "y":counter*15, "color":lineColorRegion["Nordjylland"], "text":"Nordjylland"}); counter++;
+		colorData.push({"x":0, "y":counter*15, "color":lineColorRegion["Sjælland"], "text":"Sjælland"}); counter++;
+		colorData.push({"x":0, "y":counter*15, "color":lineColorRegion["Syddanmark"], "text":"Syddanmark"}); counter++;
+		counter++;
+	}
+
 	for (var i = 0; i < Object.keys(data).length; i++) {
 		//Her skal alle kommuner vises med samme farveindeling i regioner
-		if(kunKommune === true && currentRegion === null){
+		if(kunKommune === true && currentRegion === null || kunKommune === false && currentRegion === null && currentMunicipality === null){
 			colorData.push({"x":0, "y":counter*15, "color":lineColorRegion[data[i].region], "text":data[i].kommune});
 			counter++;
 			if(hvilkenLineChart === "akkumuleret"){
@@ -55,8 +65,6 @@ function drawLineChart(data){
 			}
 			
 		}
-
-
 		else if(currentMunicipality !== null && currentMunicipality === data[i].kommune && hvilkenLineChart == "akkumuleret" 
 			|| currentRegion !== null && data[i].region === currentRegion && currentMunicipality === null && hvilkenLineChart == "akkumuleret"
 			|| currentRegion === null && hvilkenLineChart == "akkumuleret"){
@@ -111,11 +119,29 @@ function drawLineChartOrdinal(chartData){
 	width = 800 - margin.left - margin.right,
 	height = 500 - margin.top - margin.bottom;
 
-	var dataGroup = d3.nest()
-	.key(function(d) {
-		return d.kommune;
-	})
-	.entries(data);
+	if(kunKommune === false && currentRegion === null && currentMunicipality === null){
+		var dataGroup = d3.nest()
+	  .key(function(d) { return d.region; })
+	  .key(function(d) { return d.displayDate; })
+	  .rollup(function(v) {
+	  	return d3.sum(v, function(d) { return d.antal; }) 
+	  })
+	  .entries(data);
+	  
+	  data = [];
+	  for (var i = 0; i < Object.keys(dataGroup).length; i++) {
+	  	for (var j = 0; j < Object.keys(dataGroup[i].values).length; j++) {
+	  		data.push({"kommune":dataGroup[i].key, "region":dataGroup[i].key, "displayDate":dataGroup[i].values[j].key, "antal":dataGroup[i].values[j].values, "color":lineColorRegion[dataGroup[i].key]});
+	  	};
+	  };
+	}
+	else{
+		var dataGroup = d3.nest()
+		.key(function(d) {
+			return d.kommune;
+		})
+		.entries(data);
+	}
 
     // console.log(JSON.stringify(dataGroup));
 
@@ -156,15 +182,6 @@ function drawLineChartOrdinal(chartData){
     .outerTickSize(0)
     .tickPadding(10);
 
-    var voronoi = d3.geom.voronoi()
-    .x(function(d) { return xScale(d.displayDate); })
-    .y(function(d) { return yScale(d.antal); });
-    // .clipExtent([[0, 0], [width, height]]);
-
-    var line = d3.svg.line()
-    .x(function(d) { return xScale(d.displayDate); })
-    .y(function(d) { return yScale(d.antal); });
-
     var svg = d3.select("#graphWrapper")
     .append("svg")
     .attr("id", "graph")
@@ -183,24 +200,30 @@ function drawLineChartOrdinal(chartData){
     .call(yAxis);
 
     var lineGen = d3.svg.line()
-    .x(function(d) { return xScale(d.displayDate); })
-    .y(function(d) { return yScale(d.antal); });
+    .x(function(d, i) { 
+    	if(kunKommune === false && currentRegion === null && currentMunicipality === null)
+    		return xScale(d.key);
+    	else	
+    		return xScale(d.displayDate); })
+    .y(function(d, i) { 
+    	if(kunKommune === false && currentRegion === null && currentMunicipality === null)
+    		return yScale(d.values);
+    	else	
+    		return yScale(d.antal); });
 
-    dataGroup.forEach(function(d, i) {
-		svg.append('svg:path')
-		.attr('d', lineGen(d.values))
-		.attr('stroke', function() {
-			return d.values[0].color;
-			// if (kunKommune === true)
-			// 	return d3.scale.category20(i);
-			// else
-			// 	return d.values[0].color;
-		})
-		.attr('stroke-width', 2)
-		.attr('fill', 'none')
-		.attr('id', "line_"+d.key)
-		.attr('class', 'lineChartline');
-    });
+
+    dataGroup.forEach(function(d,i) {
+        svg.append('svg:path')
+        .attr('d', lineGen(d.values) )
+        .attr('stroke', function() { 
+        	if(kunKommune === false && currentRegion === null && currentMunicipality === null)
+        		return lineColorRegion[d.key];
+        	else
+        		return d.values[0].color; })
+        .attr('stroke-width', 2)
+        .attr('id', 'line_'+d.key)
+        .attr('fill', 'none')
+        .attr('class', 'lineChartline')});
 
     var focus = svg.append("g")
         .attr("transform", "translate(-100,-100)")
@@ -213,12 +236,16 @@ function drawLineChartOrdinal(chartData){
         .attr("y", -10);
 
 
+    var voronoi = d3.geom.voronoi()
+    .x(function(d) { return xScale(d.displayDate); })
+    .y(function(d) { return yScale(d.antal); });
+
     var voronoiGroup = svg.append("g")
         .attr("class", "voronoi")
         .attr("id", "graph");
 
       voronoiGroup.selectAll("path")
-        .data(voronoi(chartData))
+        .data(voronoi(data))
         .enter().append("path")
         .attr("d", function(d) { if(d !== undefined) return "M" + d.join("L") + "Z";}) //return "M" + d.join("L") + "Z";
         .datum(function(d) {
@@ -265,8 +292,8 @@ function drawLineChartOrdinal(chartData){
 }
 
 function clickedLine(d){
-	currentRegion = d.region;
-	currentMunicipality = d.kommune;
+	if(d.region == d.kommune) {currentRegion = d.region; currentMunicipality = null;}
+	else { currentRegion = d.region; currentMunicipality = d.kommune; }
 	$("#graphWrapper").fadeOut(function(){
         $("#loadScreen").fadeIn(function(){
                 drawLineChart(newData);
@@ -280,6 +307,11 @@ function clickedLine(d){
 }
 
 function clickedText(d){
+	if(kunKommune === true && currentRegion === null 
+		&& d.text === "Hovedstaden" | "Midtjylland" | "Syddanmark" | "Nordjylland" | "Sjælland") {
+		console.log("fanget i første if, skal returne"); return;
+	}
+
 	var fjernKommune = d.text;
 	var string = "#".concat("text_").concat(fjernKommune);
 
@@ -310,6 +342,8 @@ function updateFarveLinechart(chartData){
     var heightBox = colorData.length * 15; // Skal laves dynamisk!!!
     d3.select("#svgFarve").remove();
 
+    console.log(colorData);
+
     $("#farvekode").empty().append('<div id="buttonsForSelection" class="row"><a type="button" class="btn btn-default btn-xs" onclick="selectAll()">Vælg alle</a><a type="button" class="btn btn-default btn-xs" onclick="deselectAll()">Fravælg alle</a></div>');
 
     var svg = d3.select("#farvekode").append("svg").attr("id","svgFarve").attr("width", widthBox).attr("height", heightBox);
@@ -339,7 +373,6 @@ function updateFarveLinechart(chartData){
 }
 
 function selectAll(){
-	console.log("select all function");
 	$("#graphWrapper").fadeOut(function(){
 		$("#loadScreen").fadeIn(function(){
 			doNotShow = [];
@@ -354,7 +387,6 @@ function selectAll(){
 }
 
 function deselectAll(){
-	console.log("deselect all function");
 	$("#graphWrapper").fadeOut(function(){
 		$("#loadScreen").fadeIn(function(){
 			for (var i = 0; i < Object.keys(chartData).length; i++) {
